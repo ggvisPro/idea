@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // 模拟登录验证 (实际应用中应通过API请求验证)
         if (username === 'wang' && password === '1234') {
             // 登录成功
-            loginMessage.textContent = '欢迎您，王院！';
+            loginMessage.textContent = '欢迎您，王师傅！';
             loginMessage.style.color = 'green';
             
             // 这里可以添加跳转逻辑
