@@ -1,4 +1,6 @@
-# 原型图
+# ggvis的原型图作品
 
-## [knowledge_base](https://ggvispro.github.io/ppt/knowledge_base/)
-临床知识库的原型图
+| 项目名称 | 项目描述 |
+|---------|---------|
+| [knowledge_base](https://ggvispro.github.io/ppt/knowledge_base/)  | 临床知识库 |
+| [SEO](https://ggvispro.github.io/ppt/seo/) | 搜索引擎优化 |
