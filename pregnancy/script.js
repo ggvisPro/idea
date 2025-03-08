@@ -40,9 +40,9 @@ function calculatePregnancy() {
     document.getElementById('dueDate').textContent = formatDate(dueDate);
     document.getElementById('currentWeek').textContent = `${pregnancyWeeks}周${remainingDays}天`;
     
-    // 默认将今天设为指定日期
-    document.getElementById('specificDate').valueAsDate = new Date();
-    calculateSpecificDateWeek();
+    // 移除自动触发计算指定日期孕周的代码
+    // document.getElementById('specificDate').valueAsDate = new Date();
+    // calculateSpecificDateWeek();
     
     // 只为主要孕期计算结果添加动画效果
     animateResults(['dueDate', 'currentWeek']);

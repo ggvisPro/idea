@@ -129,6 +129,7 @@ h2 {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    align-items: center; /* 使表单组内的元素居中 */
 }
 
 .input-wrapper {
@@ -201,15 +202,18 @@ button {
     background: var(--primary-color);
     color: white;
     border: none;
-    padding: 10px 18px;
+    padding: 8px 16px; /* 减小内边距使按钮更窄 */
     border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
     font-weight: 600;
     transition: var(--transition);
-    align-self: flex-start;
+    align-self: center; /* 将按钮自身设置为居中 */
     letter-spacing: -0.2px;
     width: auto;
+    min-width: 90px; /* 设置最小宽度 */
+    max-width: 200px; /* 限制最大宽度 */
+    text-align: center; /* 确保按钮文本居中 */
 }
 
 button:hover {
@@ -260,13 +264,18 @@ button:active {
 
 footer {
     text-align: center;
-    padding: 20px 0;
-    margin-top: 20px;
-    margin-bottom: 0; /* 移除底部边距 */
-    color: var(--secondary-text);
-    font-size: 14px;
-    background-color: var(--card-bg);
+    padding: 20px 0 10px 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    color: rgba(0, 0, 0, 0.4); /* 更浅的字体颜色 */
+    font-size: 11px;
+    background-color: var(--card-bg); /* 与主体背景相同 */
     width: 100%;
+    font-weight: 300; /* 更细的字体 */
+    position: relative; /* 定位控制 */
+    z-index: 1; /* 确保层级正确 */
+    letter-spacing: 0.5px; /* 增加字母间距，提高可读性 */
+    border-top: none; /* 移除任何可能的顶部边框 */
 }
 
 /* 行内结果显示 */
@@ -276,6 +285,11 @@ footer {
     align-items: center;
     padding: 4px 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* 移除孕周计算主结果项下的横线 */
+#pregnancyResults > .inline-result {
+    border-bottom: none;
 }
 
 .inline-result:last-child {
@@ -305,6 +319,25 @@ footer {
     margin-bottom: 0; /* 移除最后一个表单组的底部边距 */
 }
 
+/* 修改mt-20类，移除孕周计算模块中的分隔线 */
+#pregnancy-tab .mt-20 {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: none; /* 移除孕周计算模块中的横线 */
+}
+
+/* 修改mt-20类，为孕周计算模块中的子模块添加分隔线 */
+#pregnancy-tab .mt-20 {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1); /* 恢复孕周计算模块中的横线 */
+}
+
+/* 保留其他模块的分隔线 */
+.calculator-section:not(#pregnancy-tab) .mt-20 {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
 /* 增强响应式设计 */
 @media (min-width: 768px) {
     .form-group {
@@ -314,7 +347,7 @@ footer {
     
     button {
         width: auto;
-        align-self: flex-end;
+        align-self: center; /* 确保在大屏幕上也居中 */
     }
     
     .input-wrapper {
@@ -348,8 +381,10 @@ footer {
     }
     
     button {
-        width: 100%;
-        padding: 14px 20px;
+        width: auto; /* 在移动设备上保持按钮窄一些 */
+        max-width: 100%; /* 但允许自适应屏幕 */
+        padding: 12px 16px;
+        align-self: center; /* 确保在小屏幕上也居中 */
     }
     
     .days-input {
@@ -417,4 +452,38 @@ footer {
     .inline-result {
         border-bottom-color: rgba(255, 255, 255, 0.05);
     }
+    
+    #pregnancyResults > .inline-result {
+        border-bottom: none;
+    }
+    
+    .calculator-section:not(#pregnancy-tab) .mt-20 {
+        border-top-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    #pregnancy-tab .mt-20 {
+        border-top-color: rgba(255, 255, 255, 0.1); /* 深色模式下的分隔线颜色 */
+    }
+    
+    footer {
+        color: rgba(255, 255, 255, 0.3); /* 深色模式下更浅的字体颜色 */
+        background-color: var(--card-bg);
+    }
+}
+
+/* 修改特定标签的对齐方式 */
+.form-group .result-item {
+    align-self: flex-start; /* 使结果项左对齐 */
+    width: 100%;
+}
+
+/* 确保result-item内的元素左对齐 */
+.form-group .result-item .label {
+    text-align: left;
+}
+
+/* 对于form-group内的内联结果，保持原有的两端对齐布局 */
+.form-group .inline-result {
+    justify-content: space-between;
+    width: 100%;
 }
