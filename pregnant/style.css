@@ -1,0 +1,312 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --primary-color: #0071e3;
+    --primary-dark: #0058b0;
+    --accent-color: #fa5252;
+    --light-bg: #f5f5f7;
+    --card-bg: #ffffff;
+    --text-color: #000000; /* 纯黑色文本 */
+    --secondary-text: #000000; /* 纯黑色辅助文本 */
+    --border-radius: 12px;
+    --shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+    --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@font-face {
+    font-family: 'SF Pro Text';
+    src: local('SF Pro Text'), local('SFProText-Regular');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    color: var(--text-color);
+    background: var(--light-bg);
+    padding: 20px;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+h1 {
+    text-align: center;
+    margin: 40px 0;
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.title-icon {
+    display: inline-flex;
+    align-items: center;
+    color: var(--primary-color);
+}
+
+.section-header {
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: var(--text-color);
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+}
+
+.divider {
+    height: 1px;
+    background-color: rgba(0,0,0,0.1);
+    margin-top: 10px;
+}
+
+.calculator-section {
+    margin-bottom: 40px;
+    padding: 30px;
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.form-group {
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.input-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+label {
+    color: var(--secondary-text);
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+input, select {
+    padding: 12px 16px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: var(--card-bg);
+    transition: var(--transition);
+    color: var(--text-color);
+    font-family: inherit;
+    -webkit-appearance: none;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2);
+}
+
+input[type="date"] {
+    width: 100%;
+}
+
+.week-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.week-separator {
+    font-size: 16px;
+    color: var(--secondary-text);
+}
+
+input[type="number"] {
+    width: 80px;
+    text-align: center;
+}
+
+.days-input {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.days-input input {
+    flex: 1;
+}
+
+.days-input select {
+    flex: 1;
+}
+
+button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: var(--transition);
+    align-self: flex-start;
+    letter-spacing: -0.2px;
+    width: auto;
+}
+
+button:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+.results {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.result-item {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.label {
+    font-size: 14px;
+    color: #000000; /* 纯黑色标签 */
+    margin-right: 8px;
+    min-width: 100px;
+}
+
+.value {
+    font-size: 18px;
+    font-weight: 500;
+    color: #000000; /* 纯黑色值 */
+}
+
+.mt-20 {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+footer {
+    text-align: center;
+    margin-top: 60px;
+    margin-bottom: 30px;
+    color: var(--secondary-text);
+    font-size: 14px;
+}
+
+/* 增强响应式设计 */
+@media (min-width: 768px) {
+    .form-group {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    button {
+        width: auto;
+        align-self: flex-end;
+    }
+    
+    .input-wrapper {
+        flex: 1;
+        min-width: 200px;
+    }
+    
+    .result-item {
+        width: 100%;
+    }
+}
+
+@media (max-width: 767px) {
+    h1 {
+        font-size: 32px;
+        margin: 30px 0;
+    }
+    
+    .calculator-section {
+        padding: 24px 20px;
+        border-radius: 10px;
+    }
+    
+    button {
+        width: 100%;
+        padding: 14px 20px;
+    }
+    
+    .days-input {
+        flex-direction: column;
+    }
+}
+
+/* 添加触摸优化 */
+@media (pointer: coarse) {
+    input, 
+    select, 
+    button { /* 深色模式下保持白色 */
+        min-height: 48px; /* 深色模式下保持白色 */
+    }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --light-bg: #1a1a1f;
+        --card-bg: #2c2c30;
+        --text-color: #ffffff;
+        --secondary-text: #ffffff;
+    }
+    
+    input, select {
+        background-color: #3a3a3c;
+        border-color: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+    }
+    
+    label {
+        color: #ffffff; /* 深色模式下保持白色 */
+    }
+    
+    .label {
+        color: #ffffff; /* 深色模式下保持白色 */
+    }
+    
+    .value {
+        color: #ffffff; /* 深色模式下保持白色 */
+    }
+    
+    .divider {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .mt-20 {
+        border-top-color: rgba(255, 255, 255, 0.1);
+    }
+}

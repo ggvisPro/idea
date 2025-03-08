@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>孕周计算器</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- 添加图标字体支持 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <span class="title-icon"><i class="fas fa-baby"></i></span>
+            孕周计算器
+        </h1>
+        
+        <div class="calculator-section">
+            <div class="section-header">
+                <h2>孕周计算</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="form-group">
+                <button onclick="calculatePregnancy()">计算孕周及预产期</button>
+                <div class="input-wrapper">
+                    <label for="lastPeriod">末次月经日期</label>
+                    <input type="date" id="lastPeriod">
+                </div>
+            </div>
+            
+            <div id="pregnancyResults" class="results">
+                <div class="result-item">
+                    <span class="label">预产期</span>
+                    <span id="dueDate" class="value"></span>
+                </div>
+                <div class="result-item">
+                    <span class="label">当前孕周</span>
+                    <span id="currentWeek" class="value"></span>
+                </div>
+                
+                <div class="form-group mt-20">
+                    <button onclick="calculateSpecificDateWeek()">计算指定日期孕周</button>
+                    <div class="input-wrapper">
+                        <label for="specificDate">指定日期</label>
+                        <input type="date" id="specificDate">
+                    </div>
+                    <div class="result-item">
+                        <span class="label">该日期的孕周</span>
+                        <span id="specificDateWeek" class="value"></span>
+                    </div>
+                </div>
+                
+                <div class="form-group mt-20">
+                    <button onclick="calculateWeekDate()">计算指定孕周日期</button>
+                    <div class="input-wrapper">
+                        <label for="weekInput">输入孕周</label>
+                        <div class="week-inputs">
+                            <input type="number" id="weekInput" placeholder="周数" min="0" max="45">
+                            <span class="week-separator">周</span>
+                            <input type="number" id="dayInput" placeholder="天数" min="0" max="6">
+                            <span class="week-separator">天</span>
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">对应的日期</span>
+                        <span id="weekDate" class="value"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="calculator-section">
+            <div class="section-header">
+                <h2>日期间隔计算</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="form-group">
+                <button onclick="calculateDateDifference()">计算日期的间隔</button>
+                <div class="input-wrapper">
+                    <label for="date1">起始日期</label>
+                    <input type="date" id="date1">
+                </div>
+                <div class="input-wrapper">
+                    <label for="date2">结束日期</label>
+                    <input type="date" id="date2">
+                </div>
+            </div>
+            <div class="result-item">
+                <span class="label">间隔天数</span>
+                <span id="dateDifference" class="value"></span>
+            </div>
+        </div>
+        
+        <div class="calculator-section">
+            <div class="section-header">
+                <h2>日期推算</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="form-group">
+                <button onclick="calculateNewDate()">推算日期</button>
+                <div class="input-wrapper">
+                    <label for="baseDate">基准日期</label>
+                    <input type="date" id="baseDate">
+                </div>
+                <div class="input-wrapper">
+                    <label for="dayCount">天数</label>
+                    <div class="days-input">
+                        <input type="number" id="dayCount" min="0">
+                        <select id="direction">
+                            <option value="forward">之后</option>
+                            <option value="backward">之前</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="result-item">
+                <span class="label">计算结果</span>
+                <span id="newDate" class="value"></span>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2025 孕周计算器</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
