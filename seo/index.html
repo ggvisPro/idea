@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO文章生成器</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>SEO文章生成器</h1>
+        </div>
+    </header>
+    
+    <main class="container">
+        <div class="app-container">
+            <!-- 左侧设置面板 -->
+            <section class="settings-panel">
+                <h2>设置</h2>
+                <form id="seoForm">
+                    <div class="form-group">
+                        <label for="apiKey">API Key</label>
+                        <input type="password" id="apiKey" name="apiKey" placeholder="输入您的API密钥">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="product">产品名称</label>
+                        <input type="text" id="product" name="product" placeholder="输入产品名称">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productDescription">产品介绍</label>
+                        <textarea id="productDescription" name="productDescription" rows="4" placeholder="输入产品详细介绍"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="theme">主题</label>
+                        <input type="text" id="theme" name="theme" placeholder="输入文章主题">
+                    </div>
+                    
+                    <button type="submit" class="button-primary">生成文章</button>
+                </form>
+            </section>
+            
+            <!-- 右侧输出区域 -->
+            <section class="output-panel">
+                <div class="output-controls">
+                    <div class="tabs">
+                        <button id="realtimeTab" class="tab-button active">实时输出</button>
+                        <button id="finalTab" class="tab-button">最终结果</button>
+                    </div>
+                    <div class="action-buttons">
+                        <button id="copyButton" class="icon-button" title="复制内容">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        <button id="downloadButton" class="icon-button" title="下载内容">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="output-content">
+                    <div id="realtimeOutput" class="output-area active">
+                        <div class="placeholder">实时输出将显示在这里...</div>
+                    </div>
+                    <div id="finalOutput" class="output-area">
+                        <div class="placeholder">最终结果将显示在这里...</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 | 基于<strong>DeepSeek</strong>的SEO文章生成器</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
