@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今日诗词</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        @font-face {
+            font-family: 'KaiTi';
+            src: url('https://cdn.jsdelivr.net/gh/googlefonts/noto-cjk@main/Sans/OTF/Chinese-Simplified/NotoSansCJKsc-Regular.otf') format('opentype');
+        }
+        
+        @font-face {
+            font-family: 'MaoBiFont';
+            src: url('https://cdn.jsdelivr.net/npm/qingke-font@1.0.3/fangzhengkaiti.ttf') format('truetype');
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f2e8d5;
+            padding: 20px;
+            color: #413932;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5z' fill='%23d5c7b1' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        
+        .poem-card {
+            width: 90%;
+            max-width: 380px;
+            min-height: 500px;
+            background: #f8f5ee;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(65, 57, 50, 0.1), 0 2px 5px rgba(65, 57, 50, 0.12);
+            position: relative;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #d3c7b6;
+            overflow: hidden;
+        }
+        
+        .poem-card:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23d0c4b3' fill-opacity='0.1'%3E%3Cpath d='M5 0h1L0 6V5zm1 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .poem-card__header {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px dashed #d3c7b6;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .poem-card__title {
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            letter-spacing: 1px;
+            color: #5e4b3c;
+            text-transform: uppercase;
+        }
+        
+        .poem-card__content {
+            flex: 1;
+            padding: 35px 25px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        #poem_sentence {
+            font-family: 'MaoBiFont', 'KaiTi', 'STKaiti', 'FangSong', serif;
+            font-size: 28px;
+            line-height: 1.8;
+            margin-bottom: 35px;
+            text-align: center;
+            font-weight: normal;
+            letter-spacing: 2px;
+            color: #332c24;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        #poem_sentence .poem-line {
+            margin: 8px 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        #poem_info {
+            font-family: 'MaoBiFont', 'KaiTi', 'STKaiti', serif;
+            font-size: 15px;
+            color: #786b5e;
+            text-align: right;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+        
+        .poem-card__footer {
+            padding: 12px 0;
+            border-top: 1px dashed #d3c7b6;
+            color: #8a7c6e;
+            font-size: 12px;
+            text-align: center;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .poem-card__stamp {
+            position: absolute;
+            right: 30px;
+            top: 50px;
+            width: 70px;
+            height: 70px;
+            border: 2px solid #c5a496;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.2;
+            transform: rotate(15deg);
+            z-index: 0;
+        }
+        
+        .poem-card__stamp-text {
+            font-size: 10px;
+            color: #c5a496;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .loading-text {
+            font-style: italic;
+            color: #8a7c6e;
+        }
+        
+        @media (max-width: 600px) {
+            .poem-card {
+                max-width: 320px;
+                min-height: 450px;
+            }
+            
+            .poem-card__content {
+                padding: 25px 20px;
+            }
+            
+            #poem_sentence {
+                font-size: 24px;
+                line-height: 1.7;
+            }
+            
+            #poem_info {
+                font-size: 13px;
+            }
+            
+            .poem-card__stamp {
+                width: 60px;
+                height: 60px;
+                top: 40px;
+                right: 20px;
+            }
+        }
+    </style>
+    <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+</head>
+<body>
+    <div class="poem-card">
+        <div class="poem-card__header">
+            <div class="poem-card__title">今日诗词</div>
+        </div>
+        <div class="poem-card__content">
+            <div id="poem_sentence" class="loading-text">正在加载诗词...</div>
+            <div id="poem_info"></div>
+            <div class="poem-card__stamp">
+                <div class="poem-card__stamp-text">诗词印记</div>
+            </div>
+        </div>
+        <div class="poem-card__footer">
+            古诗文 · 每日一诗
+        </div>
+    </div>
+
+    <script type="text/javascript">
+      jinrishici.load(function(result) {
+        var sentence = document.querySelector("#poem_sentence");
+        var info = document.querySelector("#poem_info");
+        
+        // 处理诗句，按标点符号分行
+        var content = result.data.content;
+        var lines = content.split(/[，。？！；,\.?!;]/g).filter(function(line) {
+          return line.trim().length > 0;
+        });
+        
+        // 构建HTML
+        var htmlContent = '';
+        for (var i = 0; i < lines.length; i++) {
+          htmlContent += '<div class="poem-line">' + lines[i] + '</div>';
+        }
+        
+        sentence.innerHTML = htmlContent;
+        sentence.classList.remove("loading-text");
+        info.innerHTML = '【' + result.data.origin.dynasty + '】' + result.data.origin.author + '<br><br>' + '《' + result.data.origin.title + '》';
+      });
+    </script>
+</body>
+</html>

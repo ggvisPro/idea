@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
             loginMessage.style.color = 'green';
             
             // 这里可以添加跳转逻辑
-            setTimeout(() => { window.location.href = 'main.html'; }, 3000);
+            setTimeout(() => { window.location.href = 'main.html'; }, 2000);
         } else {
             // 登录失败
             loginMessage.textContent = '账号或密码错误';

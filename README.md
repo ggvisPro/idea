@@ -8,3 +8,4 @@
 | [🍓草莓计算器](https://ggvispro.github.io/idea/strawberry/) | 终于能数清楚strawberry中有几个r了 |
 | [贪吃蛇](https://ggvispro.github.io/idea/snake/) | 所有人都爱玩的贪吃蛇游戏 |
 | [孕周计算器](https://ggvispro.github.io/idea/pregnancy/) | 孕周计算器,主任再也不用担心我算错预产期了 |
+| [诗词卡](https://ggvispro.github.io/idea/poem_card/) | 献给古诗词爱好者,好看的诗词卡片(就一句) |
