@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>临床知识库 - AI医疗助手</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        /* 导航栏样式 */
+        .nav-bar {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #0071e3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-weight: 500;
+        }
+
+        .username {
+            font-weight: 500;
+        }
+
+        /* 主内容样式 */
+        .container {
+            max-width: 1200px;
+            margin: 78px auto 40px;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            font-weight: 400;
+            color: #6e6e73;
+            margin-bottom: 40px;
+        }
+
+        /* 搜索框样式 */
+        .search-container {
+            margin-bottom: 50px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 18px;
+            border-radius: 12px;
+            border: none;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 4px rgba(0, 125, 250, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #86868b;
+        }
+
+        /* 知识库卡片样式 */
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            color: #6e6e73;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        /* 自定义知识库上传区域 */
+        .upload-area {
+            background: linear-gradient(145deg, #42a1ec, #0070c9);
+            border-radius: 18px;
+            padding: 40px;
+            text-align: center;
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        .upload-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .upload-description {
+            max-width: 600px;
+            margin: 0 auto 24px;
+            font-size: 17px;
+            opacity: 0.9;
+        }
+
+        .upload-button {
+            background-color: white;
+            color: #0070c9;
+            border: none;
+            border-radius: 100px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .upload-button:hover {
+            transform: scale(1.05);
+        }
+
+        /* 底部信息 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #86868b;
+            font-size: 12px;
+        }
+
+        /* 颜色定义 */
+        .bg-blue { background-color: #0071e3; }
+        .bg-green { background-color: #34c759; }
+        .bg-orange { background-color: #ff9500; }
+        .bg-red { background-color: #ff3b30; }
+        .bg-purple { background-color: #af52de; }
+        .bg-teal { background-color: #5ac8fa; }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="logo">临床知识库</div>
+        <div class="user-info" style="cursor: pointer;" onclick="window.location.href='user_profile.html'">
+            <img src="./皮卡丘像素.png" class="user-avatar" alt="用户头像">
+            <div class="username">王院</div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <!-- 欢迎信息 -->
+        <h1 class="welcome">您好，王院</h1>
+        <p class="subtitle">基于DeepSeek，通过临床知识库，快速获取您所需的专业医疗信息</p>
+
+        <!-- 搜索区域 -->
+        <div class="search-container">
+            <form action="search_results.html" method="get">
+            <div class="search-box">
+                <input type="text" name="query" class="search-input" placeholder="搜索临床问题、疾病、药物或检查方法...">
+                <button type="submit" class="search-icon" style="background: none; border: none; cursor: pointer;">🔍</button>
+            </div>
+            </form>
+        </div>
+
+        <!-- 知识库分类 -->
+        <h2 class="section-title">专业知识库</h2>
+        <div class="cards-grid">
+            <div class="card" onclick="window.location.href='case_analysis.html'">
+                <div class="card-icon" style="background: linear-gradient(145deg, #ff3b30, #ff9500);">诊</div>
+                <h3 class="card-title">AI病例分析</h3>
+                <p class="card-description">输入病例信息，获取AI辅助诊断分析和专业治疗方案建议。</p>
+            </div>
+            <div class="card" onclick="window.location.href='internal_medicine_library.html'">
+                <div class="card-icon bg-blue">内</div>
+                <h3 class="card-title">内科知识库</h3>
+                <p class="card-description">涵盖心血管、呼吸、消化、内分泌等内科疾病的诊断与治疗指南。</p>
+            </div>
+            <div class="card" onclick="window.location.href='surgery_library.html'">
+                <div class="card-icon bg-green">外</div>
+                <h3 class="card-title">外科知识库</h3>
+                <p class="card-description">包含普外、骨科、神经外科等手术指南和围手术期管理知识。</p>
+            </div>
+            <div class="card" onclick="window.location.href='obgyn_library.html'">
+                <div class="card-icon bg-purple">妇</div>
+                <h3 class="card-title">妇产科知识库</h3>
+                <p class="card-description">关于女性健康、妊娠、分娩及产后护理的专业知识。</p>
+            </div>
+            <div class="card" onclick="window.location.href='pediatrics_library.html'">
+                <div class="card-icon bg-orange">儿</div>
+                <h3 class="card-title">儿科知识库</h3>
+                <p class="card-description">儿童生长发育、常见疾病及预防接种等儿科专业指南。</p>
+            </div>
+            <div class="card" onclick="window.location.href='medication_assistant.html'">
+                <div class="card-icon bg-red">药</div>
+                <h3 class="card-title">用药助手</h3>
+                <p class="card-description">药物说明书、用药指导、药物相互作用及不良反应速查。</p>
+            </div>
+            <div class="card" onclick="window.location.href='diagnostic_tests.html'">
+                <div class="card-icon bg-teal">检</div>
+                <h3 class="card-title">辅助检查</h3>
+                <p class="card-description">常见检验检查结果解读、影像学检查指南及参考值。</p>
+            </div>
+            <div class="card" onclick="window.location.href='clinical_guidelines.html'">
+                <div class="card-icon" style="background: linear-gradient(145deg, #5ac8fa, #007aff);">指</div>
+                <h3 class="card-title">临床指南</h3>
+                <p class="card-description">最新、最全的临床指南，助力临床决策。</p>
+            </div>
+        </div>
+
+        <!-- 自定义知识库上传 -->
+        <div class="upload-area">
+            <h2 class="upload-title">自定义知识库</h2>
+            <p class="upload-description">上传您的专业资料，构建个性化知识库。支持 PDF、Word、Excel、jpg。</p>
+            <a href="custom_library.html"><button class="upload-button">上传文档</button></a>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div class="footer">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk 
+    </div>
+</body>
+</html>

@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用药助手 - 临床知识库</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        /* 导航栏样式 */
+        .nav-bar {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #0071e3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-weight: 500;
+        }
+
+        .username {
+            font-weight: 500;
+        }
+
+        /* 返回按钮 */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: #f5f5f7;
+            border: 1px solid #d2d2d7;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #1d1d1f;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .back-button:hover {
+            background-color: #e8e8ed;
+        }
+
+        /* 主内容样式 */
+        .container {
+            max-width: 1200px;
+            margin: 78px auto 40px;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .title-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .subtitle {
+            font-size: 22px;
+            font-weight: 400;
+            color: #6e6e73;
+            margin-bottom: 40px;
+        }
+
+        /* 搜索框样式 */
+        .search-container {
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 18px;
+            border-radius: 12px;
+            border: none;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 4px rgba(255, 59, 48, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #86868b;
+        }
+        
+        .search-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+        
+        .search-chip {
+            background-color: rgba(255, 59, 48, 0.1);
+            color: #ff3b30;
+            border: 1px solid rgba(255, 59, 48, 0.3);
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .search-chip:hover {
+            background-color: rgba(255, 59, 48, 0.2);
+        }
+
+        /* 分类标题 */
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        /* 知识库卡片样式 */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            color: #6e6e73;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        /* 药物相互作用查询器 */
+        .interaction-checker {
+            background: linear-gradient(145deg, #ff3b30, #ff9500);
+            border-radius: 18px;
+            padding: 40px;
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        .interaction-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .interaction-description {
+            font-size: 16px;
+            margin-bottom: 25px;
+            max-width: 800px;
+            opacity: 0.9;
+        }
+
+        .interaction-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .interaction-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .interaction-input {
+            flex: 1;
+            padding: 14px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .add-drug-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            width: 40px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .add-drug-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .check-btn {
+            align-self: flex-start;
+            background-color: white;
+            color: #ff3b30;
+            border: none;
+            border-radius: 100px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s;
+            margin-top: 10px;
+        }
+
+        .check-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* 常用药物资源列表 */
+        .resource-list {
+            background-color: white;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 60px;
+        }
+
+        .resource-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .resource-item:last-child {
+            border-bottom: none;
+        }
+
+        .resource-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-size: 20px;
+            color: white;
+        }
+
+        .resource-info {
+            flex: 1;
+        }
+
+        .resource-title {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .resource-description {
+            color: #6e6e73;
+            font-size: 14px;
+        }
+
+        .resource-button {
+            background-color: #f5f5f7;
+            color: #ff3b30;
+            border: none;
+            border-radius: 100px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .resource-button:hover {
+            background-color: #e5e5ea;
+        }
+
+        /* 特殊用药指南表格 */
+        .guidelines-table {
+            width: 100%;
+            background-color: white;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 60px;
+            border-collapse: collapse;
+        }
+
+        .guidelines-table th {
+            background-color: #ff3b30;
+            color: white;
+            text-align: left;
+            padding: 16px 20px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .guidelines-table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e5e5e5;
+            font-size: 15px;
+            color: #1d1d1f;
+        }
+
+        .guidelines-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .guidelines-table tr:hover td {
+            background-color: #f5f5f7;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 500;
+            color: white;
+            margin-right: 6px;
+        }
+
+        .tag-caution {
+            background-color: #ff9500;
+        }
+
+        .tag-alert {
+            background-color: #ff3b30;
+        }
+
+        .tag-safe {
+            background-color: #34c759;
+        }
+
+        /* 底部信息 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #86868b;
+            font-size: 12px;
+        }
+
+        /* 颜色定义 */
+        .bg-blue { background-color: #0071e3; }
+        .bg-green { background-color: #34c759; }
+        .bg-orange { background-color: #ff9500; }
+        .bg-red { background-color: #ff3b30; }
+        .bg-purple { background-color: #af52de; }
+        .bg-teal { background-color: #5ac8fa; }
+        .bg-pink { background-color: #ff2d55; }
+        .bg-yellow { background-color: #ffcc00; }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="logo">临床知识库</div>
+        <div class="user-info" style="cursor: pointer;" onclick="window.location.href='user_profile.html'">
+            <img src="./皮卡丘像素.png" class="user-avatar" alt="用户头像">
+            <div class="username">王院</div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <!-- 返回按钮 -->
+        <div class="back-button" onclick="window.location.href='main.html'">
+            ← 返回首页
+        </div>
+        
+        <!-- 页面标题 -->
+        <div class="page-title">
+            用药助手
+        </div>
+        <p class="subtitle">提供药物说明书、用药指导、药物相互作用及不良反应速查</p>
+
+        <!-- 搜索区域 -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="搜索药品名称、成分或适应症...">
+                <div class="search-icon">🔍</div>
+            </div>
+            <div class="search-chips">
+                <div class="search-chip">阿司匹林</div>
+                <div class="search-chip">阿托伐他汀</div>
+                <div class="search-chip">氨氯地平</div>
+                <div class="search-chip">二甲双胍</div>
+                <div class="search-chip">奥美拉唑</div>
+                <div class="search-chip">氯沙坦</div>
+            </div>
+        </div>
+
+        <!-- 药物分类 -->
+        <h2 class="section-title">药物分类</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon" style="background: linear-gradient(145deg, #ff3b30, #ff9500);">心</div>
+                <h3 class="card-title">心血管用药</h3>
+                <p class="card-description">抗高血压、抗心律失常、抗心绞痛、降脂药物等心血管系统药物。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-teal">呼</div>
+                <h3 class="card-title">呼吸系统用药</h3>
+                <p class="card-description">支气管扩张剂、镇咳祛痰药、抗哮喘药物等呼吸系统药物。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-yellow">消</div>
+                <h3 class="card-title">消化系统用药</h3>
+                <p class="card-description">抗酸药、助消化药、胃肠动力药、抗炎药等消化系统药物。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-green">内</div>
+                <h3 class="card-title">内分泌系统用药</h3>
+                <p class="card-description">降糖药、甲状腺功能药物、糖皮质激素等内分泌系统药物。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-red">抗</div>
+                <h3 class="card-title">抗感染药物</h3>
+                <p class="card-description">抗生素、抗病毒药、抗真菌药、抗结核药等抗感染药物。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-purple">神</div>
+                <h3 class="card-title">神经系统用药</h3>
+                <p class="card-description">解热镇痛药、抗精神病药、抗抑郁药、抗焦虑药物等。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-blue">血</div>
+                <h3 class="card-title">血液系统用药</h3>
+                <p class="card-description">抗凝血药、抗血小板药、溶栓药、止血药等血液系统药物。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-pink">肿</div>
+                <h3 class="card-title">抗肿瘤药物</h3>
+                <p class="card-description">化疗药物、靶向药物、激素类药物等抗肿瘤治疗药物。</p>
+            </div>
+        </div>
+
+        <!-- 药物相互作用查询 -->
+        <div class="interaction-checker">
+            <h2 class="interaction-title">药物相互作用查询</h2>
+            <p class="interaction-description">输入两种及以上药物名称，快速查询它们之间可能存在的相互作用及临床注意事项</p>
+            <form class="interaction-form">
+                <div class="interaction-input-group">
+                    <input type="text" class="interaction-input" placeholder="输入药物名称">
+                    <button type="button" class="add-drug-btn">+</button>
+                </div>
+                <div class="interaction-input-group">
+                    <input type="text" class="interaction-input" placeholder="输入另一种药物名称">
+                    <button type="button" class="add-drug-btn">+</button>
+                </div>
+                <button type="button" class="check-btn">检查相互作用</button>
+            </form>
+        </div>
+
+        <!-- 特殊人群用药指南 -->
+        <h2 class="section-title">特殊人群用药指南</h2>
+        <table class="guidelines-table">
+            <thead>
+                <tr>
+                    <th style="width: 30%;">药物分类</th>
+                    <th style="width: 23%;">孕妇用药</th>
+                    <th style="width: 23%;">儿童用药</th>
+                    <th style="width: 24%;">老年人用药</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>非甾体抗炎药(NSAIDs)</td>
+                    <td><span class="tag tag-caution">谨慎</span> 孕晚期禁用</td>
+                    <td><span class="tag tag-caution">谨慎</span> 剂量需调整</td>
+                    <td><span class="tag tag-caution">谨慎</span> 胃肠道风险</td>
+                </tr>
+                <tr>
+                    <td>抗生素</td>
+                    <td><span class="tag tag-safe">安全</span> 青霉素类</td>
+                    <td><span class="tag tag-safe">安全</span> 剂量需调整</td>
+                    <td><span class="tag tag-caution">谨慎</span> 肾功能监测</td>
+                </tr>
+                <tr>
+                    <td>降压药</td>
+                    <td><span class="tag tag-alert">禁用</span> ACEI/ARB</td>
+                    <td><span class="tag tag-caution">谨慎</span> 专科指导</td>
+                    <td><span class="tag tag-safe">安全</span> 起始剂量减半</td>
+                </tr>
+                <tr>
+                    <td>降糖药</td>
+                    <td><span class="tag tag-caution">谨慎</span> 首选胰岛素</td>
+                    <td><span class="tag tag-caution">谨慎</span> 多监测血糖</td>
+                    <td><span class="tag tag-caution">谨慎</span> 避免低血糖</td>
+                </tr>
+                <tr>
+                    <td>抗凝药</td>
+                    <td><span class="tag tag-alert">禁用</span> 华法林</td>
+                    <td><span class="tag tag-alert">禁用</span> 慎用</td>
+                    <td><span class="tag tag-caution">谨慎</span> 出血风险</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 常用药物说明书 -->
+        <h2 class="section-title">常用药物说明书</h2>
+        <div class="resource-list">
+            <div class="resource-item">
+                <div class="resource-icon bg-red">心</div>
+                <div class="resource-info">
+                    <div class="resource-title">阿司匹林</div>
+                    <div class="resource-description">抗血小板药物，用于预防心血管疾病和短期缓解疼痛</div>
+                </div>
+                <button class="resource-button">查看详情</button>
+            </div>
+            <div class="resource-item">
+                <div class="resource-icon bg-yellow">降</div>
+                <div class="resource-info">
+                    <div class="resource-title">阿托伐他汀</div>
+                    <div class="resource-description">他汀类调脂药，降低胆固醇，预防心血管事件</div>
+                </div>
+                <button class="resource-button">查看详情</button>
+            </div>
+            <div class="resource-item">
+                <div class="resource-icon bg-blue">压</div>
+                <div class="resource-info">
+                    <div class="resource-title">氨氯地平</div>
+                    <div class="resource-description">钙通道阻滞剂，用于高血压和心绞痛的治疗</div>
+                </div>
+                <button class="resource-button">查看详情</button>
+            </div>
+            <div class="resource-item">
+                <div class="resource-icon bg-green">糖</div>
+                <div class="resource-info">
+                    <div class="resource-title">二甲双胍</div>
+                    <div class="resource-description">双胍类降糖药，2型糖尿病一线用药</div>
+                </div>
+                <button class="resource-button">查看详情</button>
+            </div>
+            <div class="resource-item">
+                <div class="resource-icon bg-purple">胃</div>
+                <div class="resource-info">
+                    <div class="resource-title">奥美拉唑</div>
+                    <div class="resource-description">质子泵抑制剂，用于消化性溃疡和胃食管反流病</div>
+                </div>
+                <button class="resource-button">查看详情</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div class="footer">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk 
+    </div>
+</body>
+</html>

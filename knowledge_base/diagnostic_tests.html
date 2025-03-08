@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>辅助检查 - 临床知识库</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        /* 导航栏样式 */
+        .nav-bar {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #0071e3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-weight: 500;
+        }
+
+        .username {
+            font-weight: 500;
+        }
+
+        /* 返回按钮 */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: #f5f5f7;
+            border: 1px solid #d2d2d7;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #1d1d1f;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .back-button:hover {
+            background-color: #e8e8ed;
+        }
+
+        /* 主内容样式 */
+        .container {
+            max-width: 1200px;
+            margin: 78px auto 40px;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .title-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .subtitle {
+            font-size: 22px;
+            font-weight: 400;
+            color: #6e6e73;
+            margin-bottom: 40px;
+        }
+
+        /* 搜索框样式 */
+        .search-container {
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 18px;
+            border-radius: 12px;
+            border: none;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 4px rgba(90, 200, 250, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #86868b;
+        }
+        
+        .search-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+        
+        .search-chip {
+            background-color: rgba(90, 200, 250, 0.1);
+            color: #5ac8fa;
+            border: 1px solid rgba(90, 200, 250, 0.3);
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .search-chip:hover {
+            background-color: rgba(90, 200, 250, 0.2);
+        }
+
+        /* 分类标题 */
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        /* 知识库卡片样式 */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            color: #6e6e73;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        /* 参考值查询工具 */
+        .reference-tool {
+            background: linear-gradient(145deg, #5ac8fa, #007aff);
+            border-radius: 18px;
+            padding: 40px;
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        .reference-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .reference-description {
+            font-size: 16px;
+            margin-bottom: 25px;
+            max-width: 800px;
+            opacity: 0.9;
+        }
+
+        .reference-form {
+            display: flex;
+            gap: 12px;
+            max-width: 800px;
+        }
+
+        .reference-input {
+            flex: 1;
+            padding: 14px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .reference-btn {
+            background-color: white;
+            color: #007aff;
+            border: none;
+            border-radius: 100px;
+            padding: 0 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .reference-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* 检查结果解读表格 */
+        .interpretation-table {
+            width: 100%;
+            background-color: white;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 60px;
+            border-collapse: collapse;
+        }
+
+        .interpretation-table th {
+            background-color: #5ac8fa;
+            color: white;
+            text-align: left;
+            padding: 16px 20px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .interpretation-table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e5e5e5;
+            font-size: 15px;
+            color: #1d1d1f;
+        }
+
+        .interpretation-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .interpretation-table tr:hover td {
+            background-color: #f5f5f7;
+        }
+
+        .result-abnormal {
+            color: #ff3b30;
+        }
+
+        .result-normal {
+            color: #34c759;
+        }
+
+        /* 常用检查资源列表 */
+        .resource-list {
+            background-color: white;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 60px;
+        }
+
+        .resource-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .resource-item:last-child {
+            border-bottom: none;
+        }
+
+        .resource-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-size: 20px;
+            color: white;
+        }
+
+        .resource-info {
+            flex: 1;
+        }
+
+        .resource-title {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .resource-description {
+            color: #6e6e73;
+            font-size: 14px;
+        }
+
+        .resource-button {
+            background-color: #f5f5f7;
+            color: #5ac8fa;
+            border: none;
+            border-radius: 100px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .resource-button:hover {
+            background-color: #e5e5ea;
+        }
+
+        /* 报告解读工具 */
+        .report-interpreter {
+            background-color: white;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 60px;
+        }
+
+        .interpreter-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .upload-area {
+            border: 2px dashed #e5e5e5;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        .upload-area:hover {
+            border-color: #5ac8fa;
+            background-color: rgba(90, 200, 250, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 40px;
+            color: #6e6e73;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            font-size: 16px;
+            color: #1d1d1f;
+            margin-bottom: 8px;
+        }
+
+        .upload-description {
+            font-size: 14px;
+            color: #6e6e73;
+        }
+
+        /* 底部信息 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #86868b;
+            font-size: 12px;
+        }
+
+        /* 颜色定义 */
+        .bg-blue { background-color: #0071e3; }
+        .bg-green { background-color: #34c759; }
+        .bg-orange { background-color: #ff9500; }
+        .bg-red { background-color: #ff3b30; }
+        .bg-purple { background-color: #af52de; }
+        .bg-teal { background-color: #5ac8fa; }
+        .bg-yellow { background-color: #ffcc00; }
+        .bg-gray { background-color: #8e8e93; }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="logo">临床知识库</div>
+        <div class="user-info" style="cursor: pointer;" onclick="window.location.href='user_profile.html'">
+            <img src="./皮卡丘像素.png" class="user-avatar" alt="用户头像">
+            <div class="username">王院</div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <!-- 返回按钮 -->
+        <div class="back-button" onclick="window.location.href='main.html'">
+            ← 返回首页
+        </div>
+        
+        <!-- 页面标题 -->
+        <div class="page-title">
+            辅助检查
+        </div>
+        <p class="subtitle">提供常见检验检查结果解读、影像学检查指南及参考值查询</p>
+
+        <!-- 搜索区域 -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="搜索检查项目名称或缩写...">
+                <div class="search-icon">🔍</div>
+            </div>
+            <div class="search-chips">
+                <div class="search-chip">血常规</div>
+                <div class="search-chip">肝功能</div>
+                <div class="search-chip">肾功能</div>
+                <div class="search-chip">血脂</div>
+                <div class="search-chip">电解质</div>
+                <div class="search-chip">胸部CT</div>
+            </div>
+        </div>
+
+        <!-- 检查分类 -->
+        <h2 class="section-title">检查分类</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon bg-red">血</div>
+                <h3 class="card-title">血液检验</h3>
+                <p class="card-description">血常规、生化检查、免疫学检查、内分泌相关检查等血液学检验项目。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-yellow">尿</div>
+                <h3 class="card-title">尿液检验</h3>
+                <p class="card-description">尿常规、尿沉渣、24小时尿蛋白定量等尿液检查项目。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-teal">影</div>
+                <h3 class="card-title">影像学检查</h3>
+                <p class="card-description">X线、CT、核磁共振、超声、PET-CT等影像学检查技术。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-blue">心</div>
+                <h3 class="card-title">心电图检查</h3>
+                <p class="card-description">常规心电图、动态心电图、运动心电图、心脏电生理检查等。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-purple">内</div>
+                <h3 class="card-title">内镜检查</h3>
+                <p class="card-description">胃镜、肠镜、支气管镜、膀胱镜等内镜检查技术。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-green">病</div>
+                <h3 class="card-title">病理检查</h3>
+                <p class="card-description">组织病理、细胞病理、特殊染色、免疫组化等病理学诊断。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-orange">功</div>
+                <h3 class="card-title">功能检查</h3>
+                <p class="card-description">肺功能、心功能、肝功能、肾功能等器官功能评估。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon" style="background: linear-gradient(145deg, #5ac8fa, #007aff);">微</div>
+                <h3 class="card-title">微生物检验</h3>
+                <p class="card-description">细菌培养、药敏试验、真菌检查、病毒学检测等。</p>
+            </div>
+        </div>
+
+        <!-- 参考值查询工具 -->
+        <div class="reference-tool">
+            <h2 class="reference-title">实验室检查参考值查询</h2>
+            <p class="reference-description">输入检验项目名称或缩写，快速查询成人、儿童、老年人和孕妇的正常参考值范围</p>
+            <form class="reference-form">
+                <input type="text" class="reference-input" placeholder="输入检验项目（如：血红蛋白、ALT、TSH等）">
+                <button type="button" class="reference-btn">查询</button>
+            </form>
+        </div>
+
+        <!-- 异常结果解读 -->
+        <h2 class="section-title">常见异常检验结果解读</h2>
+        <table class="interpretation-table">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">检验项目</th>
+                    <th style="width: 20%;">异常结果</th>
+                    <th style="width: 55%;">临床意义</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>白细胞计数(WBC)</td>
+                    <td class="result-abnormal">↑ 升高</td>
+                    <td>常见于细菌感染、炎症反应、白血病、组织损伤等</td>
+                </tr>
+                <tr>
+                    <td>白细胞计数(WBC)</td>
+                    <td class="result-abnormal">↓ 降低</td>
+                    <td>可见于病毒感染、骨髓抑制、脾功能亢进、自身免疫性疾病等</td>
+                </tr>
+                <tr>
+                    <td>血红蛋白(Hb)</td>
+                    <td class="result-abnormal">↓ 降低</td>
+                    <td>各类贫血、失血、血液稀释、营养不良、慢性疾病等</td>
+                </tr>
+                <tr>
+                    <td>血小板计数(PLT)</td>
+                    <td class="result-abnormal">↓ 降低</td>
+                    <td>免疫性血小板减少症、DIC、脾功能亢进、药物因素等</td>
+                </tr>
+                <tr>
+                    <td>丙氨酸氨基转移酶(ALT)</td>
+                    <td class="result-abnormal">↑ 升高</td>
+                    <td>肝细胞损伤，如病毒性肝炎、药物性肝损伤、酒精性肝病等</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 报告解读工具 -->
+        <div class="report-interpreter">
+            <h2 class="interpreter-title">医学影像报告解读助手</h2>
+            <div class="upload-area">
+                <div class="upload-icon">📄</div>
+                <div class="upload-text">上传医学影像报告进行智能解读</div>
+                <div class="upload-description">支持CT、MRI、X光、超声等影像检查报告的文字识别和解读</div>
+            </div>
+        </div>
+
+        <!-- 常用检查指南 -->
+        <h2 class="section-title">检查指南</h2>
+        <div class="resource-list">
+            <div class="resource-item">
+                <div class="resource-icon bg-teal">准</div>
+                <div class="resource-info">
+                    <div class="resource-title">检查前准备指南</div>
+                    <div class="resource-description">各类检查前的注意事项、禁忌症、准备工作等专业指导</div>
+                </div>
+                <button class="resource-button">查看详情</button>
+            </div>
+            <div class="resource-item">
+                <div class="resource-icon bg-blue">临</div>
+                <div class="resource-info">
+                    <div class="resource-title">临床路径推荐</div>
+                    <div class="resource-description">各种常见疾病的合理检查顺序与组合推荐</div>
+                </div>
+                <button class="resource-button">查看详情</button>
+            </div>
+            <div class="resource-item">
+                <div class="resource-icon bg-green">典</div>
+                <div class="resource-info">
+                    <div class="resource-title">典型病例解析</div>
+                    <div class="resource-description">通过临床案例学习检查结果的解读与鉴别诊断</div>
+                </div>
+                <button class="resource-button">查看详情</button>
+            </div>
+            <div class="resource-item">
+                <div class="resource-icon bg-purple">专</div>
+                <div class="resource-info">
+                    <div class="resource-title">专家讲解视频</div>
+                    <div class="resource-description">资深临床医师讲解检验、影像检查结果的诊断价值</div>
+                </div>
+                <button class="resource-button">观看视频</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div class="footer">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk 
+    </div>
+</body>
+</html>

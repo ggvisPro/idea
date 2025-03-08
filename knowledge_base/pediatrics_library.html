@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>儿科知识库 - AI医疗助手</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        /* 导航栏样式 */
+        .nav-bar {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #0071e3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-weight: 500;
+        }
+
+        .username {
+            font-weight: 500;
+        }
+
+        /* 主内容样式 */
+        .container {
+            max-width: 1200px;
+            margin: 78px auto 40px;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #ff9500;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            font-weight: 400;
+            color: #6e6e73;
+            margin-bottom: 40px;
+        }
+
+        /* 搜索框样式 */
+        .search-container {
+            margin-bottom: 50px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 18px;
+            border-radius: 12px;
+            border: none;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 4px rgba(255, 149, 0, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #86868b;
+        }
+
+        /* 知识库卡片样式 */
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            color: #6e6e73;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        /* 热门指南区域 */
+        .featured-guidelines {
+            background: linear-gradient(145deg, #ffa631, #ff9500);
+            border-radius: 18px;
+            padding: 40px;
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        .featured-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .guidelines-list {
+            margin-bottom: 24px;
+        }
+
+        .guideline-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 12px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .guideline-item:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+
+        .guideline-icon {
+            margin-right: 12px;
+            font-size: 24px;
+        }
+
+        .guideline-info {
+            flex: 1;
+        }
+
+        .guideline-title {
+            font-weight: 500;
+            font-size: 17px;
+            margin-bottom: 4px;
+        }
+
+        .guideline-date {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .view-all-button {
+            background-color: white;
+            color: #ff9500;
+            border: none;
+            border-radius: 100px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .view-all-button:hover {
+            transform: scale(1.05);
+        }
+
+        /* 成长与发育区域 */
+        .growth-section {
+            background-color: white;
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 60px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .growth-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1d1d1f;
+        }
+
+        .growth-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .growth-item {
+            text-align: center;
+            padding: 15px;
+            border-radius: 12px;
+            background-color: #f5f5f7;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .growth-item:hover {
+            background-color: #e8e8ed;
+            transform: translateY(-3px);
+            cursor: pointer;
+        }
+
+        .growth-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .growth-age {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        /* 返回按钮 */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: #f5f5f7;
+            border: 1px solid #d2d2d7;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #1d1d1f;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .back-button:hover {
+            background-color: #e8e8ed;
+        }
+
+        /* 底部信息 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #86868b;
+            font-size: 12px;
+        }
+
+        /* 颜色定义 */
+        .bg-orange { background-color: #ff9500; }
+        .bg-light-orange { background-color: #ffa631; }
+        .bg-yellow { background-color: #ffcc00; }
+        .bg-red { background-color: #ff3b30; }
+        .bg-green { background-color: #34c759; }
+        .bg-blue { background-color: #007aff; }
+        .bg-teal { background-color: #5ac8fa; }
+        .bg-purple { background-color: #af52de; }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="logo" onclick="window.location.href='main.html'">临床知识库</div>
+        <div class="user-info" style="cursor: pointer;" onclick="window.location.href='user_profile.html'">
+            <img src="./皮卡丘像素.png" class="user-avatar" alt="用户头像">
+            <div class="username">王院</div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <!-- 返回按钮 -->
+        <div class="back-button" onclick="window.location.href='main.html'">
+            ← 返回首页
+        </div>
+
+        <!-- 欢迎信息 -->
+        <h1 class="welcome">儿科知识库</h1>
+        <p class="subtitle">全面的儿童保健、常见疾病诊疗及生长发育评估指南</p>
+
+        <!-- 搜索区域 -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="搜索儿科疾病、用药、生长发育...">
+                <div class="search-icon">🔍</div>
+            </div>
+        </div>
+
+        <!-- 儿科常见疾病 -->
+        <h2 class="section-title">常见疾病</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon bg-red">呼</div>
+                <h3 class="card-title">呼吸系统</h3>
+                <p class="card-description">上呼吸道感染、肺炎、哮喘、支气管炎等儿童呼吸系统疾病。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-yellow">消</div>
+                <h3 class="card-title">消化系统</h3>
+                <p class="card-description">腹泻、便秘、腹痛、消化不良等儿童消化系统常见问题。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-purple">神</div>
+                <h3 class="card-title">神经系统</h3>
+                <p class="card-description">惊厥、脑炎、癫痫、发育迟缓等儿童神经系统疾病。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-green">传</div>
+                <h3 class="card-title">传染病</h3>
+                <p class="card-description">麻疹、水痘、手足口病、流行性腮腺炎等儿童传染病。</p>
+            </div>
+        </div>
+
+        <!-- 儿童保健 -->
+        <h2 class="section-title">儿童保健</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon" style="background: linear-gradient(145deg, #ffa631, #ffcc00);">苗</div>
+                <h3 class="card-title">疫苗接种</h3>
+                <p class="card-description">儿童计划免疫程序、疫苗接种时间表与注意事项。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-green">营</div>
+                <h3 class="card-title">营养指导</h3>
+                <p class="card-description">各年龄段儿童营养需求、喂养指导及营养不良防治。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-teal">心</div>
+                <h3 class="card-title">心理健康</h3>
+                <p class="card-description">儿童心理发育特点、行为问题及心理健康指导。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-blue">护</div>
+                <h3 class="card-title">日常护理</h3>
+                <p class="card-description">儿童皮肤护理、口腔保健、睡眠指导及意外伤害防护。</p>
+            </div>
+        </div>
+
+        <!-- 专科管理 -->
+        <h2 class="section-title">专科管理</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon" style="background: linear-gradient(145deg, #ff3b30, #ff9500);">新</div>
+                <h3 class="card-title">新生儿医学</h3>
+                <p class="card-description">新生儿疾病诊治、早产儿管理及新生儿急救措施。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon" style="background: linear-gradient(145deg, #5ac8fa, #007aff);">血</div>
+                <h3 class="card-title">儿童血液疾病</h3>
+                <p class="card-description">贫血、血小板减少症、白血病等儿童血液系统疾病。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-purple">内</div>
+                <h3 class="card-title">内分泌疾病</h3>
+                <p class="card-description">矮小症、性早熟、甲状腺疾病及儿童糖尿病管理。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-orange">慢</div>
+                <h3 class="card-title">慢病管理</h3>
+                <p class="card-description">儿童哮喘、糖尿病、肾病综合征等慢性疾病长期管理。</p>
+            </div>
+        </div>
+
+        <!-- 生长发育区域 -->
+        <div class="growth-section">
+            <h3 class="growth-title">生长发育里程碑</h3>
+            <div class="growth-grid">
+                <div class="growth-item">
+                    <div class="growth-icon">👶</div>
+                    <div class="growth-age">新生儿期</div>
+                </div>
+                <div class="growth-item">
+                    <div class="growth-icon">👼</div>
+                    <div class="growth-age">3个月</div>
+                </div>
+                <div class="growth-item">
+                    <div class="growth-icon">🧒</div>
+                    <div class="growth-age">6个月</div>
+                </div>
+                <div class="growth-item">
+                    <div class="growth-icon">🧒</div>
+                    <div class="growth-age">1岁</div>
+                </div>
+                <div class="growth-item">
+                    <div class="growth-icon">👦</div>
+                    <div class="growth-age">2岁</div>
+                </div>
+                <div class="growth-item">
+                    <div class="growth-icon">👧</div>
+                    <div class="growth-age">3-4岁</div>
+                </div>
+                <div class="growth-item">
+                    <div class="growth-icon">👦</div>
+                    <div class="growth-age">5-6岁</div>
+                </div>
+                <div class="growth-item">
+                    <div class="growth-icon">👧</div>
+                    <div class="growth-age">学龄期</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 热门指南区域 -->
+        <div class="featured-guidelines">
+            <h2 class="featured-title">儿科热门指南</h2>
+            <div class="guidelines-list">
+                <div class="guideline-item">
+                    <div class="guideline-icon">📄</div>
+                    <div class="guideline-info">
+                        <div class="guideline-title">中国儿童免疫规划疫苗程序及说明（2025版）</div>
+                        <div class="guideline-date">发布于 2025-02-10</div>
+                    </div>
+                </div>
+                <div class="guideline-item">
+                    <div class="guideline-icon">📄</div>
+                    <div class="guideline-info">
+                        <div class="guideline-title">儿童社区获得性肺炎诊断与治疗指南（2024版）</div>
+                        <div class="guideline-date">发布于 2024-12-18</div>
+                    </div>
+                </div>
+                <div class="guideline-item">
+                    <div class="guideline-icon">📄</div>
+                    <div class="guideline-info">
+                        <div class="guideline-title">中国儿童生长发育评估标准更新</div>
+                        <div class="guideline-date">发布于 2024-09-20</div>
+                    </div>
+                </div>
+            </div>
+            <button class="view-all-button">查看全部指南</button>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div class="footer">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk
+    </div>
+</body>
+</html>

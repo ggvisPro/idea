@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>妇产科知识库 - AI医疗助手</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        /* 导航栏样式 */
+        .nav-bar {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #0071e3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-weight: 500;
+        }
+
+        .username {
+            font-weight: 500;
+        }
+
+        /* 主内容样式 */
+        .container {
+            max-width: 1200px;
+            margin: 78px auto 40px;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #af52de;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            font-weight: 400;
+            color: #6e6e73;
+            margin-bottom: 40px;
+        }
+
+        /* 搜索框样式 */
+        .search-container {
+            margin-bottom: 50px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 18px;
+            border-radius: 12px;
+            border: none;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 4px rgba(175, 82, 222, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #86868b;
+        }
+
+        /* 知识库卡片样式 */
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            color: #6e6e73;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        /* 最新指南区域 */
+        .guidelines-area {
+            background: linear-gradient(145deg, #bf70ec, #af52de);
+            border-radius: 18px;
+            padding: 40px;
+            text-align: left;
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        .guidelines-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .guidelines-list {
+            margin-bottom: 24px;
+        }
+
+        .guideline-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 12px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .guideline-item:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+
+        .guideline-icon {
+            margin-right: 12px;
+            font-size: 24px;
+        }
+
+        .guideline-info {
+            flex: 1;
+        }
+
+        .guideline-title {
+            font-weight: 500;
+            font-size: 17px;
+            margin-bottom: 4px;
+        }
+
+        .guideline-date {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .view-all-button {
+            background-color: white;
+            color: #af52de;
+            border: none;
+            border-radius: 100px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .view-all-button:hover {
+            transform: scale(1.05);
+        }
+
+        /* 底部信息 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #86868b;
+            font-size: 12px;
+        }
+
+        /* 返回按钮 */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: #f5f5f7;
+            border: 1px solid #d2d2d7;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #1d1d1f;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .back-button:hover {
+            background-color: #e8e8ed;
+        }
+
+        /* 颜色定义 */
+        .bg-purple { background-color: #af52de; }
+        .bg-light-purple { background-color: #bf70ec; }
+        .bg-pink { background-color: #ff2d55; }
+        .bg-blue { background-color: #007aff; }
+        .bg-teal { background-color: #5ac8fa; }
+        .bg-green { background-color: #34c759; }
+        .bg-orange { background-color: #ff9500; }
+        .bg-red { background-color: #ff3b30; }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="logo" onclick="window.location.href='main.html'" style="cursor: pointer;">临床知识库</div>
+        <div class="user-info" style="cursor: pointer;" onclick="window.location.href='user_profile.html'">
+            <img src="./皮卡丘像素.png" class="user-avatar" alt="用户头像">
+            <div class="username">王院</div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <!-- 返回按钮 -->
+        <div class="back-button" onclick="window.location.href='main.html'">
+            ← 返回首页
+        </div>
+
+        <!-- 欢迎信息 -->
+        <h1 class="welcome">妇产科知识库</h1>
+        <p class="subtitle">全面的妇产科疾病诊疗指南、操作规范及最新研究进展</p>
+
+        <!-- 搜索区域 -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="搜索妇产科疾病、检查、手术或药物...">
+                <div class="search-icon">🔍</div>
+            </div>
+        </div>
+
+        <!-- 妇科分类 -->
+        <h2 class="section-title">妇科疾病</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon bg-purple">炎</div>
+                <h3 class="card-title">妇科炎症</h3>
+                <p class="card-description">阴道炎、宫颈炎、盆腔炎等常见妇科炎症的诊断标准与治疗方案。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-pink">肿</div>
+                <h3 class="card-title">妇科肿瘤</h3>
+                <p class="card-description">子宫肌瘤、卵巢肿瘤、宫颈癌等妇科肿瘤的筛查、诊断与治疗。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-blue">月</div>
+                <h3 class="card-title">月经疾病</h3>
+                <p class="card-description">月经失调、痛经、闭经、更年期综合征等月经相关疾病诊疗。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-orange">内</div>
+                <h3 class="card-title">内分泌疾病</h3>
+                <p class="card-description">多囊卵巢综合征、子宫内膜异位症等内分泌失调相关疾病。</p>
+            </div>
+        </div>
+
+        <!-- 产科分类 -->
+        <h2 class="section-title">产科管理</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon bg-green">孕</div>
+                <h3 class="card-title">孕期保健</h3>
+                <p class="card-description">正常孕期管理、营养指导、产检规范及孕期常见问题处理。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-red">高</div>
+                <h3 class="card-title">高危妊娠</h3>
+                <p class="card-description">妊娠期高血压、妊娠期糖尿病等高危妊娠的诊断与管理。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-teal">产</div>
+                <h3 class="card-title">分娩指南</h3>
+                <p class="card-description">自然分娩、剖宫产、难产处理及产后管理专业指南。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-light-purple">胎</div>
+                <h3 class="card-title">胎儿医学</h3>
+                <p class="card-description">产前诊断、胎儿监护、胎儿异常与宫内治疗技术指南。</p>
+            </div>
+        </div>
+
+        <!-- 专科技术 -->
+        <h2 class="section-title">专科技术</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon" style="background: linear-gradient(145deg, #af52de, #ff2d55);">手</div>
+                <h3 class="card-title">妇产科手术</h3>
+                <p class="card-description">各类妇科手术和产科手术的适应症、操作规范与并发症处理。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon" style="background: linear-gradient(145deg, #5ac8fa, #007aff);">超</div>
+                <h3 class="card-title">超声诊断</h3>
+                <p class="card-description">妇产科超声检查的规范操作、指标解读与临床应用。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-blue">育</div>
+                <h3 class="card-title">生殖医学</h3>
+                <p class="card-description">不孕不育诊疗、辅助生殖技术指南及生殖内分泌研究。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-orange">急</div>
+                <h3 class="card-title">急诊救治</h3>
+                <p class="card-description">产科急症、妇科急腹症等妇产科急危重症的规范化处理。</p>
+            </div>
+        </div>
+
+        <!-- 最新指南区域 -->
+        <div class="guidelines-area">
+            <h2 class="guidelines-title">最新妇产科指南</h2>
+            <div class="guidelines-list">
+                <div class="guideline-item">
+                    <div class="guideline-icon">📄</div>
+                    <div class="guideline-info">
+                        <div class="guideline-title">2025年妊娠期糖尿病诊疗指南</div>
+                        <div class="guideline-date">发布于 2025-01-15</div>
+                    </div>
+                </div>
+                <div class="guideline-item">
+                    <div class="guideline-icon">📄</div>
+                    <div class="guideline-info">
+                        <div class="guideline-title">子宫内膜异位症诊疗专家共识（2024版）</div>
+                        <div class="guideline-date">发布于 2024-11-22</div>
+                    </div>
+                </div>
+                <div class="guideline-item">
+                    <div class="guideline-icon">📄</div>
+                    <div class="guideline-info">
+                        <div class="guideline-title">宫颈癌筛查与防治指南更新</div>
+                        <div class="guideline-date">发布于 2024-10-05</div>
+                    </div>
+                </div>
+            </div>
+            <button class="view-all-button">查看全部指南</button>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div class="footer">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk
+    </div>
+</body>
+</html>

@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>病例分析 - 临床知识库</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        /* 导航栏样式 */
+        .nav-bar {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .username {
+            font-weight: 500;
+        }
+
+        /* 主内容样式 */
+        .container {
+            max-width: 1200px;
+            margin: 68px auto 40px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 992px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .page-header {
+            grid-column: 1 / -1;
+        }
+
+        .page-title {
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .page-description {
+            color: #6e6e73;
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+
+        /* 左边病例输入区域 */
+        .case-input-container {
+            background-color: white;
+            border-radius: 18px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            height: fit-content;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .case-input-container:hover {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .tool-button {
+            background-color: #f5f5f7;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            color: #0071e3;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .tool-button:hover {
+            background-color: #e5e5ea;
+            transform: translateY(-1px);
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: #1d1d1f;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid #e5e5e5;
+            font-size: 15px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: #0071e3;
+            box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.2);
+            outline: none;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid #e5e5e5;
+            font-size: 15px;
+            resize: vertical;
+            min-height: 160px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-textarea:focus {
+            border-color: #0071e3;
+            box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.2);
+            outline: none;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid #e5e5e5;
+            font-size: 15px;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236e6e73' viewBox='0 0 16 16'%3E%3Cpath d='M8 11.5l-6-6 1.5-1.5L8 8.5 12.5 4 14 5.5l-6 6z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-select:focus {
+            border-color: #0071e3;
+            box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.2);
+            outline: none;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .tab.active {
+            color: #0071e3;
+            border-bottom-color: #0071e3;
+        }
+
+        .tab:hover:not(.active) {
+            color: #0071e3;
+        }
+
+        .file-upload {
+            border: 2px dashed #e5e5e5;
+            border-radius: 10px;
+            padding: 24px;
+            text-align: center;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        .file-upload:hover {
+            border-color: #0071e3;
+            background-color: rgba(0, 113, 227, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 32px;
+            color: #6e6e73;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            font-size: 15px;
+            color: #6e6e73;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 100px;
+            font-size: 16px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e5e5ea;
+        }
+
+        .btn-primary {
+            background-color: #0071e3;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0061c3;
+        }
+
+        /* 右边分析结果区域 */
+        .analysis-results {
+            background-color: white;
+            border-radius: 18px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .analysis-results:hover {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .results-title {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .results-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .result-section {
+            margin-bottom: 30px;
+        }
+
+        .result-section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1d1d1f;
+        }
+
+        .result-card {
+            background-color: #f5f5f7;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            transition: transform 0.2s;
+        }
+
+        .result-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .result-card-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .confidence {
+            font-size: 13px;
+            color: white;
+            background-color: #0071e3;
+            padding: 3px 10px;
+            border-radius: 100px;
+            font-weight: 500;
+        }
+
+        .confidence.high {
+            background-color: #34c759;
+        }
+
+        .confidence.medium {
+            background-color: #ff9500;
+        }
+
+        .confidence.low {
+            background-color: #ff3b30;
+        }
+
+        .result-card-content {
+            font-size: 15px;
+            color: #434343;
+            line-height: 1.6;
+        }
+
+        .evidence-list {
+            margin-top: 12px;
+        }
+
+        .evidence-item {
+            padding: 10px 0;
+            border-top: 1px solid #e5e5e5;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .evidence-source {
+            color: #0071e3;
+            font-size: 13px;
+        }
+
+        .reference-item {
+            display: flex;
+            padding: 14px;
+            border-radius: 12px;
+            background-color: #f5f5f7;
+            margin-bottom: 12px;
+            transition: transform 0.2s;
+        }
+
+        .reference-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .reference-icon {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            background-color: #0071e3;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 14px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .reference-content {
+            flex: 1;
+        }
+
+        .reference-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 15px;
+        }
+
+        .reference-details {
+            font-size: 13px;
+            color: #6e6e73;
+        }
+
+        .chart {
+            width: 100%;
+            height: 200px;
+            background-color: #f5f5f7;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            color: #6e6e73;
+            transition: transform 0.2s;
+        }
+
+        .chart:hover {
+            transform: translateY(-2px);
+        }
+
+        .treatment-option {
+            padding: 16px;
+            background-color: #f5f5f7;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: transform 0.2s;
+        }
+
+        .treatment-option:hover {
+            transform: translateY(-2px);
+        }
+
+        .treatment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .treatment-title {
+            font-weight: 600;
+        }
+
+        .treatment-rating {
+            display: flex;
+            color: #ff9500;
+        }
+
+        .star {
+            color: #ff9500;
+        }
+
+        .treatment-description {
+            font-size: 15px;
+            color: #434343;
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .note-container {
+            background-color: #fff8e6;
+            border-left: 4px solid #ff9500;
+            padding: 16px;
+            margin-top: 30px;
+            border-radius: 0 12px 12px 0;
+            transition: transform 0.2s;
+        }
+
+        .note-container:hover {
+            transform: translateY(-2px);
+        }
+
+        .note-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1d1d1f;
+        }
+
+        .note-content {
+            font-size: 15px;
+            color: #434343;
+            line-height: 1.5;
+        }
+
+        /* 底部信息 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #86868b;
+            font-size: 13px;
+            grid-column: 1 / -1;
+        }
+
+        /* 返回按钮 */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: #f5f5f7;
+            border: 1px solid #d2d2d7;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #1d1d1f;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            grid-column: 1 / -1;
+            width: fit-content;
+        }
+
+        .back-button:hover {
+            background-color: #e8e8ed;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="logo" onclick="window.location.href='main.html'">临床知识库</div>
+        <div class="user-info" onclick="window.location.href='user_profile.html'">
+            <img src="./皮卡丘像素.png" class="user-avatar" alt="用户头像">
+            <div class="username">王院</div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <!-- 返回按钮 -->
+        <div class="back-button" onclick="window.location.href='main.html'">
+            ← 返回首页
+        </div>
+        
+        <!-- 页面标题 -->
+        <div class="page-header">
+            <h1 class="page-title">病例分析</h1>
+            <p class="page-description">输入病例信息，获取AI辅助诊断分析和治疗建议</p>
+        </div>
+
+        <!-- 左侧病例输入区域 -->
+        <div class="case-input-container">
+            <div class="section-header">
+                <h2 class="section-title">病例信息</h2>
+                <button class="tool-button">导入模板</button>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active">手动输入</div>
+                <div class="tab">上传文件</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">患者基本信息</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <input type="text" class="form-input" placeholder="姓名" value="张某">
+                    <select class="form-select">
+                        <option>男</option>
+                        <option>女</option>
+                    </select>
+                    <input type="text" class="form-input" placeholder="年龄" value="45">
+                    <input type="text" class="form-input" placeholder="体重(kg)" value="75">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">主诉</label>
+                <input type="text" class="form-input" value="反复发热1周，咳嗽咳痰3天">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">现病史</label>
+                <textarea class="form-textarea">患者1周前无明显诱因出现发热，体温最高达38.5℃，伴有咳嗽，痰白，量少，无胸痛、胸闷，无恶心、呕吐，无头晕、头痛。曾于社区医院就诊，给予口服"感冒药"（具体不详）治疗后症状无明显缓解。3天前咳嗽加重，痰呈黄色，量中等，无痰中带血。自测体温仍有发热，体温波动于37.5-38.8℃之间。今为进一步诊治来我院门诊就诊。</textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">既往史</label>
+                <textarea class="form-textarea">高血压病史5年，目前服用缬沙坦80mg qd控制，平素血压控制良好。2型糖尿病病史2年，服用二甲双胍0.5g bid，空腹血糖控制在7mmol/L左右。否认冠心病、脑卒中病史，否认肝炎、结核等传染病史，否认外伤手术史，否认食物药物过敏史。</textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">体格检查</label>
+                <textarea class="form-textarea">T 38.2℃，P 92次/分，R 22次/分，BP 135/85mmHg，SpO2 95%（空气）。
+神志清楚，精神可，全身皮肤黏膜无黄染及出血点。浅表淋巴结未触及肿大。口咽无充血。双肺呼吸音粗，右下肺可闻及湿啰音。心率92次/分，律齐，各瓣膜听诊区未闻及病理性杂音。腹平软，无压痛及反跳痛，肝脾肋下未触及。双下肢无浮肿。</textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">辅助检查</label>
+                <textarea class="form-textarea">血常规：WBC 12.5×10^9/L，N 78.6%，Hb 145g/L，PLT 230×10^9/L
+C反应蛋白：45mg/L
+胸部X线：右下肺片状致密影，考虑炎症性病变
+血气分析：pH 7.42，PaO2 80mmHg，PaCO2 38mmHg</textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">分析需求</label>
+                <select class="form-select">
+                    <option>诊断分析与建议</option>
+                    <option>治疗方案推荐</option>
+                    <option>疾病进展预测</option>
+                    <option>全面病例分析</option>
+                </select>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-secondary">重置</button>
+                <button class="btn btn-primary">开始分析</button>
+            </div>
+        </div>
+
+        <!-- 右侧分析结果区域 -->
+        <div class="analysis-results">
+            <div class="results-header">
+                <h2 class="results-title">分析结果</h2>
+                <div class="results-actions">
+                    <button class="tool-button">保存</button>
+                    <button class="tool-button">导出</button>
+                </div>
+            </div>
+
+            <div class="result-section">
+                <h3 class="result-section-title">诊断建议</h3>
+                <div class="result-card">
+                    <div class="result-card-title">
+                        <span>社区获得性肺炎</span>
+                        <span class="confidence high">可信度高 92%</span>
+                    </div>
+                    <div class="result-card-content">
+                        根据患者发热、咳嗽咳黄痰的症状，结合体格检查中右下肺湿啰音，辅助检查显示白细胞及中性粒细胞比例升高、C反应蛋白升高，以及胸部X线右下肺片状致密影，高度考虑社区获得性肺炎诊断。
+                    </div>
+                    <div class="evidence-list">
+                        <div class="evidence-item">
+                            <span>符合社区获得性肺炎诊断标准</span>
+                            <span class="evidence-source">中华医学会呼吸病学分会指南 2022</span>
+                        </div>
+                        <div class="evidence-item">
+                            <span>临床表现、检查结果与中度肺炎相符</span>
+                            <span class="evidence-source">IDSA/ATS共识指南 2019</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <div class="result-card-title">
+                        <span>需排除的诊断</span>
+                    </div>
+                    <div class="result-card-content">
+                        <ul style="padding-left: 20px;">
+                            <li>COVID-19 - 建议进行新冠病毒核酸检测排除</li>
+                            <li>支气管扩张并感染 - 建议进行胸部CT检查</li>
+                            <li>肺结核 - 需结合痰培养和TB-DNA结果排除</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-section">
+                <h3 class="result-section-title">严重程度评估</h3>
+                <div class="chart">
+                    根据CURB-65评分：1分（轻中度）
+                </div>
+                <div class="result-card">
+                    <div class="result-card-content">
+                        患者CURB-65评分1分（年龄≥65岁：0分；意识障碍：0分；BUN>7mmol/L：不详；呼吸≥30次/分：0分；低血压：0分；血压≤90/60mmHg：0分），属于轻中度肺炎，适合门诊治疗或短期住院观察。
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-section">
+                <h3 class="result-section-title">治疗建议</h3>
+                <div class="treatment-option">
+                    <div class="treatment-header">
+                        <div class="treatment-title">经验性抗感染治疗</div>
+                        <div class="treatment-rating">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                        </div>
+                    </div>
+                    <div class="treatment-description">
+                        考虑到患者有基础疾病（高血压、糖尿病），建议选择以下方案之一：<br>
+                        1. 莫西沙星 400mg 静脉滴注 qd<br>
+                        2. 头孢曲松 2g 静脉滴注 qd + 阿奇霉素 0.5g 静脉滴注 qd<br>
+                        3. 头孢呋辛 1.5g 静脉滴注 q8h + 阿奇霉素 0.5g 静脉滴注 qd
+                    </div>
+                </div>
+
+                <div class="treatment-option">
+                    <div class="treatment-header">
+                        <div class="treatment-title">对症支持治疗</div>
+                        <div class="treatment-rating">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span>★</span>
+                        </div>
+                    </div>
+                    <div class="treatment-description">
+                        1. 解热镇痛：对乙酰氨基酚 650mg po q6h prn<br>
+                        2. 祛痰治疗：盐酸氨溴索 30mg po tid<br>
+                        3. 监测血压、血糖，继续原有高血压和糖尿病治疗<br>
+                        4. 充分水化，建议每日液体摄入量≥2000ml
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-section">
+                <h3 class="result-section-title">后续建议</h3>
+                <div class="result-card">
+                    <div class="result-card-content">
+                        <ol style="padding-left: 20px; line-height: 1.6;">
+                            <li>建议完善痰培养及药敏试验</li>
+                            <li>抗生素治疗3天后评估临床疗效，若症状无改善考虑调整方案</li>
+                            <li>随访胸部影像学检查，评估肺部炎症吸收情况</li>
+                            <li>若症状持续加重或出现呼吸困难、意识改变等，建议立即就医</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-section">
+                <h3 class="result-section-title">相关参考文献</h3>
+                <div class="reference-item">
+                    <div class="reference-icon">文</div>
+                    <div class="reference-content">
+                        <div class="reference-title">中国成人社区获得性肺炎诊断和治疗指南（2022年版）</div>
+                        <div class="reference-details">中华医学会呼吸病学分会，2022年</div>
+                    </div>
+                </div>
+                <div class="reference-item">
+                    <div class="reference-icon">文</div>
+                    <div class="reference-content">
+                        <div class="reference-title">社区获得性肺炎患者抗菌药物治疗的循证分析</div>
+                        <div class="reference-details">中华内科杂志，2021年第60卷第2期</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="note-container">
+                <div class="note-title">注意事项</div>
+                <div class="note-content">本分析结果仅供临床参考，具体诊疗方案应由医生根据患者个体情况制定。如患者情况发生变化，请及时调整治疗方案。</div>
+            </div>
+        </div>
+
+        <!-- 底部信息 -->
+        <div class="footer">
+            © 2025 临床知识库 | 科技赋能 | powered by wangzk
+        </div>
+    </div>
+</body>
+</html>

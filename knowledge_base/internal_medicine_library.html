@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>内科知识库 - AI医疗助手</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        /* 导航栏样式 */
+        .nav-bar {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #0071e3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-weight: 500;
+        }
+
+        .username {
+            font-weight: 500;
+        }
+
+        /* 主内容样式 */
+        .container {
+            max-width: 1200px;
+            margin: 78px auto 40px;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #0071e3;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            font-weight: 400;
+            color: #6e6e73;
+            margin-bottom: 40px;
+        }
+
+        /* 搜索框样式 */
+        .search-container {
+            margin-bottom: 50px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 18px;
+            border-radius: 12px;
+            border: none;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #86868b;
+        }
+
+        /* 知识库卡片样式 */
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            color: #6e6e73;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        /* 指南区域 */
+        .guidelines-area {
+            background: linear-gradient(145deg, #42a1ec, #0071e3);
+            border-radius: 18px;
+            padding: 40px;
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        .guidelines-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .guidelines-list {
+            margin-bottom: 24px;
+        }
+
+        .guideline-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 12px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .guideline-item:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+
+        .guideline-icon {
+            margin-right: 12px;
+            font-size: 24px;
+        }
+
+        .guideline-info {
+            flex: 1;
+        }
+
+        .guideline-title {
+            font-weight: 500;
+            font-size: 17px;
+            margin-bottom: 4px;
+        }
+
+        .guideline-date {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .view-all-button {
+            background-color: white;
+            color: #0071e3;
+            border: none;
+            border-radius: 100px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .view-all-button:hover {
+            transform: scale(1.05);
+        }
+
+        /* 常见症状区域 */
+        .symptoms-section {
+            background-color: white;
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 60px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .symptoms-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1d1d1f;
+        }
+
+        .symptoms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .symptom-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 10px;
+            background-color: #f5f5f7;
+            transition: transform 0.2s, background-color 0.2s;
+            cursor: pointer;
+        }
+
+        .symptom-item:hover {
+            background-color: #e8e8ed;
+            transform: translateY(-2px);
+        }
+
+        .symptom-icon {
+            margin-right: 12px;
+            font-size: 20px;
+        }
+
+        .symptom-name {
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        /* 返回按钮 */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: #f5f5f7;
+            border: 1px solid #d2d2d7;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #1d1d1f;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .back-button:hover {
+            background-color: #e8e8ed;
+        }
+
+        /* 底部信息 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #86868b;
+            font-size: 12px;
+        }
+
+        /* 颜色定义 */
+        .bg-blue { background-color: #0071e3; }
+        .bg-light-blue { background-color: #42a1ec; }
+        .bg-red { background-color: #ff3b30; }
+        .bg-orange { background-color: #ff9500; }
+        .bg-green { background-color: #34c759; }
+        .bg-yellow { background-color: #ffcc00; }
+        .bg-purple { background-color: #af52de; }
+        .bg-teal { background-color: #5ac8fa; }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="logo" onclick="window.location.href='main.html'">临床知识库</div>
+        <div class="user-info" style="cursor: pointer;" onclick="window.location.href='user_profile.html'">
+            <img src="./皮卡丘像素.png" class="user-avatar" alt="用户头像">
+            <div class="username">王院</div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <!-- 返回按钮 -->
+        <div class="back-button" onclick="window.location.href='main.html'">
+            ← 返回首页
+        </div>
+
+        <!-- 欢迎信息 -->
+        <h1 class="welcome">内科知识库</h1>
+        <p class="subtitle">权威全面的内科疾病诊疗指南、治疗方案及用药参考</p>
+
+        <!-- 搜索区域 -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="搜索内科疾病、症状、药物或治疗方案...">
+                <div class="search-icon">🔍</div>
+            </div>
+        </div>
+
+        <!-- 内科系统分类 -->
+        <h2 class="section-title">系统疾病</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon" style="background: linear-gradient(145deg, #ff3b30, #ff9500);">心</div>
+                <h3 class="card-title">心血管系统</h3>
+                <p class="card-description">高血压、冠心病、心衰、心律失常等心血管疾病诊疗方案。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon" style="background: linear-gradient(145deg, #42a1ec, #0071e3);">肺</div>
+                <h3 class="card-title">呼吸系统</h3>
+                <p class="card-description">慢阻肺、哮喘、肺炎、肺间质纤维化等呼吸系统疾病诊疗。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-yellow">消</div>
+                <h3 class="card-title">消化系统</h3>
+                <p class="card-description">胃食管反流、消化性溃疡、肝炎、胰腺炎等消化系统疾病。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-green">内</div>
+                <h3 class="card-title">内分泌系统</h3>
+                <p class="card-description">糖尿病、甲状腺疾病、肾上腺疾病等内分泌代谢疾病。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-purple">血</div>
+                <h3 class="card-title">血液系统</h3>
+                <p class="card-description">各类贫血、白血病、淋巴瘤、出凝血疾病等血液疾病。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-teal">肾</div>
+                <h3 class="card-title">肾脏疾病</h3>
+                <p class="card-description">肾小球肾炎、肾病综合征、尿路感染、肾功能不全等疾病。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-orange">风</div>
+                <h3 class="card-title">风湿免疫</h3>
+                <p class="card-description">类风湿关节炎、红斑狼疮、血管炎等风湿免疫性疾病。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-red">感</div>
+                <h3 class="card-title">感染疾病</h3>
+                <p class="card-description">各类细菌、病毒、真菌感染及抗生素合理应用指南。</p>
+            </div>
+        </div>
+
+        <!-- 常见症状区域 -->
+        <div class="symptoms-section">
+            <h3 class="symptoms-title">常见症状鉴别诊断</h3>
+            <div class="symptoms-grid">
+                <div class="symptom-item">
+                    <div class="symptom-icon">🤒</div>
+                    <div class="symptom-name">发热</div>
+                </div>
+                <div class="symptom-item">
+                    <div class="symptom-icon">💓</div>
+                    <div class="symptom-name">胸痛</div>
+                </div>
+                <div class="symptom-item">
+                    <div class="symptom-icon">🫁</div>
+                    <div class="symptom-name">呼吸困难</div>
+                </div>
+                <div class="symptom-item">
+                    <div class="symptom-icon">🤢</div>
+                    <div class="symptom-name">恶心呕吐</div>
+                </div>
+                <div class="symptom-item">
+                    <div class="symptom-icon">⚡</div>
+                    <div class="symptom-name">头痛</div>
+                </div>
+                <div class="symptom-item">
+                    <div class="symptom-icon">🥴</div>
+                    <div class="symptom-name">眩晕</div>
+                </div>
+                <div class="symptom-item">
+                    <div class="symptom-icon">💦</div>
+                    <div class="symptom-name">乏力</div>
+                </div>
+                <div class="symptom-item">
+                    <div class="symptom-icon">💪</div>
+                    <div class="symptom-name">关节痛</div>
+                </div>
+                <div class="symptom-item">
+                    <div class="symptom-icon">🫃</div>
+                    <div class="symptom-name">腹痛</div>
+                </div>
+                <div class="symptom-item">
+                    <div class="symptom-icon">💩</div>
+                    <div class="symptom-name">腹泻</div>
+                </div>
+                <div class="symptom-item">
+                    <div class="symptom-icon">💤</div>
+                    <div class="symptom-name">意识障碍</div>
+                </div>
+                <div class="symptom-item">
+                    <div class="symptom-icon">🩸</div>
+                    <div class="symptom-name">出血</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 专科指南 -->
+        <h2 class="section-title">专科管理</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon bg-blue">急</div>
+                <h3 class="card-title">急危重症</h3>
+                <p class="card-description">休克、急性心肌梗死、急性肺栓塞等内科急危重症的处理原则。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-green">慢</div>
+                <h3 class="card-title">慢病管理</h3>
+                <p class="card-description">高血压、糖尿病、慢阻肺等慢性疾病的长期管理方案。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-teal">老</div>
+                <h3 class="card-title">老年医学</h3>
+                <p class="card-description">老年患者用药原则、多系统疾病管理及老年常见综合征。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-red">重</div>
+                <h3 class="card-title">重症监护</h3>
+                <p class="card-description">呼吸支持、血流动力学监测、营养支持等重症监护技术。</p>
+            </div>
+        </div>
+
+        <!-- 热门指南区域 -->
+        <div class="guidelines-area">
+            <h2 class="guidelines-title">最新内科指南</h2>
+            <div class="guidelines-list">
+                <div class="guideline-item">
+                    <div class="guideline-icon">📄</div>
+                    <div class="guideline-info">
+                        <div class="guideline-title">中国2型糖尿病防治指南（2024版）</div>
+                        <div class="guideline-date">发布于 2024-12-15</div>
+                    </div>
+                </div>
+                <div class="guideline-item">
+                    <div class="guideline-icon">📄</div>
+                    <div class="guideline-info">
+                        <div class="guideline-title">中国高血压防治指南最新更新</div>
+                        <div class="guideline-date">发布于 2024-09-22</div>
+                    </div>
+                </div>
+                <div class="guideline-item">
+                    <div class="guideline-icon">📄</div>
+                    <div class="guideline-info">
+                        <div class="guideline-title">心力衰竭诊断与治疗指南（2025版）</div>
+                        <div class="guideline-date">发布于 2025-01-10</div>
+                    </div>
+                </div>
+            </div>
+            <button class="view-all-button">查看全部指南</button>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div class="footer">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk
+    </div>
+</body>
+</html>
