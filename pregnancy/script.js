@@ -192,6 +192,24 @@ function animateResults(elementIds) {
 
 // 页面加载后设置今天的日期为默认值
 document.addEventListener('DOMContentLoaded', function() {
+    // 选项卡切换功能
+    const tabs = document.querySelectorAll('.tab');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            // 移除所有选项卡和内容区域的active类
+            tabs.forEach(t => t.classList.remove('active'));
+            const sections = document.querySelectorAll('.calculator-section');
+            sections.forEach(s => s.classList.remove('active'));
+            
+            // 为当前点击的选项卡添加active类
+            this.classList.add('active');
+            
+            // 显示对应的内容区域
+            const targetTabId = this.getAttribute('data-tab');
+            document.getElementById(targetTabId).classList.add('active');
+        });
+    });
+
     const today = new Date();
     
     if (document.getElementById('lastPeriod'))

@@ -9,20 +9,16 @@
     <title>孕周计算器</title>
     <link rel="stylesheet" href="style.css">
     <!-- 添加图标字体支持 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <h1>
-            <span class="title-icon"><i class="fas fa-baby"></i></span>
-            孕周计算器
-        </h1>
+        <div class="tab-navigation">
+            <div class="tab active" data-tab="pregnancy-tab">孕周计算</div>
+            <div class="tab" data-tab="date-diff-tab">日期间隔</div>
+            <div class="tab" data-tab="date-calc-tab">日期推算</div>
+        </div>
         
-        <div class="calculator-section">
-            <div class="section-header">
-                <h2>孕周计算</h2>
-                <div class="divider"></div>
-            </div>
+        <div class="calculator-section active" id="pregnancy-tab">
             <div class="form-group">
                 <button onclick="calculatePregnancy()">计算孕周及预产期</button>
                 <div class="input-wrapper">
@@ -32,22 +28,22 @@
             </div>
             
             <div id="pregnancyResults" class="results">
-                <div class="result-item">
+                <div class="result-item inline-result">
                     <span class="label">预产期</span>
                     <span id="dueDate" class="value"></span>
                 </div>
-                <div class="result-item">
+                <div class="result-item inline-result">
                     <span class="label">当前孕周</span>
                     <span id="currentWeek" class="value"></span>
                 </div>
                 
-                <div class="form-group mt-20">
+                <div class="form-group mt-20 compact-results">
                     <button onclick="calculateSpecificDateWeek()">计算指定日期孕周</button>
                     <div class="input-wrapper">
                         <label for="specificDate">指定日期</label>
                         <input type="date" id="specificDate">
                     </div>
-                    <div class="result-item">
+                    <div class="result-item no-margin">
                         <span class="label">该日期的孕周</span>
                         <span id="specificDateWeek" class="value"></span>
                     </div>
@@ -64,19 +60,15 @@
                             <span class="week-separator">天</span>
                         </div>
                     </div>
-                    <div class="result-item">
-                        <span class="label">对应的日期</span>
+                    <div class="result-item inline-result">
+                        <span class="label">对应日期</span>
                         <span id="weekDate" class="value"></span>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="calculator-section">
-            <div class="section-header">
-                <h2>日期间隔计算</h2>
-                <div class="divider"></div>
-            </div>
+        <div class="calculator-section" id="date-diff-tab">
             <div class="form-group">
                 <button onclick="calculateDateDifference()">计算日期的间隔</button>
                 <div class="input-wrapper">
@@ -88,17 +80,13 @@
                     <input type="date" id="date2">
                 </div>
             </div>
-            <div class="result-item">
+            <div class="result-item inline-result">
                 <span class="label">间隔天数</span>
                 <span id="dateDifference" class="value"></span>
             </div>
         </div>
         
-        <div class="calculator-section">
-            <div class="section-header">
-                <h2>日期推算</h2>
-                <div class="divider"></div>
-            </div>
+        <div class="calculator-section" id="date-calc-tab">
             <div class="form-group">
                 <button onclick="calculateNewDate()">推算日期</button>
                 <div class="input-wrapper">
@@ -116,14 +104,14 @@
                     </div>
                 </div>
             </div>
-            <div class="result-item">
+            <div class="result-item inline-result">
                 <span class="label">计算结果</span>
                 <span id="newDate" class="value"></span>
             </div>
         </div>
         
         <footer>
-            <p>© 2025 孕周计算器</p>
+            <p>©孕周计算器 | powered by Sonnet</p>
         </footer>
     </div>
     <script src="script.js"></script>
