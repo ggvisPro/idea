@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 标准化病人 - 口语化理解</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="oral.css">
+</head>
+<body>
+    <div class="container main-container">
+        <header>
+            <div class="header-content">
+                <h1>AI 标准化病人</h1>
+                <p class="subtitle">千人千症，AI复现，科技驱动，精准评测</p>
+            </div>
+            <div class="user-section">
+                <div class="user-info">
+                    <span class="organization">北京巨成医学</span>
+                    <div class="user-dropdown">
+                        <div class="user-avatar">
+                            <img src="皮卡丘像素.png" alt="用户头像">
+                        </div>
+                        <span class="user-name">王师傅</span>
+                        <i class="fas fa-chevron-down"></i>
+                        <div class="dropdown-menu">
+                            <a href="#"><i class="fas fa-user"></i> 个人中心</a>
+                            <a href="#"><i class="fas fa-hospital"></i> 机构管理</a>
+                            <a href="#"><i class="fas fa-cog"></i> 系统设置</a>
+                            <a href="#"><i class="fas fa-sign-out-alt"></i> 退出登录</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="action-bar">
+            <div class="case-info">
+                <h2 class="case-name" id="case-name-display">案例名称</h2>
+                <div class="case-status">
+                    <i class="fas fa-comment-alt"></i>
+                    <span>口语化处理</span>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    返回案例
+                    <span class="tooltip-icon" data-tooltip="返回到案例详情页面">?</span>
+                </button>
+                <button class="btn btn-primary" id="edit-oral-btn">
+                    <i class="fas fa-edit"></i>
+                    修改案例
+                    <span class="tooltip-icon" data-tooltip="手动编辑口语化内容">?</span>
+                </button>
+                <button class="btn btn-primary" id="save-oral-btn">
+                    <i class="fas fa-save"></i>
+                    保存案例
+                    <span class="tooltip-icon" data-tooltip="保存案例到系统中">?</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="panels-container">
+            <div class="panel original-panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <div class="panel-icon"><i class="fas fa-file-medical"></i></div>
+                        优化病历
+                    </div>
+                </div>
+                <div class="panel-body" id="optimized-panel-body">
+                    <div class="field-group">
+                        <div class="field-label">主诉</div>
+                        <div class="field-value" id="optimized-complaint"></div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <div class="field-label">现病史</div>
+                        <div class="field-value" id="optimized-present-history"></div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <div class="field-label">既往史</div>
+                        <div class="field-value" id="optimized-past-history"></div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <div class="field-label">个人史</div>
+                        <div class="field-value" id="optimized-personal-history"></div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <div class="field-label">家族史</div>
+                        <div class="field-value" id="optimized-family-history"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel oral-panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <div class="panel-icon"><i class="fas fa-comment"></i></div>
+                        口语化表达
+                        <span class="optimization-badge optimized">口语化版本</span>
+                    </div>
+                </div>
+                <div class="panel-body" id="oral-panel-body">
+                    <div class="empty-state" id="empty-oral-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-comment-dots"></i>
+                        </div>
+                        <h3>AI口语化转换</h3>
+                        <p>转换为SP更容易理解的口语表达</p>
+                        <button class="btn btn-primary btn-optimize-panel" id="generate-oral-btn">
+                            <i class="fas fa-comment-alt"></i>
+                            口语版转化
+                            <span class="tooltip-icon" data-tooltip="Agent3: 口语化转化；Agent4：反思口语化版本质量，不合格就自动重新生成">?</span>
+                        </button>
+                    </div>
+                    
+                    <div id="oral-content" style="display: none;">
+                        <div class="field-group">
+                            <div class="field-label">主诉</div>
+                            <div class="field-value oral-field" id="oral-complaint" contenteditable="false">null</div>
+                        </div>
+                        
+                        <div class="field-group">
+                            <div class="field-label">现病史</div>
+                            <div class="field-value oral-field" id="oral-present-history" contenteditable="false">null</div>
+                        </div>
+                        
+                        <div class="field-group">
+                            <div class="field-label">既往史</div>
+                            <div class="field-value oral-field" id="oral-past-history" contenteditable="false">null</div>
+                        </div>
+                        
+                        <div class="field-group">
+                            <div class="field-label">个人史</div>
+                            <div class="field-value oral-field" id="oral-personal-history" contenteditable="false">null</div>
+                        </div>
+                        
+                        <div class="field-group">
+                            <div class="field-label">家族史</div>
+                            <div class="field-value oral-field" id="oral-family-history" contenteditable="false">null</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 通知提示 -->
+        <div class="notification" id="notification">
+            <div class="notification-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <div class="notification-content">
+                <h3>操作成功</h3>
+                <p>案例已成功保存</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="oral.js"></script>
+</body>
+</html>

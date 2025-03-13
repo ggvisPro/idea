@@ -1,0 +1,192 @@
+/* 口语化页面特有样式 */
+.oral-panel .panel-icon {
+    background: rgba(76, 175, 80, 0.1);
+    color: #4CAF50;
+}
+
+.oral-panel .optimization-badge {
+    background: #e8f5e9;
+    color: #4CAF50;
+}
+
+#oral-expression {
+    font-size: 16px;
+    line-height: 1.8;
+    padding: 20px;
+    background-color: #f9fbf9;
+    border-radius: 12px;
+    border-left: 4px solid #4CAF50;
+}
+
+.oral-panel .field-value[contenteditable="true"] {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+/* 口语化样式中的引用和对话 */
+.quote {
+    padding-left: 15px;
+    border-left: 3px solid #4CAF50;
+    margin: 10px 0;
+    font-style: italic;
+    color: #555;
+}
+
+
+/* 添加口语化字段样式 */
+.oral-field {
+    font-size: 16px;
+    line-height: 1.8;
+    padding: 20px;
+    background-color: #f9fbf9;
+    border-radius: 12px;
+    border-left: 4px solid #4CAF50;
+    margin-bottom: 10px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.oral-field.editable {
+    background-color: #f9fff9;
+    border: 1px solid #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    border-left: 4px solid #4CAF50;
+}
+
+/* 增强口语化对话的样式 */
+.dialog {
+    margin: 15px 0;
+    padding: 10px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideInDialog 0.5s forwards;
+}
+
+.dialog:hover {
+    background-color: rgba(76, 175, 80, 0.05);
+}
+
+.dialog .speaker {
+    font-weight: 500;
+    color: #4CAF50;
+    display: inline-block;
+    min-width: 50px;
+}
+
+.dialog .speech {
+    margin-left: 10px;
+    line-height: 1.6;
+}
+
+.dialog:nth-child(1) { animation-delay: 0.1s; }
+.dialog:nth-child(2) { animation-delay: 0.2s; }
+.dialog:nth-child(3) { animation-delay: 0.3s; }
+.dialog:nth-child(4) { animation-delay: 0.4s; }
+.dialog:nth-child(5) { animation-delay: 0.5s; }
+.dialog:nth-child(6) { animation-delay: 0.6s; }
+.dialog:nth-child(7) { animation-delay: 0.7s; }
+.dialog:nth-child(8) { animation-delay: 0.8s; }
+.dialog:nth-child(9) { animation-delay: 0.9s; }
+.dialog:nth-child(10) { animation-delay: 1.0s; }
+
+@keyframes slideInDialog {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 高亮专业术语的解释 */
+.term {
+    border-bottom: 1px dashed #4CAF50;
+    position: relative;
+    cursor: help;
+    padding: 0 2px;
+    color: #3a8a3e;
+    font-weight: 500;
+}
+
+.term .explanation {
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border: 1px solid #ddd;
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    width: 250px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 100;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.5;
+}
+
+.term:hover .explanation {
+    opacity: 1;
+    visibility: visible;
+    bottom: 135%;
+}
+
+.term .explanation::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -8px;
+    width: 0;
+    height: 0;
+    border-top: 8px solid white;
+    border-right: 8px solid transparent;
+    border-left: 8px solid transparent;
+}
+
+/* 编辑时的特别样式 */
+#oral-expression.editable {
+    background-color: #f9fff9;
+    border: 1px solid #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+/* 调整口语化内容的样式 */
+#oral-content {
+    height: 100%;
+}
+
+#oral-content .field-group {
+    height: auto;
+    margin-bottom: 20px;
+}
+
+#oral-content .field-value {
+    height: auto;
+    max-height: none;
+}
+
+/* 添加字段淡入动画 */
+@keyframes fadeInField {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px);
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0);
+    }
+}
+
+.fade-in-field {
+    animation: fadeInField 0.5s forwards;
+}
+
+.oral-panel .field-label {
+    color: #4CAF50;
+    font-weight: 600;
+}

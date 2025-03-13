@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 标准化病人 - 导入案例</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .welcome-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* 改为顶部对齐 */
+            height: auto; /* 移除固定高度 */
+            padding-top: 0; /* 减少顶部填充 */
+            margin-top: 0;
+            text-align: center;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .import-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 0 30px 0; /* 减少顶部边距 */
+            padding-top: 0;
+            animation: slideUp 0.8s ease-out 0.3s both;
+            width: 100%;
+        }
+        
+        .import-section h2 {
+            margin-top: 10px;
+            margin-bottom: 20px; /* 减少标题下方的边距 */
+        }
+        
+        .welcome-title {
+            font-size: 48px;
+            font-weight: 600;
+            background: linear-gradient(90deg, #0071e3, #00c2ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 12px rgba(0,113,227,0.1);
+        }
+        
+        .welcome-subtitle {
+            font-size: 22px;
+            color: var(--apple-dark-grey);
+            margin-bottom: 40px;
+            max-width: 700px;
+            line-height: 1.5;
+        }
+        
+        .import-options {
+            display: flex;
+            flex-direction: row; /* 改回横排布局 */
+            gap: 40px; /* 增加间距 */
+            margin-top: 30px;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .import-option {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 40px;
+            width: 500px; /* 调整宽度以适应横排 */
+            box-shadow: var(--panel-shadow);
+            text-align: center;
+            transition: all var(--transition-speed);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+            margin: 10px 0;
+        }
+        
+        .import-option:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .import-option::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #0071e3, #00c2ff);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+        
+        .import-option:hover::after {
+            transform: scaleX(1);
+        }
+        
+        .option-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: var(--apple-blue);
+            transition: transform 0.3s ease;
+        }
+        
+        .import-option:hover .option-icon {
+            transform: scale(1.1);
+        }
+        
+        .option-title {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .option-desc {
+            color: var(--apple-dark-grey);
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .demo-cases {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px; /* 增加间距 */
+            margin-top: 25px;
+            justify-content: center;
+        }
+        
+        .demo-case {
+            background: var(--apple-grey);
+            border-radius: 10px;
+            padding: 12px 20px; /* 增加按钮大小 */
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            font-size: 16px; /* 增加字体大小 */
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .demo-case:hover {
+            background: rgba(0, 113, 227, 0.1);
+            color: var(--apple-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .demo-case::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--apple-blue);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+            z-index: -1;
+        }
+        
+        .demo-case:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .bottom-note {
+            margin-top: 50px;
+            font-size: 14px;
+            color: var(--apple-dark-grey);
+            animation: fadeIn 1s ease-out 1s both;
+            background: rgba(0, 113, 227, 0.05);
+            padding: 15px 25px;
+            border-radius: 10px;
+            max-width: 80%;
+            text-align: center;
+        }
+        
+        .upload-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .drop-zone {
+            border: 2px dashed #ddd;
+            border-radius: 15px;
+            padding: 40px 25px;
+            text-align: center;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .drop-zone-hover,
+        .drop-zone:hover {
+            border-color: #0071e3;
+            background-color: rgba(0, 113, 227, 0.05);
+        }
+        
+        .drop-zone p {
+            margin: 10px 0;
+            color: #666;
+        }
+        
+        .drop-zone-icon {
+            font-size: 36px;
+            color: #aaa;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+        
+        .drop-zone:hover .drop-zone-icon,
+        .drop-zone-hover .drop-zone-icon {
+            color: #0071e3;
+            transform: translateY(-5px);
+        }
+        
+        .import-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background: var(--apple-blue);
+            color: white;
+            border-radius: 20px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 113, 227, 0.2);
+            margin-top: 15px;
+        }
+        
+        .import-btn:hover {
+            background: #005bbf;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 113, 227, 0.3);
+        }
+
+        /* 增加一些动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .loading-spinner {
+            text-align: center;
+        }
+        
+        .loading-spinner svg {
+            animation: rotate 1.5s linear infinite;
+            filter: drop-shadow(0 0 8px rgba(0, 113, 227, 0.2));
+        }
+        
+        .loading-spinner circle {
+            stroke-dasharray: 125;
+            stroke-dashoffset: 125;
+            animation: dash 1.5s ease-in-out infinite;
+        }
+        
+        .loading-spinner p {
+            margin-top: 15px;
+            font-family: var(--apple-font);
+            color: var(--apple-blue);
+            font-size: 18px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes rotate {
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes dash {
+            0% {
+                stroke-dashoffset: 125;
+            }
+            50% {
+                stroke-dashoffset: 0;
+            }
+            100% {
+                stroke-dashoffset: -125;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .welcome-section {
+                padding: 10px 0; /* 减少桌面端的填充 */
+            }
+            
+            .container {
+                max-width: 1400px; /* 增加容器最大宽度 */
+                margin: 0 auto;
+            }
+            
+            .welcome-title {
+                font-size: 56px; /* 增大桌面端标题字号 */
+            }
+            
+            .welcome-subtitle {
+                font-size: 24px;
+                max-width: 800px;
+            }
+        }
+        
+        /* 调整头部和欢迎部分之间的边距 */
+        header {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>AI 标准化病人</h1>
+                <p class="subtitle">千人千症，AI复现，科技驱动，精准评测</p>
+            </div>
+            <div class="user-section">
+                <div class="user-info">
+                    <span class="organization">北京巨成医学</span>
+                    <div class="user-dropdown">
+                        <div class="user-avatar">
+                            <img src="皮卡丘像素.png" alt="用户头像">
+                        </div>
+                        <span class="user-name">王师傅</span>
+                        <i class="fas fa-chevron-down"></i>
+                        <div class="dropdown-menu">
+                            <a href="#"><i class="fas fa-user"></i> 个人中心</a>
+                            <a href="#"><i class="fas fa-hospital"></i> 机构管理</a>
+                            <a href="#"><i class="fas fa-cog"></i> 系统设置</a>
+                            <a href="#"><i class="fas fa-sign-out-alt"></i> 退出登录</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="welcome-section">
+            <div class="import-section">
+                <h2>您好，王师傅，请选择导入方式</h2>
+                
+                <div class="import-options">
+                    <div class="import-option" id="upload-option">
+                        <div class="option-icon">
+                            <i class="fas fa-file-upload"></i>
+                        </div>
+                        <h3 class="option-title">上传案例文件</h3>
+                        <p class="option-desc">支持上传PDF、DOC、DOCX、TXT格式的案例文件</p>
+                        
+                        <div class="upload-content">
+                            <div class="drop-zone" id="drop-zone">
+                                <div class="drop-zone-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <label for="file-upload" class="import-btn">
+                                    选择文件
+                                    <span class="help-icon" data-tooltip="系统会自动识别文件中的关键信息并进行结构化处理。">?</span>
+                                </label>
+                                <input id="file-upload" type="file" accept=".pdf,.doc,.docx,.txt" hidden>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="import-option" id="demo-option">
+                        <div class="option-icon">
+                            <i class="fas fa-flask"></i>
+                        </div>
+                        <h3 class="option-title">使用示例案例</h3>
+                        <p class="option-desc">我们准备了一些常见疾病的标准化病例供您体验</p>
+                        <div class="demo-cases">
+                            <div class="demo-case" data-case="coronary">冠心病</div>
+                            <div class="demo-case" data-case="diabetes">糖尿病</div>
+                            <div class="demo-case" data-case="hypertension">高血压</div>
+                            <div class="demo-case" data-case="stroke">脑卒中</div>
+                            <div class="demo-case" data-case="preeclampsia">子痫前期</div>
+                            <div class="demo-case" data-case="placenta-previa">前置胎盘</div>
+                            <div class="demo-case" data-case="jaundice">新生儿黄疸</div>
+                            <div class="demo-case" data-case="appendicitis">阑尾炎</div>
+                            <div class="demo-case" data-case="cholecystitis">胆囊炎</div>
+                            <div class="demo-case" data-case="cholecystitis">白血病</div>
+                            <div class="demo-case" data-case="cholecystitis">贫血</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileUpload = document.getElementById('file-upload');
+            const demoCases = document.querySelectorAll('.demo-case');
+            const dropZone = document.getElementById('drop-zone');
+            const fileSelectButton = document.querySelector('label[for="file-upload"]');
+            
+            // 文件上传处理
+            fileUpload.addEventListener('change', function(e) {
+                if (this.files && this.files[0]) {
+                    console.log("文件已选择:", this.files[0].name); // 调试输出
+                    processFile(this.files[0]);
+                }
+            });
+            
+            // 阻止"选择文件"按钮事件冒泡
+            fileSelectButton.addEventListener('click', function(e) {
+                e.stopPropagation(); // 阻止事件冒泡到drop-zone
+                console.log("选择文件按钮被点击");
+            });
+            
+            // 拖拽功能
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            // 拖拽进入区域
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, highlight, false);
+            });
+            
+            // 拖拽离开区域
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                dropZone.classList.add('drop-zone-hover');
+            }
+            
+            function unhighlight() {
+                dropZone.classList.remove('drop-zone-hover');
+            }
+            
+            // 处理拖拽的文件
+            dropZone.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files && files.length) {
+                    console.log("文件已拖放:", files[0].name); // 调试输出
+                    processFile(files[0]);
+                }
+            }
+            
+            // 点击拖拽区域也可以触发文件选择
+            dropZone.addEventListener('click', function(e) {
+                // 确保点击的不是选择文件按钮本身
+                if (!e.target.closest('label[for="file-upload"]')) {
+                    console.log("拖放区域被点击");
+                    fileUpload.click();
+                }
+            });
+            
+            // 统一处理文件的函数
+            function processFile(file) {
+                try {
+                    // 检查文件类型是否合法
+                    const validTypes = ['.pdf', '.doc', '.docx', '.txt'];
+                    const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+                    
+                    console.log("处理文件:", file.name, "类型:", fileExtension); // 调试输出
+                    
+                    if (!validTypes.includes(fileExtension)) {
+                        alert('请上传有效的文件格式：PDF、DOC、DOCX、TXT');
+                        return;
+                    }
+                    
+                    // 显示上传状态提示
+                    const dropZoneIcon = document.querySelector('.drop-zone-icon i');
+                    const originalIcon = dropZoneIcon.className;
+                    dropZoneIcon.className = 'fas fa-spinner fa-spin';
+                    
+                    // 显示加载动画
+                    showLoading("正在处理您的文件...");
+                    
+                    // 模拟文件处理过程
+                    setTimeout(() => {
+                        try {
+                            // 存储文件名到 sessionStorage，供主界面使用
+                            sessionStorage.setItem('importedFile', file.name);
+                            console.log("文件已保存到sessionStorage，准备跳转"); // 调试输出
+                            
+                            // 跳转到主界面
+                            window.location.href = 'main.html?source=upload';
+                        } catch (err) {
+                            console.error("跳转过程中出错:", err);
+                            alert("处理文件时出错，请重试");
+                            // 恢复图标
+                            dropZoneIcon.className = originalIcon;
+                            // 移除加载动画
+                            removeLoading();
+                        }
+                    }, 2000);
+                } catch (err) {
+                    console.error("处理文件时出错:", err);
+                    alert("处理文件时出错，请重试");
+                }
+            }
+            
+            // 移除加载动画
+            function removeLoading() {
+                const loadingOverlay = document.querySelector('.loading-overlay');
+                if (loadingOverlay) {
+                    loadingOverlay.remove();
+                }
+            }
+            
+            // 示例案例处理
+            demoCases.forEach(demoCase => {
+                demoCase.addEventListener('click', function() {
+                    const caseType = this.getAttribute('data-case');
+                    
+                    // 显示加载动画
+                    showLoading("正在加载示例案例...");
+                    
+                    // 存储案例类型到 sessionStorage，供主界面使用
+                    sessionStorage.setItem('demoCase', caseType);
+                    
+                    // 模拟加载过程
+                    setTimeout(() => {
+                        // 跳转到主界面
+                        window.location.href = 'main.html?source=demo&case=' + caseType;
+                    }, 1500);
+                });
+            });
+            
+            // 显示加载动画
+            function showLoading(message) {
+                const loadingOverlay = document.createElement('div');
+                loadingOverlay.classList.add('loading-overlay');
+                loadingOverlay.innerHTML = `
+                    <div class="loading-spinner">
+                        <svg width="50" height="50" viewBox="0 0 50 50">
+                            <circle cx="25" cy="25" r="20" fill="none" stroke="#0071e3" stroke-width="5"></circle>
+                        </svg>
+                        <p>${message}</p>
+                    </div>
+                `;
+                document.body.appendChild(loadingOverlay);
+            }
+            
+            // 为标题添加hover效果
+            const welcomeTitle = document.querySelector('.welcome-title');
+            if (welcomeTitle) {
+                welcomeTitle.addEventListener('mouseenter', function() {
+                    this.style.backgroundSize = '200%';
+                    this.style.backgroundPosition = 'right center';
+                    this.style.transition = 'all 0.8s ease';
+                });
+                
+                welcomeTitle.addEventListener('mouseleave', function() {
+                    this.style.backgroundSize = '100%';
+                    this.style.backgroundPosition = 'left center';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

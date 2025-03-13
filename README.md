@@ -4,6 +4,7 @@
 |---------|---------|
 | [知识库0.2](https://ggvispro.github.io/idea/knowledge_base/)  | 临床知识库的原型图,画了不少页面 |
 | [知识库0.1](https://ggvispro.github.io/idea/knowledge_base_red/)  | 旧版本临床知识库的原型图,红色,非常ugly |
+| [案例导入](https://ggvispro.github.io/idea/import_case/)  | AI 标准化病人的案例导入workflow |
 | [SEO](https://ggvispro.github.io/idea/seo/) | 搜索引擎优化 |
 | [🍓草莓计算器](https://ggvispro.github.io/idea/strawberry/) | 终于能数清楚strawberry中有几个r了 |
 | [贪吃蛇](https://ggvispro.github.io/idea/snake/) | 所有人都爱玩的贪吃蛇游戏 |
