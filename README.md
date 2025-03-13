@@ -10,4 +10,4 @@
 | [贪吃蛇](https://ggvispro.github.io/idea/snake/) | 所有人都爱玩的贪吃蛇游戏 |
 | [孕周计算器](https://ggvispro.github.io/idea/pregnancy/) | 孕周计算器,主任再也不用担心我算错预产期了 |
 | [诗词卡](https://ggvispro.github.io/idea/poem_card/) | 献给古诗词爱好者,好看的诗词卡片(就一句) |
-| [题目答案](https://ggvispro.github.io/idea/train_teacher/) | 2025师资培训练习题的答案 |
+| [题目答案](https://ggvispro.github.io/idea/train_teacher/) | 2025年师资培训练习题的答案 |
