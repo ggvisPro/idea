@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MACE Risk Calculator for Pregnant Women with VHD</title>
+    <style>
+        :root {
+            --primary-color: #0071e3;
+            --secondary-color: #f5f5f7;
+            --text-color: #1d1d1f;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        h2 {
+            font-size: 20px;
+            font-weight: 500;
+            margin: 30px 0 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        label {
+            display: block;
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .toggle-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+            margin-right: 10px;
+        }
+        
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            border-radius: 28px;
+            transition: var(--transition);
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 24px;
+            width: 24px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 18px;
+            font-weight: 500;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 30px;
+        }
+        
+        .btn:hover {
+            background-color: #005bbd;
+        }
+        
+        .result {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: var(--border-radius);
+            background-color: rgba(0, 113, 227, 0.1);
+            display: none;
+        }
+        
+        .risk-score {
+            font-size: 36px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+        
+        .risk-level {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .risk-description {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #86868b;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            h2 {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>合并 VHD 孕妇 MACE 风险计算器</h1>
+        
+        <div class="form-group">
+            <h2>临床特征</h2>
+            
+            <div class="form-group">
+                <div class="toggle-container">
+                    <label class="toggle">
+                        <input type="checkbox" id="hasCardiacSymptoms">
+                        <span class="slider"></span>
+                    </label>
+                    <label for="hasCardiacSymptoms">有心脏不适症状 (OR=3.9)</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="toggle-container">
+                    <label class="toggle">
+                        <input type="checkbox" id="hasCardiacSurgery">
+                        <span class="slider"></span>
+                    </label>
+                    <label for="hasCardiacSurgery">先天性心脏病矫正术后 (OR=4.5)</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="toggle-container">
+                    <label class="toggle">
+                        <input type="checkbox" id="isGradeV">
+                        <span class="slider"></span>
+                    </label>
+                    <label for="isGradeV">妊娠风险V级 (OR=3.9)</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="toggle-container">
+                    <label class="toggle">
+                        <input type="checkbox" id="hasLMWH">
+                        <span class="slider"></span>
+                    </label>
+                    <label for="hasLMWH">抗凝方案LMWH (OR=4.3)</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="toggle-container">
+                    <label class="toggle">
+                        <input type="checkbox" id="hasArrhythmia">
+                        <span class="slider"></span>
+                    </label>
+                    <label for="hasArrhythmia">合并心律失常 (OR=4.5)</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="toggle-container">
+                    <label class="toggle">
+                        <input type="checkbox" id="hasMS">
+                        <span class="slider"></span>
+                    </label>
+                    <label for="hasMS">二尖瓣狭窄 (MS) (OR=3.9)</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="toggle-container">
+                    <label class="toggle">
+                        <input type="checkbox" id="hasPulmonaryHypertension">
+                        <span class="slider"></span>
+                    </label>
+                    <label for="hasPulmonaryHypertension">合并肺动脉高压 (OR=1.4)</label>
+                </div>
+            </div>
+        </div>
+        
+        <button class="btn" id="calculateBtn">计算风险</button>
+        
+        <div class="result" id="resultContainer">
+            <h2>风险评估结果</h2>
+            <div class="risk-score" id="riskScore">-</div>
+            <div class="risk-level" id="riskLevel">-</div>
+            <div class="risk-description" id="riskDescription"></div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        基于多因素分析结果开发 | 仅供参考，不能替代医生诊断
+    </div>
+    
+    <script>
+        document.getElementById('calculateBtn').addEventListener('click', function() {
+            // Get all the risk factors
+            const hasCardiacSymptoms = document.getElementById('hasCardiacSymptoms').checked;
+            const hasCardiacSurgery = document.getElementById('hasCardiacSurgery').checked;
+            const isGradeV = document.getElementById('isGradeV').checked;
+            const hasLMWH = document.getElementById('hasLMWH').checked;
+            const hasArrhythmia = document.getElementById('hasArrhythmia').checked;
+            const hasMS = document.getElementById('hasMS').checked;
+            const hasPulmonaryHypertension = document.getElementById('hasPulmonaryHypertension').checked;
+            
+            // Count the number of risk factors
+            let riskFactorCount = 0;
+            if (hasCardiacSymptoms) riskFactorCount++;
+            if (hasCardiacSurgery) riskFactorCount++;
+            if (isGradeV) riskFactorCount++;
+            if (hasLMWH) riskFactorCount++;
+            if (hasArrhythmia) riskFactorCount++;
+            if (hasMS) riskFactorCount++;
+            if (hasPulmonaryHypertension) riskFactorCount++;
+            
+            // Calculate risk score (simplified version)
+            let riskScore = 0;
+            if (hasCardiacSymptoms) riskScore += 3.9;
+            if (hasCardiacSurgery) riskScore += 4.5;
+            if (isGradeV) riskScore += 3.9;
+            if (hasLMWH) riskScore += 4.3;
+            if (hasArrhythmia) riskScore += 4.5;
+            if (hasMS) riskScore += 3.9;
+            if (hasPulmonaryHypertension) riskScore += 1.4;
+            
+            // Round to one decimal place
+            riskScore = Math.round(riskScore * 10) / 10;
+            
+            // Determine risk level
+            let riskLevel = '';
+            let riskDescription = '';
+            
+            if (riskScore === 0) {
+                riskLevel = '低风险';
+                riskDescription = '根据当前输入，未发现显著风险因素。但请继续定期进行产前检查，并遵循医生建议。';
+            } else if (riskScore < 5) {
+                riskLevel = '中低风险';
+                riskDescription = '存在一定风险因素，建议密切监测，按医嘱进行产前检查。';
+            } else if (riskScore < 10) {
+                riskLevel = '中度风险';
+                riskDescription = '存在多个风险因素，建议增加产前检查频率，可能需要专科会诊。';
+            } else if (riskScore < 15) {
+                riskLevel = '中高风险';
+                riskDescription = '风险明显增高，建议由多学科团队评估，制定个体化管理方案。';
+            } else {
+                riskLevel = '高风险';
+                riskDescription = '风险极高，建议立即就医并考虑住院管理，需要心脏科和产科密切协作监测。';
+            }
+            
+            // Display results
+            document.getElementById('riskScore').textContent = riskScore.toString();
+            document.getElementById('riskLevel').textContent = riskLevel;
+            document.getElementById('riskDescription').textContent = riskDescription;
+            document.getElementById('resultContainer').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
