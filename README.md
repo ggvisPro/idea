@@ -2,6 +2,7 @@
 
 | 项目名称 | 项目描述 |
 |---------|---------|
+| [知识库0.3](https://ggvispro.github.io/idea/knowledge_base_03/)  | 在0.2的基础上加了导航栏和新页面 |
 | [知识库0.2](https://ggvispro.github.io/idea/knowledge_base/)  | 临床知识库的原型图,画了不少页面 |
 | [知识库0.1](https://ggvispro.github.io/idea/knowledge_base_red/)  | 旧版本临床知识库的原型图,红色,非常ugly |
 | [案例导入](https://ggvispro.github.io/idea/import_case/)  | AI 标准化病人的案例导入workflow |

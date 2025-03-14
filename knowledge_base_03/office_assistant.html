@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>办公助手 - AI医疗助手</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        /* 导航栏样式 */
+        .nav-bar {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #0071e3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-weight: 500;
+        }
+
+        .username {
+            font-weight: 500;
+        }
+
+        /* 侧边导航栏样式 */
+        .side-nav {
+            position: fixed;
+            left: 0;
+            top: 48px;
+            width: 200px;
+            height: calc(100% - 48px);
+            background-color: white;
+            box-shadow: 1px 0 5px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            z-index: 99;
+            overflow-y: auto;
+        }
+
+        .side-nav-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            color: #1d1d1f;
+            text-decoration: none;
+        }
+
+        .side-nav-item:hover {
+            background-color: #f5f5f7;
+        }
+
+        .side-nav-item.active {
+            background-color: #e8f2fc;
+            color: #0071e3;
+            font-weight: 500;
+            border-left: 4px solid #0071e3;
+        }
+
+        .nav-icon {
+            margin-right: 12px;
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* 主内容样式 */
+        .container {
+            max-width: 1200px;
+            margin: 78px auto 40px 220px;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            font-weight: 400;
+            color: #6e6e73;
+            margin-bottom: 40px;
+        }
+
+        /* 搜索框样式 */
+        .search-container {
+            margin-bottom: 50px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 18px;
+            border-radius: 12px;
+            border: none;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 4px rgba(0, 125, 250, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #86868b;
+        }
+
+        /* 功能卡片样式 */
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            color: #6e6e73;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        /* 最近使用区域 */
+        .recent-section {
+            background-color: white;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 50px;
+        }
+
+        .recent-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .recent-items {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .recent-item {
+            padding: 15px;
+            border-radius: 12px;
+            background-color: #f5f5f7;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        .recent-item:hover {
+            background-color: #e8f2fc;
+        }
+
+        .recent-icon {
+            margin-right: 15px;
+            font-size: 20px;
+            color: #0071e3;
+        }
+
+        .recent-name {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* 底部信息 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #86868b;
+            font-size: 12px;
+            margin-left: 200px;
+        }
+
+        /* 颜色定义 */
+        .bg-blue { background-color: #0071e3; }
+        .bg-green { background-color: #34c759; }
+        .bg-orange { background-color: #ff9500; }
+        .bg-red { background-color: #ff3b30; }
+        .bg-purple { background-color: #af52de; }
+        .bg-teal { background-color: #5ac8fa; }
+        .bg-indigo { background-color: #5856d6; }
+        .bg-yellow { background-color: #ffcc00; }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="logo">临床知识库</div>
+        <div class="user-info" style="cursor: pointer;" onclick="window.location.href='user_profile.html'">
+            <img src="./皮卡丘像素.png" class="user-avatar" alt="用户头像">
+            <div class="username">李主任</div>
+        </div>
+    </div>
+
+    <!-- 侧边导航栏 -->
+    <div class="side-nav">
+        <a href="deepseek_assistant.html" class="side-nav-item">
+            <div class="nav-icon">🤖</div>
+            <div>DeepSeek助手</div>
+        </a>
+        <a href="main.html" class="side-nav-item">
+            <div class="nav-icon">📚</div>
+            <div>知识库</div>
+        </a>
+        <a href="teaching_assistant.html" class="side-nav-item">
+            <div class="nav-icon">📝</div>
+            <div>教案助手</div>
+        </a>
+        <a href="case_teaching.html" class="side-nav-item">
+            <div class="nav-icon">🏥</div>
+            <div>模拟病例教学</div>
+        </a>
+        <a href="office_assistant.html" class="side-nav-item active">
+            <div class="nav-icon">💼</div>
+            <div>办公助手</div>
+        </a>
+        <a href="literature_search.html" class="side-nav-item">
+            <div class="nav-icon">📄</div>
+            <div>医学文献检索</div>
+        </a>
+        <a href="my_assistant.html" class="side-nav-item">
+            <div class="nav-icon">👨‍⚕️</div>
+            <div>我的智能助手</div>
+        </a>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <!-- 欢迎信息 -->
+        <h1 class="welcome">医学教学办公助手</h1>
+        <p class="subtitle">提高教学效率的智能办公工具箱，为医学教育工作者提供全方位支持</p>
+
+        <!-- 搜索区域 -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="搜索教学文档、模板或功能...">
+                <div class="search-icon">🔍</div>
+            </div>
+        </div>
+
+        <!-- 最近使用 -->
+        <div class="recent-section">
+            <h3 class="recent-title">最近使用</h3>
+            <div class="recent-items">
+                <div class="recent-item">
+                    <div class="recent-icon">📄</div>
+                    <div class="recent-name">外科示教课程表</div>
+                </div>
+                <div class="recent-item">
+                    <div class="recent-icon">📊</div>
+                    <div class="recent-name">期末考试成绩分析</div>
+                </div>
+                <div class="recent-item">
+                    <div class="recent-icon">📝</div>
+                    <div class="recent-name">临床实习评分表</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 办公功能 -->
+        <h2 class="section-title">教学办公工具</h2>
+        <div class="cards-grid">
+            <div class="card" onclick="window.location.href='document_management.html'">
+                <div class="card-icon bg-blue">📑</div>
+                <h3 class="card-title">教学文档管理</h3>
+                <p class="card-description">创建和管理教案、课件、习题、医学案例等教学材料，支持智能生成和编辑。</p>
+            </div>
+            <div class="card" onclick="window.location.href='course_scheduler.html'">
+                <div class="card-icon bg-purple">📅</div>
+                <h3 class="card-title">课程排班表</h3>
+                <p class="card-description">智能安排教学日程、临床实习排班和考试时间，提供冲突检测和优化建议。</p>
+            </div>
+            <div class="card" onclick="window.location.href='student_evaluation.html'">
+                <div class="card-icon bg-orange">📊</div>
+                <h3 class="card-title">学生评估系统</h3>
+                <p class="card-description">轻松管理考试成绩、临床技能评分，生成个性化学习报告和反馈建议。</p>
+            </div>
+            <div class="card" onclick="window.location.href='teaching_reports.html'">
+                <div class="card-icon bg-green">📈</div>
+                <h3 class="card-title">教学汇报生成器</h3>
+                <p class="card-description">自动生成教学总结报告、教学质量分析和学生反馈统计，支持多种图表可视化。</p>
+            </div>
+            <div class="card" onclick="window.location.href='smart_forms.html'">
+                <div class="card-icon bg-teal">📋</div>
+                <h3 class="card-title">智能表格助手</h3>
+                <p class="card-description">提供医学教学相关表格模板，支持智能填充和数据处理，简化教学管理工作。</p>
+            </div>
+            <div class="card" onclick="window.location.href='meeting_assistant.html'">
+                <div class="card-icon bg-red">👥</div>
+                <h3 class="card-title">教研会议助手</h3>
+                <p class="card-description">教研会议记录、会议安排、议程管理和会议纪要生成，提高教研工作效率。</p>
+            </div>
+            <div class="card" onclick="window.location.href='teaching_notification.html'">
+                <div class="card-icon bg-yellow">📢</div>
+                <h3 class="card-title">教学通知制作</h3>
+                <p class="card-description">快速创建和发送教学相关通知、课程变更提醒和重要事项公告。</p>
+            </div>
+            <div class="card" onclick="window.location.href='resource_sharing.html'">
+                <div class="card-icon bg-indigo">🔄</div>
+                <h3 class="card-title">教学资源共享</h3>
+                <p class="card-description">与同事共享和协作教学资源，支持权限管理和版本控制。</p>
+            </div>
+        </div>
+
+        <!-- AI助手功能 -->
+        <h2 class="section-title">AI教学助手</h2>
+        <div class="cards-grid">
+            <div class="card" onclick="window.location.href='slide_maker.html'">
+                <div class="card-icon" style="background: linear-gradient(145deg, #ff3b30, #ff9500);">🖼️</div>
+                <h3 class="card-title">智能课件制作</h3>
+                <p class="card-description">输入主题或课程大纲，AI助手自动生成精美医学教学PPT。</p>
+            </div>
+            <div class="card" onclick="window.location.href='quiz_generator.html'">
+                <div class="card-icon" style="background: linear-gradient(145deg, #5ac8fa, #007aff);">❓</div>
+                <h3 class="card-title">试题生成器</h3>
+                <p class="card-description">根据教学内容自动生成选择题、填空题、案例分析题等多种题型。</p>
+            </div>
+            <div class="card" onclick="window.location.href='teaching_plan.html'">
+                <div class="card-icon" style="background: linear-gradient(145deg, #34c759, #32ade6);">📝</div>
+                <h3 class="card-title">教案智能生成</h3>
+                <p class="card-description">输入课程主题，获取完整的教学计划、重点难点分析和教学建议。</p>
+            </div>
+            <div class="card" onclick="window.location.href='feedback_assistant.html'">
+                <div class="card-icon" style="background: linear-gradient(145deg, #af52de, #5856d6);">💬</div>
+                <h3 class="card-title">学生反馈助手</h3>
+                <p class="card-description">帮助教师分析学生反馈，提供针对性的教学改进建议。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div class="footer">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk 
+    </div>
+</body>
+</html>

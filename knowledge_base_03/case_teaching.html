@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模拟病例教学 - AI医疗助手</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        /* 导航栏样式 */
+        .nav-bar {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #0071e3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-weight: 500;
+        }
+
+        .username {
+            font-weight: 500;
+        }
+
+        /* 侧边导航栏样式 */
+        .side-nav {
+            position: fixed;
+            left: 0;
+            top: 48px;
+            width: 200px;
+            height: calc(100% - 48px);
+            background-color: white;
+            box-shadow: 1px 0 5px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            z-index: 99;
+            overflow-y: auto;
+        }
+
+        .side-nav-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            color: #1d1d1f;
+            text-decoration: none;
+        }
+
+        .side-nav-item:hover {
+            background-color: #f5f5f7;
+        }
+
+        .side-nav-item.active {
+            background-color: #e8f2fc;
+            color: #0071e3;
+            font-weight: 500;
+            border-left: 4px solid #0071e3;
+        }
+
+        .nav-icon {
+            margin-right: 12px;
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* 主内容样式 */
+        .container {
+            max-width: 1200px;
+            margin: 78px auto 40px 220px;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            font-weight: 400;
+            color: #6e6e73;
+            margin-bottom: 40px;
+        }
+
+        /* 介绍区域 */
+        .intro-section {
+            margin-bottom: 60px;
+        }
+
+        .intro-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .intro-text {
+            padding-right: 20px;
+        }
+
+        .intro-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            background: linear-gradient(90deg, #007aff, #5ac8fa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .intro-description {
+            font-size: 18px;
+            line-height: 1.5;
+            color: #6e6e73;
+            margin-bottom: 24px;
+        }
+
+        .intro-image {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 创建病例区域 */
+        .create-case-section {
+            background-color: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .case-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid #d2d2d7;
+            font-size: 16px;
+            outline: none;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color: #0071e3;
+            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.2);
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        /* 角色设置区域 */
+        .agent-setup-section {
+            margin-bottom: 60px;
+        }
+
+        .agent-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .agent-card {
+            background-color: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .agent-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .agent-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .agent-description {
+            font-size: 14px;
+            color: #6e6e73;
+            margin-bottom: 16px;
+        }
+
+        .agent-customize {
+            font-size: 14px;
+            color: #0071e3;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        /* 场景预览区域 */
+        .scenario-preview {
+            background: linear-gradient(145deg, #42a1ec, #0070c9);
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        .preview-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .preview-content {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            padding: 24px;
+            color: #1d1d1f;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        /* 按钮样式 */
+        .button {
+            background-color: #0071e3;
+            color: white;
+            border: none;
+            border-radius: 100px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .button:hover {
+            background-color: #0077ed;
+            transform: scale(1.02);
+        }
+
+        .button.secondary {
+            background-color: transparent;
+            border: 1px solid #0071e3;
+            color: #0071e3;
+        }
+
+        .button.secondary:hover {
+            background-color: rgba(0, 113, 227, 0.1);
+        }
+
+        .buttons-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        /* 我的病例模板区域 */
+        .templates-section {
+            margin-bottom: 60px;
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .template-card {
+            background-color: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .template-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .template-disease {
+            font-size: 16px;
+            color: #0071e3;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .template-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .template-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #86868b;
+        }
+
+        /* 底部信息 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #86868b;
+            font-size: 12px;
+            margin-left: 200px;
+        }
+
+        /* 颜色定义 */
+        .bg-blue { background-color: #0071e3; }
+        .bg-green { background-color: #34c759; }
+        .bg-orange { background-color: #ff9500; }
+        .bg-red { background-color: #ff3b30; }
+        .bg-purple { background-color: #af52de; }
+        .bg-teal { background-color: #5ac8fa; }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="logo">临床知识库</div>
+        <div class="user-info" style="cursor: pointer;" onclick="window.location.href='user_profile.html'">
+            <img src="./皮卡丘像素.png" class="user-avatar" alt="用户头像">
+            <div class="username">李主任</div>
+        </div>
+    </div>
+
+    <!-- 侧边导航栏 -->
+    <div class="side-nav">
+        <a href="deepseek_assistant.html" class="side-nav-item">
+            <div class="nav-icon">🤖</div>
+            <div>DeepSeek助手</div>
+        </a>
+        <a href="main.html" class="side-nav-item">
+            <div class="nav-icon">📚</div>
+            <div>知识库</div>
+        </a>
+        <a href="teaching_assistant.html" class="side-nav-item">
+            <div class="nav-icon">📝</div>
+            <div>教案助手</div>
+        </a>
+        <a href="case_teaching.html" class="side-nav-item active">
+            <div class="nav-icon">🏥</div>
+            <div>模拟病例教学</div>
+        </a>
+        <a href="office_assistant.html" class="side-nav-item">
+            <div class="nav-icon">💼</div>
+            <div>办公助手</div>
+        </a>
+        <a href="literature_search.html" class="side-nav-item">
+            <div class="nav-icon">📄</div>
+            <div>医学文献检索</div>
+        </a>
+        <a href="my_assistant.html" class="side-nav-item">
+            <div class="nav-icon">👨‍⚕️</div>
+            <div>我的智能助手</div>
+        </a>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <!-- 欢迎信息 -->
+        <h1 class="welcome">模拟病例教学</h1>
+        <p class="subtitle">借助AI多角色交互，创建逼真的临床情景教学体验</p>
+
+        <!-- 介绍区域 -->
+        <div class="intro-section">
+            <div class="intro-grid">
+                <div class="intro-text">
+                    <h2 class="intro-title">让临床教学更加生动逼真</h2>
+                    <p class="intro-description">
+                        通过AI驱动的多智能体（Multi-Agent）模拟系统，您可以轻松创建临床情景化教学案例。
+                        系统会自动生成逼真的医患对话、临床思维过程和决策点，让学生沉浸在真实临床环境中学习。
+                    </p>
+                    <p class="intro-description">
+                        支持定制多种角色（医生、护士、患者、家属）和复杂临床场景，可用于临床思维训练、
+                        医患沟通教学、临床技能评估等多种教学场景。
+                    </p>
+                </div>
+                <div>
+                    <img class="intro-image" src="https://via.placeholder.com/600x400" alt="模拟病例教学示例">
+                </div>
+            </div>
+        </div>
+
+        <!-- 创建新病例 -->
+        <div class="create-case-section">
+            <h2 class="section-title">创建新病例</h2>
+            <form class="case-form">
+                <div class="form-group">
+                    <label class="form-label" for="case-title">病例标题</label>
+                    <input type="text" id="case-title" class="form-input" placeholder="例如：急性心肌梗死病例分析">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="disease-type">疾病类型</label>
+                    <select id="disease-type" class="form-select">
+                        <option value="">请选择疾病类型</option>
+                        <option value="cardiovascular">心血管疾病</option>
+                        <option value="respiratory">呼吸系统疾病</option>
+                        <option value="digestive">消化系统疾病</option>
+                        <option value="neurological">神经系统疾病</option>
+                        <option value="endocrine">内分泌系统疾病</option>
+                        <option value="musculoskeletal">肌肉骨骼系统疾病</option>
+                        <option value="infectious">传染病</option>
+                        <option value="oncology">肿瘤</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="difficulty">难度级别</label>
+                    <select id="difficulty" class="form-select">
+                        <option value="basic">基础 - 适合低年级医学生</option>
+                        <option value="intermediate">中级 - 适合高年级医学生</option>
+                        <option value="advanced">高级 - 适合住院医师</option>
+                        <option value="expert">专家 - 适合主治医师及以上</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="teaching-goals">教学目标</label>
+                    <select id="teaching-goals" class="form-select">
+                        <option value="diagnosis">诊断思维</option>
+                        <option value="treatment">治疗决策</option>
+                        <option value="communication">医患沟通</option>
+                        <option value="emergency">急诊处理</option>
+                        <option value="multidisciplinary">多学科协作</option>
+                    </select>
+                </div>
+                <div class="form-group full-width">
+                    <label class="form-label" for="patient-background">患者背景</label>
+                    <textarea id="patient-background" class="form-textarea" placeholder="描述患者的基本信息、主诉、既往史等，或者输入简单描述后由AI自动生成详细内容"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label class="form-label" for="case-settings">场景设置</label>
+                    <select id="case-settings" class="form-select">
+                        <option value="outpatient">门诊就诊</option>
+                        <option value="emergency">急诊抢救</option>
+                        <option value="ward">病房查房</option>
+                        <option value="icu">ICU重症监护</option>
+                        <option value="surgery">手术室</option>
+                        <option value="community">社区卫生服务</option>
+                    </select>
+                </div>
+            </form>
+            <div class="buttons-row">
+                <button class="button secondary" id="ai-generate">AI生成内容</button>
+                <button class="button">创建病例</button>
+            </div>
+        </div>
+
+        <!-- 角色设置 -->
+        <div class="agent-setup-section">
+            <h2 class="section-title">角色设置</h2>
+            <p class="subtitle" style="margin-bottom: 24px; font-size: 18px;">自定义教学场景中的各类角色，使病例模拟更加真实</p>
+            
+            <div class="agent-cards">
+                <div class="agent-card">
+                    <div class="agent-icon bg-blue">👨‍⚕️</div>
+                    <h3 class="agent-title">主治医师</h3>
+                    <p class="agent-description">负责病例诊疗过程，展示临床思维与决策。可设置经验水平、专业特长等属性。</p>
+                    <div class="agent-customize">自定义角色 ›</div>
+                </div>
+                
+                <div class="agent-card">
+                    <div class="agent-icon bg-orange">👩‍⚕️</div>
+                    <h3 class="agent-title">住院医师</h3>
+                    <p class="agent-description">执行诊疗计划，与主治医师讨论病情。可展示不同层级临床医师的思维差异。</p>
+                    <div class="agent-customize">自定义角色 ›</div>
+                </div>
+                
+                <div class="agent-card">
+                    <div class="agent-icon bg-green">👨‍⚕️</div>
+                    <h3 class="agent-title">专科医生</h3>
+                    <p class="agent-description">提供专科会诊意见。可设置为不同专科背景，模拟多学科会诊场景。</p>
+                    <div class="agent-customize">自定义角色 ›</div>
+                </div>
+                
+                <div class="agent-card">
+                    <div class="agent-icon bg-red">👩‍⚕️</div>
+                    <h3 class="agent-title">护士</h3>
+                    <p class="agent-description">执行医嘱、观察患者，与医生沟通病情变化。可设置不同职责和经验水平。</p>
+                    <div class="agent-customize">自定义角色 ›</div>
+                </div>
+                
+                <div class="agent-card">
+                    <div class="agent-icon bg-purple">🧑</div>
+                    <h3 class="agent-title">患者</h3>
+                    <p class="agent-description">根据病例特点自动生成症状描述、反应和问题。可设置个性特点、教育水平等。</p>
+                    <div class="agent-customize">自定义角色 ›</div>
+                </div>
+                
+                <div class="agent-card">
+                    <div class="agent-icon bg-teal">👨</div>
+                    <h3 class="agent-title">患者家属</h3>
+                    <p class="agent-description">提供补充病史，参与医疗决策。可设置与患者关系、知识水平和情绪状态。</p>
+                    <div class="agent-customize">自定义角色 ›</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 场景预览 -->
+        <div class="scenario-preview">
+            <h2 class="preview-title">病例场景预览</h2>
+            <div class="preview-content">
+                <p>在此处将显示基于您的设置生成的临床场景预览，包括各角色间的对话、临床思维过程和关键决策点。</p>
+                <p>点击"AI生成内容"按钮，即可获取由AI自动生成的完整病例场景。</p>
+            </div>
+        </div>
+
+        <!-- 我的病例模板 -->
+        <div class="templates-section">
+            <h2 class="section-title">我的病例模板</h2>
+            <div class="templates-grid">
+                <div class="template-card">
+                    <div class="template-disease">心血管疾病</div>
+                    <h3 class="template-title">急性心肌梗死的诊断与处理</h3>
+                    <div class="template-meta">
+                        <span>难度：高级</span>
+                        <span>最近更新：2天前</span>
+                    </div>
+                </div>
+                
+                <div class="template-card">
+                    <div class="template-disease">神经系统疾病</div>
+                    <h3 class="template-title">急性缺血性脑卒中的溶栓决策</h3>
+                    <div class="template-meta">
+                        <span>难度：专家</span>
+                        <span>最近更新：1周前</span>
+                    </div>
+                </div>
+                
+                <div class="template-card">
+                    <div class="template-disease">呼吸系统疾病</div>
+                    <h3 class="template-title">慢性阻塞性肺疾病急性加重</h3>
+                    <div class="template-meta">
+                        <span>难度：中级</span>
+                        <span>最近更新：2周前</span>
+                    </div>
+                </div>
+                
+                <div class="template-card">
+                    <div class="template-disease">内分泌系统疾病</div>
+                    <h3 class="template-title">糖尿病酮症酸中毒的急诊处理</h3>
+                    <div class="template-meta">
+                        <span>难度：中级</span>
+                        <span>最近更新：1个月前</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div class="footer">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk 
+    </div>
+
+    <script>
+        // 简单的交互效果
+        document.getElementById('ai-generate').addEventListener('click', function() {
+            // 这里实际项目中应该是调用API生成内容
+            const previewContent = document.querySelector('.preview-content');
+            previewContent.innerHTML = '<p><strong>场景：急诊科</strong></p>' +
+                '<p><strong>主治医师(王医生):</strong> 患者刘先生，65岁，主诉胸痛2小时，疼痛位于胸骨后，呈压榨性，伴有出汗、恶心。有高血压病史10年，服用缬沙坦控制。请快速评估生命体征并完成心电图检查。</p>' +
+                '<p><strong>护士(李护士):</strong> 已测量生命体征：血压160/95mmHg，心率92次/分，呼吸20次/分，体温36.7℃，血氧饱和度96%。心电图显示II、III、aVF导联ST段抬高。</p>' +
+                '<p><strong>患者(刘先生):</strong> 医生，我胸口特别闷，感觉喘不上气来，从来没有这么痛过，是不是心脏出问题了？我很害怕...</p>' +
+                '<p><strong>主治医师(王医生):</strong> [临床思维] 患者表现为典型的急性下壁心肌梗死症状，需要立即启动急性冠脉综合征处理流程。</p>' +
+                '<p><strong>主治医师对患者:</strong> 刘先生，您现在的症状和检查结果提示可能是急性心肌梗死，我们需要立即进行治疗。请不要担心，我们会尽全力帮助您。</p>';
+        });
+    </script>
+</body>
+</html>

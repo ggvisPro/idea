@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教案助手 - 临床知识库</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        /* 导航栏样式 */
+        .nav-bar {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #0071e3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-weight: 500;
+        }
+
+        .username {
+            font-weight: 500;
+        }
+
+        /* 侧边导航栏样式 */
+        .side-nav {
+            position: fixed;
+            left: 0;
+            top: 48px;
+            width: 200px;
+            height: calc(100% - 48px);
+            background-color: white;
+            box-shadow: 1px 0 5px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            z-index: 99;
+            overflow-y: auto;
+        }
+
+        .side-nav-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            color: #1d1d1f;
+            text-decoration: none;
+        }
+
+        .side-nav-item:hover {
+            background-color: #f5f5f7;
+        }
+
+        .side-nav-item.active {
+            background-color: #e8f2fc;
+            color: #0071e3;
+            font-weight: 500;
+            border-left: 4px solid #0071e3;
+        }
+
+        .nav-icon {
+            margin-right: 12px;
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* 主内容样式 - 调整以适应侧边导航 */
+        .container {
+            max-width: 1200px;
+            margin: 78px auto 40px 220px; /* 增加左侧边距以适应侧边栏 */
+            padding: 0 20px;
+        }
+
+        /* 底部信息 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #86868b;
+            font-size: 12px;
+            margin-left: 200px; /* 调整左侧边距以适应侧边栏 */
+        }
+
+        /* 教案助手特定样式 */
+        .tab-container {
+            display: flex;
+            margin-bottom: 20px;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            font-weight: 500;
+            flex: 1;
+            text-align: center;
+        }
+
+        .tab:hover {
+            background-color: #f5f5f7;
+        }
+
+        .tab.active {
+            background-color: #e8f2fc;
+            color: #0071e3;
+        }
+
+        .upload-area {
+            background-color: white;
+            border: 2px dashed #d2d2d7;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-area:hover {
+            border-color: #0071e3;
+            background-color: #f5f5f7;
+        }
+
+        .upload-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            color: #86868b;
+        }
+
+        .upload-text {
+            color: #86868b;
+            margin-bottom: 10px;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .example-section {
+            margin-bottom: 20px;
+        }
+
+        .example-btn {
+            padding: 8px 16px;
+            background-color: #f5f5f7;
+            border: none;
+            border-radius: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .example-btn:hover {
+            background-color: #e8e8ed;
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #d2d2d7;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 15px;
+            margin-bottom: 20px;
+            resize: vertical;
+        }
+
+        .beautify-btn {
+            background-color: #0071e3;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .beautify-btn:hover {
+            background-color: #0077ed;
+            transform: scale(1.05);
+        }
+
+        .bg-light {
+            background-color: #e8f2fc;
+        }
+
+        /* 思维导图相关样式 */
+        .mindmap-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            height: 500px;
+        }
+
+        .mindmap-input {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 20px;
+            border: 1px solid #d2d2d7;
+            border-radius: 12px;
+            padding: 16px;
+            resize: none;
+        }
+
+        #mindmap {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .node {
+            position: absolute;
+            background-color: white;
+            border-radius: 8px;
+            padding: 8px 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+            user-select: none;
+        }
+
+        .node-main {
+            background-color: #0071e3;
+            color: white;
+        }
+
+        .node-secondary {
+            background-color: #e8f2fc;
+            color: #0071e3;
+        }
+
+        .node-title {
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .connector {
+            position: absolute;
+            background-color: #d2d2d7;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="logo">临床知识库</div>
+        <div class="user-info" style="cursor: pointer;" onclick="window.location.href='user_profile.html'">
+            <img src="./皮卡丘像素.png" class="user-avatar" alt="用户头像">
+            <div class="username">李主任</div>
+        </div>
+    </div>
+
+    <!-- 侧边导航栏 -->
+    <div class="side-nav">
+        <a href="deepseek_assistant.html" class="side-nav-item">
+            <div class="nav-icon">🤖</div>
+            <div>DeepSeek助手</div>
+        </a>
+        <a href="main.html" class="side-nav-item">
+            <div class="nav-icon">📚</div>
+            <div>知识库</div>
+        </a>
+        <a href="teaching_assistant.html" class="side-nav-item active">
+            <div class="nav-icon">📝</div>
+            <div>教案助手</div>
+        </a>
+        <a href="case_teaching.html" class="side-nav-item">
+            <div class="nav-icon">🏥</div>
+            <div>模拟病例教学</div>
+        </a>
+     
+        <a href="office_assistant.html" class="side-nav-item">
+            <div class="nav-icon">💼</div>
+            <div>办公助手</div>
+        </a>
+    
+        <a href="literature_search.html" class="side-nav-item">
+            <div class="nav-icon">📄</div>
+            <div>医学文献检索</div>
+        </a>
+        <a href="my_assistant.html" class="side-nav-item">
+            <div class="nav-icon">👨‍⚕️</div>
+            <div>我的智能助手</div>
+        </a>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <h1 style="margin-bottom: 30px;">教案助手</h1>
+        
+        <!-- 教案美化功能 -->
+        <div>
+            <h2 style="margin-bottom: 20px;">教案美化</h2>
+            
+            <!-- 上传区域 -->
+            <div id="upload-area" class="upload-area">
+                <div class="upload-icon">📄</div>
+                <p class="upload-text">点击或拖拽教案文件到这里上传</p>
+                <p style="color: #86868b; font-size: 14px;">支持 .txt, .docx, .pdf 格式</p>
+                <input type="file" id="file-input" accept=".txt,.docx,.pdf">
+            </div>
+            
+            <!-- 示例按钮 -->
+            <div class="example-section">
+                <p style="margin-bottom: 10px;">或者使用示例：</p>
+                <button class="example-btn" data-example="stroke">脑卒中教案</button>
+                <button class="example-btn" data-example="diabetes">糖尿病教案</button>
+            </div>
+            
+            <!-- 编辑区域 -->
+            <textarea placeholder="在此粘贴您的教案内容..."></textarea>
+            
+            <!-- 美化按钮 -->
+            <div style="text-align: center; margin-bottom: 30px;">
+                <button id="beautify-btn" class="beautify-btn">美化教案</button>
+            </div>
+            
+            <!-- 标签切换 -->
+            <div class="tab-container">
+                <div class="tab active" data-tab="original">原始教案</div>
+                <div class="tab" data-tab="improved">美化后教案</div>
+            </div>
+            
+            <!-- 展示区域 -->
+            <div id="original-content" style="display: block;">
+                <p style="color: #86868b; text-align: center; padding: 30px;">原始教案内容将显示在这里</p>
+            </div>
+            
+            <div id="improved-content" style="display: none;">
+                <p style="color: #86868b; text-align: center; padding: 30px;">美化后的教案将显示在这里</p>
+            </div>
+        </div>
+        
+        <!-- 思维导图生成功能 -->
+        <div style="margin-top: 50px;">
+            <h2 style="margin-bottom: 20px;">教案思维导图生成</h2>
+            
+            <!-- 思维导图输入 -->
+            <textarea id="mindmap-content" class="mindmap-input" placeholder="在此输入教案大纲或关键点，系统将自动生成思维导图..."></textarea>
+            
+            <!-- 示例按钮 -->
+            <div style="margin-bottom: 20px;">
+                <button id="stroke-example-btn" class="example-btn">脑卒中教学大纲示例</button>
+                <button id="generate-mindmap-btn" class="beautify-btn">生成思维导图</button>
+            </div>
+            
+            <!-- 思维导图展示区域 -->
+            <div id="mindmap-container" class="mindmap-container">
+                <div id="mindmap">
+                    <div class="node node-main" style="top: 220px; left: 400px;">
+                        <div class="node-title">脑卒中</div>
+                    </div>
+                    <div class="node node-secondary" style="top: 150px; left: 300px;">
+                        <div class="node-title">定义</div>
+                    </div>
+                    <div class="node node-secondary" style="top: 150px; left: 500px;">
+                        <div class="node-title">分类</div>
+                    </div>
+                    <div class="node node-secondary" style="top: 290px; left: 300px;">
+                        <div class="node-title">临床表现</div>
+                    </div>
+                    <div class="node node-secondary" style="top: 290px; left: 500px;">
+                        <div class="node-title">治疗</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div class="footer">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk
+    </div>
+
+    <script>
+        // 文件上传处理
+        document.getElementById('upload-area').addEventListener('click', function() {
+            document.getElementById('file-input').click();
+        });
+
+        document.getElementById('file-input').addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                const fileName = e.target.files[0].name;
+                document.querySelector('.upload-text').textContent = `已选择: ${fileName}`;
+            }
+        });
+
+        // 拖放功能
+        const uploadArea = document.getElementById('upload-area');
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            uploadArea.classList.add('bg-light');
+        }
+
+        function unhighlight() {
+            uploadArea.classList.remove('bg-light');
+        }
+
+        uploadArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                document.querySelector('.upload-text').textContent = `已选择: ${files[0].name}`;
+                document.getElementById('file-input').files = files;
+            }
+        }
+
+        // 标签切换
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // 移除所有标签的活动状态
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                // 添加当前标签的活动状态
+                this.classList.add('active');
+                
+                // 隐藏所有内容
+                document.getElementById('original-content').style.display = 'none';
+                document.getElementById('improved-content').style.display = 'none';
+                
+                // 显示当前标签对应的内容
+                const tabId = this.getAttribute('data-tab');
+                if (tabId === 'original') {
+                    document.getElementById('original-content').style.display = 'block';
+                } else if (tabId === 'improved') {
+                    document.getElementById('improved-content').style.display = 'block';
+                }
+            });
+        });
+
+        // 脑卒中示例按钮
+        document.querySelector('.example-btn[data-example="stroke"]').addEventListener('click', function() {
+            document.querySelector('textarea').value = `脑卒中教案
+
+定义：脑卒中是由于脑部血管突然破裂或因血管阻塞导致血液不能流入大脑而引起脑组织损伤的一种疾病。
+
+分类：
+1. 缺血性脑卒中（脑梗死）
+2. 出血性脑卒中（脑出血）
+
+流行病学：
+- 中国脑卒中的发病率、患病率和死亡率均居世界首位
+- 每年新发脑卒中约250万人，死亡约150万人
+- 是我国居民第一位死亡原因和致残原因
+
+危险因素：
+- 不可控因素：年龄、性别、种族、家族史
+- 可控因素：高血压、糖尿病、血脂异常、房颤、吸烟、饮酒、肥胖、缺乏运动
+
+临床表现：
+1. 急性起病
+2. 局灶性神经功能缺损
+   - 运动障碍：偏瘫、单瘫
+   - 感觉障碍
+   - 语言障碍：失语、构音障碍
+   - 视野缺损
+   - 意识障碍
+3. 头痛、恶心、呕吐（常见于出血性脑卒中）
+
+诊断依据：
+1. 病史及临床表现
+2. 影像学检查：CT、MRI
+3. 实验室检查：血常规、凝血功能、血脂、血糖等
+
+治疗原则：
+1. 缺血性脑卒中
+   - 急性期：溶栓治疗（时间窗内）、抗血小板治疗、其他支持治疗
+   - 预防：抗血小板、调脂、控制危险因素
+2. 出血性脑卒中
+   - 控制血压
+   - 止血治疗
+   - 必要时手术治疗
+3. 康复治疗：早期介入、个体化方案、长期坚持
+
+预防：
+1. 一级预防：控制危险因素
+2. 二级预防：防止复发
+3. 健康教育与定期随访`;
+        });
+
+        // 教案美化按钮
+        document.getElementById('beautify-btn').addEventListener('click', function() {
+            document.querySelector('.tab[data-tab="improved"]').click();
+        });
+
+        // 加载脑卒中思维导图示例
+        document.getElementById('stroke-example-btn').addEventListener('click', function() {
+            document.getElementById('mindmap-content').value = `脑卒中教学大纲
+1. 基本概念
+   - 定义：脑血管疾病导致的急性神经功能障碍
+   - 分类：缺血性和出血性
+2. 流行病学
+   - 发病率和死亡率
+   - 影响因素
+3. 病理生理
+   - 缺血性脑卒中机制
+   - 出血性脑卒中机制
+4. 临床表现
+   - 常见症状
+   - 特殊类型脑卒中表现
+5. 诊断方法
+   - 临床评估
+   - 影像学检查
+   - 实验室检查
+6. 治疗策略
+   - 急性期处理
+   - 康复治疗
+   - 二级预防
+7. 预后评估
+   - 影响因素
+   - 评估量表`;
+        });
+
+        // 生成思维导图按钮
+        document.getElementById('generate-mindmap-btn').addEventListener('click', function() {
+            // 实际应用中应该通过API处理输入内容并生成思维导图
+            // 这里仅展示界面效果，显示预先定义的思维导图
+            alert("思维导图已生成！在实际应用中，这里会调用API分析教案内容并生成思维导图。");
+        });
+
+        // 思维导图节点拖拽功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const nodes = document.querySelectorAll('.node');
+            let activeNode = null;
+            let initialX, initialY;
+            let currentX, currentY;
+            let xOffset = 0;
+            let yOffset = 0;
+
+            const mindmapContainer = document.getElementById('mindmap-container');
+            // 添加新节点的点击事件
+            mindmapContainer.addEventListener('dblclick', function(e) {
+                if (e.target === mindmapContainer || e.target.id === 'mindmap') {
+                    createNewNode(e.clientX, e.clientY);
+                }
+            });
+
+            // 为每个节点添加拖拽功能
+            nodes.forEach(node => {
+                initDraggable(node);
+            });
+
+            function initDraggable(element) {
+                element.addEventListener('mousedown', dragStart, false);
+                element.addEventListener('mouseup', dragEnd, false);
+                element.addEventListener('mousemove', drag, false);
+            }
+
+            function dragStart(e) {
+                if (e.target.classList.contains('node')) {
+                    activeNode = e.target;
+                    
+                    initialX = e.clientX - xOffset;
+                    initialY = e.clientY - yOffset;
+
+                    const style = window.getComputedStyle(activeNode);
+                    const matrix = new DOMMatrix(style.transform);
+                    currentX = matrix.m41;
+                    currentY = matrix.m42;
+                    
+                    activeNode.style.zIndex = "10";
+                }
+            }
+
+            function dragEnd(e) {
+                if (activeNode) {
+                    initialX = currentX;
+                    initialY = currentY;
+                    activeNode.style.zIndex = "2";
+                    activeNode = null;
+                }
+            }
+
+            function drag(e) {
+                if (activeNode) {
+                    e.preventDefault();
+                    
+                    currentX = e.clientX - initialX;
+                    currentY = e.clientY - initialY;
+                    
+                    xOffset = currentX;
+                    yOffset = currentY;
+                    
+                    setTranslate(currentX, currentY, activeNode);
+                    updateConnectors();
+                }
+            }
+
+            function setTranslate(xPos, yPos, el) {
+                el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+            }
+            
+            // 创建新节点
+            function createNewNode(x, y) {
+                const rect = mindmapContainer.getBoundingClientRect();
+                const nodeX = x - rect.left - 50; // 调整位置使节点中心在点击位置
+                const nodeY = y - rect.top - 15;
+                
+                const newNode = document.createElement('div');
+                newNode.className = 'node node-secondary';
+                newNode.style.top = nodeY + 'px';
+                newNode.style.left = nodeX + 'px';
+                
+                const nodeTitle = document.createElement('div');
+                nodeTitle.className = 'node-title';
+                nodeTitle.textContent = '新节点';
+                nodeTitle.contentEditable = true;
+                
+                newNode.appendChild(nodeTitle);
+                document.getElementById('mindmap').appendChild(newNode);
+                
+                // 为新节点添加拖拽功能
+                initDraggable(newNode);
+                
+                // 让新创建的节点立即可编辑
+                nodeTitle.focus();
+            }
+            
+            // 更新连接线
+            function updateConnectors() {
+                // 在实际应用中，这里会更新节点之间的连接线
+                // 为简化演示，这里省略了连接线的更新逻辑
+            }
+
+            // 允许节点内容编辑
+            document.querySelectorAll('.node-title').forEach(title => {
+                title.contentEditable = true;
+                title.addEventListener('blur', function() {
+                    if (this.textContent.trim() === '') {
+                        this.textContent = '未命名';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
