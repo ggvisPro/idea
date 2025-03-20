@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教案助手 - AI医疗助手</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        /* 导航栏样式 */
+        .nav-bar {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #0071e3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-weight: 500;
+        }
+
+        .username {
+            font-weight: 500;
+        }
+
+        /* 主内容样式 - 调整以适应侧边导航 */
+        .container {
+            max-width: 1200px;
+            margin: 78px auto 40px;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            font-weight: 400;
+            color: #6e6e73;
+            margin-bottom: 40px;
+        }
+
+        /* 搜索框样式 */
+        .search-container {
+            margin-bottom: 50px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 18px;
+            border-radius: 12px;
+            border: none;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 4px rgba(0, 125, 250, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #86868b;
+        }
+
+        /* 教案助手卡片样式 */
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            color: #6e6e73;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        /* 教案生成器区域 */
+        .generator-area {
+            background: linear-gradient(145deg, #5856d6, #2b55cc);
+            border-radius: 18px;
+            padding: 40px;
+            text-align: center;
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        .generator-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .generator-description {
+            max-width: 600px;
+            margin: 0 auto 24px;
+            font-size: 17px;
+            opacity: 0.9;
+        }
+
+        .generator-button {
+            background-color: white;
+            color: #5856d6;
+            border: none;
+            border-radius: 100px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .generator-button:hover {
+            transform: scale(1.05);
+        }
+
+        /* 最近教案区域 */
+        .recent-lessons {
+            background-color: white;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 60px;
+        }
+
+        .recent-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .view-all {
+            color: #0071e3;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .lessons-list {
+            list-style: none;
+        }
+
+        .lesson-item {
+            border-bottom: 1px solid #e5e5e5;
+            padding: 16px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .lesson-item:last-child {
+            border-bottom: none;
+        }
+
+        .lesson-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .lesson-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-size: 18px;
+            color: white;
+        }
+
+        .lesson-details h4 {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .lesson-details p {
+            color: #6e6e73;
+            font-size: 14px;
+        }
+
+        .lesson-date {
+            color: #6e6e73;
+            font-size: 14px;
+        }
+
+        /* 底部信息 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #86868b;
+            font-size: 12px;
+        }
+
+        /* 颜色定义 */
+        .bg-blue { background-color: #0071e3; }
+        .bg-green { background-color: #34c759; }
+        .bg-orange { background-color: #ff9500; }
+        .bg-red { background-color: #ff3b30; }
+        .bg-purple { background-color: #af52de; }
+        .bg-teal { background-color: #5ac8fa; }
+        .bg-indigo { background-color: #5856d6; }
+        .bg-pink { background-color: #ff2d55; }
+    </style>
+    <!-- 引入侧边栏JS -->
+    <script src="js/sidebar.js"></script>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="logo">教案助手</div>
+        <div class="user-info" style="cursor: pointer;" onclick="window.location.href='user_profile.html'">
+            <img src="./皮卡丘像素.png" class="user-avatar" alt="用户头像">
+            <div class="username">佟老师</div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <!-- 欢迎信息 -->
+        <h1 class="welcome">智能教案助手</h1>
+        <p class="subtitle">基于DeepSeek，轻松创建专业医学教案，提高教学效率</p>
+
+        <!-- 搜索区域 -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="搜索已创建的教案或医学主题...">
+                <div class="search-icon">🔍</div>
+            </div>
+        </div>
+
+        <!-- 教案生成器 -->
+        <div class="generator-area">
+            <h2 class="generator-title">AI教案生成器</h2>
+            <p class="generator-description">输入医学主题、关键概念或教学目标，AI将为您生成完整的教案结构和内容。</p>
+            <button class="generator-button">开始创建教案</button>
+        </div>
+
+        <!-- 最近教案 -->
+        <div class="recent-lessons">
+            <div class="recent-title">
+                <span>最近教案</span>
+                <a href="all_lessons.html" class="view-all">查看全部</a>
+            </div>
+            <ul class="lessons-list">
+                <li class="lesson-item">
+                    <div class="lesson-info">
+                        <div class="lesson-icon bg-blue">心</div>
+                        <div class="lesson-details">
+                            <h4>心肌梗死的临床表现与处理</h4>
+                            <p>内科学 · 心血管系统</p>
+                        </div>
+                    </div>
+                    <div class="lesson-date">2023-11-20</div>
+                </li>
+                <li class="lesson-item">
+                    <div class="lesson-info">
+                        <div class="lesson-icon bg-green">胃</div>
+                        <div class="lesson-details">
+                            <h4>消化性溃疡的病因与治疗进展</h4>
+                            <p>内科学 · 消化系统</p>
+                        </div>
+                    </div>
+                    <div class="lesson-date">2023-11-15</div>
+                </li>
+                <li class="lesson-item">
+                    <div class="lesson-info">
+                        <div class="lesson-icon bg-purple">内</div>
+                        <div class="lesson-details">
+                            <h4>糖尿病的诊断标准与管理</h4>
+                            <p>内科学 · 内分泌系统</p>
+                        </div>
+                    </div>
+                    <div class="lesson-date">2023-11-10</div>
+                </li>
+                <li class="lesson-item">
+                    <div class="lesson-info">
+                        <div class="lesson-icon bg-red">外</div>
+                        <div class="lesson-details">
+                            <h4>急性阑尾炎的手术治疗</h4>
+                            <p>外科学 · 普通外科</p>
+                        </div>
+                    </div>
+                    <div class="lesson-date">2023-11-05</div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 教案类型 -->
+        <h2 class="section-title">教案类型</h2>
+        <div class="cards-grid">
+            <div class="card" onclick="window.location.href='lecture_plan.html'">
+                <div class="card-icon bg-indigo">讲</div>
+                <h3 class="card-title">理论课教案</h3>
+                <p class="card-description">创建包含教学目标、重点难点、教学内容和教学方法的理论课教案。</p>
+            </div>
+            <div class="card" onclick="window.location.href='case_teaching_plan.html'">
+                <div class="card-icon bg-blue">例</div>
+                <h3 class="card-title">病例教学教案</h3>
+                <p class="card-description">以临床案例为中心，设计引导学生进行临床思维训练的教案。</p>
+            </div>
+            <div class="card" onclick="window.location.href='skill_training.html'">
+                <div class="card-icon bg-green">技</div>
+                <h3 class="card-title">技能训练教案</h3>
+                <p class="card-description">针对临床操作技能的训练设计，包含步骤说明和考核标准。</p>
+            </div>
+            <div class="card" onclick="window.location.href='interactive_teaching.html'">
+                <div class="card-icon bg-orange">互</div>
+                <h3 class="card-title">互动式教学设计</h3>
+                <p class="card-description">包含分组讨论、角色扮演等互动环节的教学活动设计。</p>
+            </div>
+            <div class="card" onclick="window.location.href='flipped_classroom.html'">
+                <div class="card-icon bg-teal">翻</div>
+                <h3 class="card-title">翻转课堂教案</h3>
+                <p class="card-description">设计课前自学内容和课堂讨论活动，促进深度学习。</p>
+            </div>
+            <div class="card" onclick="window.location.href='pbl_plan.html'">
+                <div class="card-icon bg-pink">P</div>
+                <h3 class="card-title">PBL教学设计</h3>
+                <p class="card-description">以问题为基础的学习方案，培养学生解决问题的能力。</p>
+            </div>
+        </div>
+
+        <!-- 教学工具 -->
+        <h2 class="section-title">教学工具</h2>
+        <div class="cards-grid">
+            <div class="card" onclick="window.location.href='ppt_generator.html'">
+                <div class="card-icon" style="background: linear-gradient(145deg, #ff9500, #ff3b30);">幻</div>
+                <h3 class="card-title">PPT生成器</h3>
+                <p class="card-description">根据教案内容自动生成精美的教学幻灯片，节省备课时间。</p>
+            </div>
+            <div class="card" onclick="window.location.href='quiz_maker.html'">
+                <div class="card-icon" style="background: linear-gradient(145deg, #5ac8fa, #007aff);">题</div>
+                <h3 class="card-title">试题生成器</h3>
+                <p class="card-description">根据教学内容生成配套习题和测验，包含选择题、案例分析等。</p>
+            </div>
+            <div class="card" onclick="window.location.href='resources_library.html'">
+                <div class="card-icon bg-purple">资</div>
+                <h3 class="card-title">教学资源库</h3>
+                <p class="card-description">医学图片、视频、3D模型等丰富的教学资源，让课堂更生动。</p>
+            </div>
+            <div class="card" onclick="window.location.href='teaching_evaluation.html'">
+                <div class="card-icon bg-green">评</div>
+                <h3 class="card-title">教学评价系统</h3>
+                <p class="card-description">设计学生反馈问卷，获取教学效果评价和改进建议。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div class="footer">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk 
+    </div>
+</body>
+</html>

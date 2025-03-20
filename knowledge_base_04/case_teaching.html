@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>病例教学 - AI医疗助手</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        /* 导航栏样式 */
+        .nav-bar {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #0071e3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-weight: 500;
+        }
+
+        .username {
+            font-weight: 500;
+        }
+
+        /* 主内容样式 */
+        .container {
+            max-width: 1200px;
+            margin: 78px auto 40px;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            font-weight: 400;
+            color: #6e6e73;
+            margin-bottom: 40px;
+        }
+
+        /* 搜索框样式 */
+        .search-container {
+            margin-bottom: 50px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 18px;
+            border-radius: 12px;
+            border: none;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 4px rgba(0, 125, 250, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #86868b;
+        }
+
+        /* 卡片样式 */
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            color: #6e6e73;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        /* 互动病例 */
+        .interactive-case {
+            background: linear-gradient(145deg, #ff2d55, #ff3b30);
+            border-radius: 18px;
+            padding: 40px;
+            text-align: center;
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        .interactive-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .interactive-description {
+            max-width: 600px;
+            margin: 0 auto 24px;
+            font-size: 17px;
+            opacity: 0.9;
+        }
+
+        .interactive-button {
+            background-color: white;
+            color: #ff2d55;
+            border: none;
+            border-radius: 100px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .interactive-button:hover {
+            transform: scale(1.05);
+        }
+
+        /* 最近查看的病例 */
+        .recent-cases {
+            background-color: white;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 60px;
+        }
+
+        .recent-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .view-all {
+            color: #0071e3;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .cases-list {
+            list-style: none;
+        }
+
+        .case-item {
+            border-bottom: 1px solid #e5e5e5;
+            padding: 16px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .case-item:last-child {
+            border-bottom: none;
+        }
+
+        .case-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .case-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-size: 18px;
+            color: white;
+        }
+
+        .case-details h4 {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .case-details p {
+            color: #6e6e73;
+            font-size: 14px;
+        }
+
+        .case-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .difficulty {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 10px;
+        }
+
+        .difficulty.easy {
+            background-color: #e3f7eb;
+            color: #34c759;
+        }
+
+        .difficulty.medium {
+            background-color: #fff9e3;
+            color: #ff9500;
+        }
+
+        .difficulty.hard {
+            background-color: #fee;
+            color: #ff3b30;
+        }
+
+        /* 特殊病例样式 */
+        .featured-case {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            background-color: white;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 60px;
+        }
+
+        .case-image {
+            background-image: url('https://images.unsplash.com/photo-1581595219315-2a29bd0bbaac?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1587&q=80');
+            background-size: cover;
+            background-position: center;
+            min-height: 350px;
+        }
+
+        .case-content {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .feature-label {
+            display: inline-block;
+            background-color: #fee;
+            color: #ff3b30;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .feature-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .feature-description {
+            color: #6e6e73;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .feature-button {
+            align-self: flex-start;
+            background-color: #0071e3;
+            color: white;
+            border: none;
+            border-radius: 100px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .feature-button:hover {
+            background-color: #0077ed;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 底部信息 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #86868b;
+            font-size: 12px;
+        }
+
+        /* 颜色定义 */
+        .bg-blue { background-color: #0071e3; }
+        .bg-green { background-color: #34c759; }
+        .bg-orange { background-color: #ff9500; }
+        .bg-red { background-color: #ff3b30; }
+        .bg-purple { background-color: #af52de; }
+        .bg-teal { background-color: #5ac8fa; }
+        .bg-yellow { background-color: #ffcc00; }
+        .bg-indigo { background-color: #5856d6; }
+        .bg-pink { background-color: #ff2d55; }
+
+        /* 响应式设计 */
+        @media (max-width: 900px) {
+            .featured-case {
+                grid-template-columns: 1fr;
+            }
+            
+            .case-image {
+                min-height: 250px;
+            }
+        }
+    </style>
+    <!-- 引入侧边栏JS -->
+    <script src="js/sidebar.js"></script>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="logo">病例教学</div>
+        <div class="user-info" style="cursor: pointer;" onclick="window.location.href='user_profile.html'">
+            <img src="./皮卡丘像素.png" class="user-avatar" alt="用户头像">
+            <div class="username">佟老师</div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <!-- 欢迎信息 -->
+        <h1 class="welcome">临床病例教学</h1>
+        <p class="subtitle">探索真实病例，提升临床思维，掌握诊疗技能</p>
+
+        <!-- 搜索区域 -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="搜索疾病、症状、病例关键词...">
+                <div class="search-icon">🔍</div>
+            </div>
+        </div>
+
+        <!-- 特色病例 -->
+        <div class="featured-case">
+            <div class="case-image" style="background-image: url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80');"></div>
+            <div class="case-content">
+            <span class="feature-label">本周精选病例</span>
+            <h2 class="feature-title">急性胰腺炎合并多器官功能衰竭的救治</h2>
+            <p class="feature-description">本案例展示了一名54岁男性患者因急性胰腺炎入院，并发多器官功能衰竭的完整诊疗过程。通过本案例学习急危重症的综合管理和多学科协作救治策略。</p>
+            <button class="feature-button">开始学习</button>
+            </div>
+        </div>
+
+        <!-- 互动病例 -->
+        <div class="interactive-case" style="background: linear-gradient(145deg, #5856d6, #af52de);">
+            <h2 class="interactive-title">临床思维互动挑战</h2>
+            <p class="interactive-description">通过模拟真实临床场景，跟随病情发展，在每个关键节点做出诊疗决策，锻炼临床思维能力。</p>
+            <button class="interactive-button" style="color: #5856d6;">进入互动病例</button>
+        </div>
+
+        <!-- 最近查看的病例 -->
+        <div class="recent-cases">
+            <div class="recent-title">
+                <span>最近查看的病例</span>
+                <a href="all_cases.html" class="view-all">查看全部</a>
+            </div>
+            <ul class="cases-list">
+                <li class="case-item">
+                    <div class="case-info">
+                        <div class="case-icon bg-red">心</div>
+                        <div class="case-details">
+                            <h4>急性心肌梗死合并心源性休克</h4>
+                            <p>心血管内科 · 急诊病例</p>
+                        </div>
+                    </div>
+                    <div class="case-actions">
+                        <span class="difficulty hard">困难</span>
+                        <a href="case_detail.html?id=1024" class="view-all">继续学习</a>
+                    </div>
+                </li>
+                <li class="case-item">
+                    <div class="case-info">
+                        <div class="case-icon bg-yellow">肺</div>
+                        <div class="case-details">
+                            <h4>重症社区获得性肺炎</h4>
+                            <p>呼吸内科 · 住院病例</p>
+                        </div>
+                    </div>
+                    <div class="case-actions">
+                        <span class="difficulty medium">中等</span>
+                        <a href="case_detail.html?id=985" class="view-all">继续学习</a>
+                    </div>
+                </li>
+                <li class="case-item">
+                    <div class="case-info">
+                        <div class="case-icon bg-purple">神</div>
+                        <div class="case-details">
+                            <h4>急性脑梗死溶栓治疗</h4>
+                            <p>神经内科 · 急诊病例</p>
+                        </div>
+                    </div>
+                    <div class="case-actions">
+                        <span class="difficulty medium">中等</span>
+                        <a href="case_detail.html?id=876" class="view-all">继续学习</a>
+                    </div>
+                </li>
+                <li class="case-item">
+                    <div class="case-info">
+                        <div class="case-icon bg-green">消</div>
+                        <div class="case-details">
+                            <h4>上消化道出血的诊断与处理</h4>
+                            <p>消化内科 · 门诊病例</p>
+                        </div>
+                    </div>
+                    <div class="case-actions">
+                        <span class="difficulty easy">简单</span>
+                        <a href="case_detail.html?id=754" class="view-all">继续学习</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 病例分类 -->
+        <h2 class="section-title">专科病例</h2>
+        <div class="cards-grid">
+            <div class="card" onclick="window.location.href='internal_medicine_cases.html'">
+                <div class="card-icon bg-blue">内</div>
+                <h3 class="card-title">内科病例</h3>
+                <p class="card-description">心血管、呼吸、消化、内分泌、肾脏等内科系统常见疾病的典型病例。</p>
+            </div>
+            <div class="card" onclick="window.location.href='surgical_cases.html'">
+                <div class="card-icon bg-red">外</div>
+                <h3 class="card-title">外科病例</h3>
+                <p class="card-description">普外、骨科、神经外科、胸外科等手术前、中、后期的完整病例。</p>
+            </div>
+            <div class="card" onclick="window.location.href='obgyn_cases.html'">
+                <div class="card-icon bg-purple">妇</div>
+                <h3 class="card-title">妇产科病例</h3>
+                <p class="card-description">围产期保健、妊娠并发症、妇科常见疾病及手术病例。</p>
+            </div>
+            <div class="card" onclick="window.location.href='pediatric_cases.html'">
+                <div class="card-icon bg-orange">儿</div>
+                <h3 class="card-title">儿科病例</h3>
+                <p class="card-description">新生儿、婴幼儿及儿童期常见疾病的诊疗病例。</p>
+            </div>
+            <div class="card" onclick="window.location.href='emergency_cases.html'">
+                <div class="card-icon" style="background: linear-gradient(145deg, #ff3b30, #ff9500);">急</div>
+                <h3 class="card-title">急诊危重病例</h3>
+                <p class="card-description">需要紧急处理的急危重症病例，重点关注抢救流程与决策。</p>
+            </div>
+            <div class="card" onclick="window.location.href='chinese_medicine_cases.html'">
+                <div class="card-icon" style="background: linear-gradient(145deg, #34c759, #5ac8fa);">中</div>
+                <h3 class="card-title">中医病例</h3>
+                <p class="card-description">结合中医理论的辨证论治病例，展示中西医结合治疗方案。</p>
+            </div>
+        </div>
+
+        <!-- 教学资源 -->
+        <h2 class="section-title">病例教学工具</h2>
+        <div class="cards-grid">
+            <div class="card" onclick="window.location.href='case_builder.html'">
+                <div class="card-icon bg-indigo">制</div>
+                <h3 class="card-title">病例制作工具</h3>
+                <p class="card-description">基于真实病例，创建教学病例，可添加临床影像、检验报告等资料。</p>
+            </div>
+            <div class="card" onclick="window.location.href='case_discussion.html'">
+                <div class="card-icon bg-teal">讨</div>
+                <h3 class="card-title">病例讨论室</h3>
+                <p class="card-description">与同行一起分析讨论复杂病例，分享经验与见解。</p>
+            </div>
+            <div class="card" onclick="window.location.href='testing_center.html'">
+                <div class="card-icon bg-pink">考</div>
+                <h3 class="card-title">临床思维测试</h3>
+                <p class="card-description">通过病例考核，评估临床思维水平，发现知识盲点。</p>
+            </div>
+            <div class="card" onclick="window.location.href='ai_case_analysis.html'">
+                <div class="card-icon" style="background: linear-gradient(145deg, #5856d6, #5ac8fa);">AI</div>
+                <h3 class="card-title">AI病例分析</h3>
+                <p class="card-description">上传临床资料，AI辅助分析病情并提供诊疗建议和学习要点。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div class="footer">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk 
+    </div>
+</body>
+</html>

@@ -1,0 +1,1254 @@
+<!DOCTYPE html> 
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>北京巨成医学 DeepSeek智能助手</title>
+    <style>
+        /* 全局样式 - 优化字体和间距 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft Yahei', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            line-height: 1.6;
+            letter-spacing: 0.015em;
+        }
+
+        /* 优化标题样式 */
+        h1, h2, h3, h4, h5, h6 {
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+        }
+
+        p {
+            margin-bottom: 0.8em;
+        }
+
+        /* 列表间距优化 */
+        ul, ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* 导航栏样式 */
+        .nav-bar {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 48px; /* 从54px改为48px */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px; /* 从24px改为20px */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 600; /* 从700改为600 */
+            font-size: 20px; /* 从22px改为20px */
+            letter-spacing: -0.01em;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* 使用gap代替margin */
+        }
+
+        .user-avatar {
+            width: 32px; /* 从36px改为32px */
+            height: 32px; /* 从36px改为32px */
+            border-radius: 50%;
+            background-color: #0071e3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            margin-right: 8px; /* 调整边距 */
+        }
+
+        .username {
+            font-weight: 500; /* 从600改为500 */
+            letter-spacing: 0.01em;
+        }
+
+        /* 侧边导航栏样式 */
+        .side-nav {
+            position: fixed;
+            left: 0;
+            top: 48px; /* 从54px改为48px，与导航栏高度一致 */
+            width: 200px;
+            height: calc(100% - 48px); /* 从54px改为48px */
+            background-color: white;
+            box-shadow: 1px 0 5px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            z-index: 99;
+            overflow-y: auto;
+        }
+
+        .side-nav-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            color: #1d1d1f;
+            text-decoration: none;
+        }
+
+        .side-nav-item:hover {
+            background-color: #f5f5f7;
+        }
+
+        .side-nav-item.active {
+            background-color: #e8f2fc;
+            color: #0071e3;
+            font-weight: 500;
+            border-left: 4px solid #0071e3;
+        }
+
+        .nav-icon {
+            margin-right: 12px;
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* 主内容样式 */
+        .container {
+            max-width: 1200px; /* 从1240px改为1200px */
+            margin: 78px auto 40px; /* 从84px改为78px */  
+            padding: 0 20px; /* 从28px改为20px */
+        }
+
+        .welcome {
+            font-size: 48px; /* 从52px改为48px */
+            font-weight: 700; /* 从800改为700 */
+            margin-bottom: 20px; /* 从24px改为20px */
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 24px; /* 从26px改为24px */
+            font-weight: 400;
+            color: #6e6e73;
+            margin-bottom: 40px; /* 从48px改为40px */
+            line-height: 1.4;
+        }
+
+        /* 聊天区域样式优化 */
+        .chat-container {
+            background-color: white;
+            border-radius: 18px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+            padding: 0;
+            height: 680px; /* 增加高度 */
+            display: flex;
+            flex-direction: row; /* 改为水平布局 */
+            overflow: hidden;
+        }
+        
+        /* 知识库侧边栏样式增强 */
+        .knowledge-sidebar {
+            width: 280px; /* 增加宽度 */
+            background-color: #f8f9fa;
+            border-right: 1px solid #e6e6e6;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            box-shadow: inset -5px 0 15px -5px rgba(0, 0, 0, 0.05);
+            transition: width 0.3s ease;
+        }
+        
+        .knowledge-header {
+            padding: 20px 22px; /* 增加内边距 */
+            border-bottom: 1px solid #e6e6e6;
+            background: linear-gradient(145deg, #f8f9fa, #ffffff);
+        }
+        
+        .knowledge-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #333;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .knowledge-title::before {
+            content: "📚";
+            font-size: 18px;
+        }
+        
+        .knowledge-search {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border-radius: 10px;
+            padding: 12px 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+            transition: all 0.2s ease;
+        }
+        
+        .knowledge-search:focus-within {
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2);
+            border-color: #0071e3;
+        }
+        
+        .knowledge-search input {
+            background: transparent;
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 15px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+        
+        .kb-list {
+            overflow-y: auto;
+            flex: 1;
+            padding-top: 10px;
+        }
+        
+        .kb-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 18px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .kb-item:hover {
+            background-color: #f0f4f8;
+            transform: translateX(3px);
+        }
+        
+        .kb-item.active {
+            background-color: #e8f2fc;
+            border-left: 4px solid #0071e3;
+            padding-left: 12px;
+        }
+        
+        .kb-item.active::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(to bottom, #42a1ec, #0070c9);
+        }
+        
+        .kb-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(145deg, #e6f2ff, #d1e6ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 14px;
+            font-size: 20px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+        
+        .kb-item:hover .kb-icon {
+            transform: scale(1.05) rotate(5deg);
+        }
+        
+        .kb-info {
+            flex: 1;
+        }
+        
+        .kb-name {
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 15px;
+            color: #333;
+            transition: color 0.2s;
+        }
+        
+        .kb-item:hover .kb-name {
+            color: #0071e3;
+        }
+        
+        .kb-meta {
+            font-size: 12px;
+            color: #6e6e73;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: 0.01em;
+        }
+        
+        .kb-meta::before {
+            content: "📊";
+            font-size: 11px;
+            opacity: 0.7;
+        }
+        
+        /* 聊天主区域样式调整 */
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-title {
+            font-weight: 700;
+            font-size: 17px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chat-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-button {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .action-button:hover {
+            background-color: #f5f5f7;
+            color: #0071e3;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            margin-bottom: 0;
+            background-color: #fafafa;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            margin-bottom: 0;
+            padding: 0;
+            border-radius: 0;
+            max-width: 88%;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+            transition: transform 0.2s;
+        }
+        
+        .message:hover {
+            transform: translateY(-2px);
+        }
+
+        .message-content {
+            padding: 18px 22px;
+            border-radius: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            position: relative;
+            transition: box-shadow 0.3s;
+            line-height: 1.5;
+        }
+        
+        .message:hover .message-content {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+        }
+
+        .message.user {
+            align-self: flex-end;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(145deg, #0071e3, #0284ff);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.assistant {
+            align-self: flex-start;
+        }
+
+        .message.assistant .message-content {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            color: #333;
+            border-bottom-left-radius: 4px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 思考过程样式优化 */
+        .thinking-process {
+            background: linear-gradient(145deg, rgba(240, 249, 255, 0.8), rgba(230, 244, 255, 0.9));
+            border-left: 4px solid #0071e3;
+            padding: 18px 22px;
+            margin: 18px 0;
+            font-size: 0.95em;
+            color: #444;
+            border-radius: 12px;
+            position: relative;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s;
+            line-height: 1.6;
+        }
+        
+        .thinking-process:hover {
+            box-shadow: 0 5px 16px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .thinking-label {
+            color: #0071e3;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            letter-spacing: 0.02em;
+        }
+
+        .thinking-label:before {
+            content: "💡";
+            font-size: 18px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* 文献引用样式优化 */
+        .reference {
+            background: linear-gradient(145deg, #f8faff, #eef4ff);
+            border-radius: 14px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #4b8bf4;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .reference:hover {
+            box-shadow: 0 5px 16px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+        }
+        
+        .reference::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, transparent 50%, rgba(75, 139, 244, 0.1) 50%);
+            border-top-right-radius: 12px;
+        }
+
+        .reference-title {
+            font-weight: 600;
+            color: #4b8bf4;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            letter-spacing: 0.01em;
+        }
+
+        .reference-title:before {
+            content: "📚";
+            font-size: 18px;
+        }
+        
+        .reference-content {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+        
+        .reference-authors {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 6px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .reference-journal {
+            color: #0071e3;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+        }
+
+        /* 输入区域样式优化 */
+        .chat-input-area {
+            padding: 18px 24px;
+            border-top: 1px solid #f0f0f0;
+            background-color: white;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 14px;
+            align-items: flex-end;
+            position: relative;
+            background-color: #f5f7fa;
+            border-radius: 16px;
+            padding: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 16px 18px;
+            border-radius: 16px;
+            border: none;
+            font-size: 16.5px;
+            outline: none;
+            resize: none;
+            max-height: 150px;
+            min-height: 48px;
+            background-color: transparent;
+            line-height: 1.5;
+        }
+
+        .input-buttons {
+            display: flex;
+            gap: 10px;
+            padding: 0 10px 10px 0;
+        }
+
+        .input-button {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .input-button:hover {
+            background-color: rgba(0, 113, 227, 0.1);
+            color: #0071e3;
+        }
+
+        .send-button {
+            background-color: #0071e3;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 46px;
+            height: 46px;
+            font-size: 22px;
+            font-weight: normal;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .send-button:hover {
+            background-color: #0061c3;
+            transform: scale(1.05);
+        }
+
+        .send-button:active {
+            transform: scale(0.95);
+        }
+
+        /* 打字指示器 */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            background-color: white;
+            border-radius: 18px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 10px;
+            width: fit-content;
+            animation: fadeIn 0.3s;
+        }
+
+        .typing-dots {
+            display: flex;
+            margin-left: 8px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #0071e3;
+            margin-right: 4px;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typingAnimation {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-4px); }
+        }
+
+        /* 工具提示 */
+        .tooltip {
+            position: absolute;
+            background-color: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .tooltip:after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        .input-button:hover .tooltip, .action-button:hover .tooltip {
+            opacity: 1;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .welcome {
+                font-size: 42px;
+            }
+            
+            .subtitle {
+                font-size: 22px;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+            
+            .knowledge-sidebar {
+                width: 240px;
+            }
+        }
+
+        /* 底部信息 */
+        .footer {
+            text-align: center;
+            padding: 24px;
+            color: #86868b;
+            font-size: 13px;
+            letter-spacing: 0.03em;
+            /* 移除margin-left，由sidebar.js控制 */
+        }
+        
+        /* 强调和突出文本 */
+        strong, b {
+            font-weight: 700;
+            color: #222;
+        }
+        
+        /* 添加内容过渡动画 */ 
+        .chat-messages > * {
+            transition: all 0.3s ease;
+        }
+    </style>
+    <!-- 引入侧边栏JS -->
+    <script src="js/sidebar.js"></script>
+    <!-- 添加字体预加载 -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="logo">MediKnow 巨成医学</div>
+        <div class="user-info" style="cursor: pointer;" onclick="window.location.href='user_profile.html'">
+            <img src="./皮卡丘像素.png" class="user-avatar" alt="用户头像">
+            <div class="username">佟老师</div>
+        </div>
+    </div>
+
+    <!-- 移除静态侧边栏，将由JS动态生成 -->
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <h1 class="welcome">DeepSeek智能助手</h1>
+        <p class="subtitle">您的专业医疗AI助手，为临床决策提供精准支持</p>
+
+        <!-- 聊天区域 - 优化版 -->
+        <div class="chat-container">
+            <!-- 左侧知识库面板 -->
+            <div class="knowledge-sidebar">
+                <div class="knowledge-header">
+                    <h2 class="knowledge-title">知识库选择</h2>
+                    <div class="knowledge-search">
+                        <span>🔍</span>
+                        <input type="text" placeholder="搜索知识库...">
+                    </div>
+                </div>
+                
+                <div class="kb-list">
+                    <div class="kb-item active" data-kb-id="all">
+                        <div class="kb-icon">📊</div>
+                        <div class="kb-info">
+                            <div class="kb-name">全部知识库</div>
+                            <div class="kb-meta">24,782 个概念 | 57,329 个关系</div>
+                        </div>
+                    </div>
+                    
+                    <div class="kb-item" data-kb-id="neuro">
+                        <div class="kb-icon">🧠</div>
+                        <div class="kb-info">
+                            <div class="kb-name">神经外科手术图谱</div>
+                            <div class="kb-meta">842 文档 | 1,205 图像</div>
+                        </div>
+                    </div>
+                    
+                    <div class="kb-item" data-kb-id="cardio">
+                        <div class="kb-icon">❤️</div>
+                        <div class="kb-info">
+                            <div class="kb-name">冠心病介入诊疗指南</div>
+                            <div class="kb-meta">625 文档 | 834 图像</div>
+                        </div>
+                    </div>
+                    
+                    <div class="kb-item" data-kb-id="chest">
+                        <div class="kb-icon">🫁</div>
+                        <div class="kb-info">
+                            <div class="kb-name">胸部影像学诊断数据库</div>
+                            <div class="kb-meta">412 文档 | 2,587 图像</div>
+                        </div>
+                    </div>
+                    
+                    <div class="kb-item" data-kb-id="pharma">
+                        <div class="kb-icon">💊</div>
+                        <div class="kb-info">
+                            <div class="kb-name">临床用药指南</div>
+                            <div class="kb-meta">1,456 文档 | 218 图像</div>
+                        </div>
+                    </div>
+                    
+                    <div class="kb-item" data-kb-id="nejm">
+                        <div class="kb-icon">📰</div>
+                        <div class="kb-info">
+                            <div class="kb-name">《NEJM》文献集</div>
+                            <div class="kb-meta">2,758 文档 | 542 图像</div>
+                        </div>
+                    </div>
+                    
+                    <div class="kb-item" data-kb-id="pathology">
+                        <div class="kb-icon">🔬</div>
+                        <div class="kb-info">
+                            <div class="kb-name">病理学图像集</div>
+                            <div class="kb-meta">634 文档 | 4,215 图像</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 聊天主区域 -->
+            <div class="chat-main">
+                <div class="chat-header">
+                    <div class="chat-title">
+                        <span>🤖</span>
+                        <span>智能医疗助手</span>
+                    </div>
+                    <div class="chat-actions">
+                        <button class="action-button" onclick="clearChat()">
+                            <span>🗑️</span>
+                            <span class="tooltip">清空对话</span>
+                        </button>
+                        <button class="action-button" onclick="exportChat()">
+                            <span>📥</span>
+                            <span class="tooltip">导出对话</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="chat-messages">
+                    <div class="message assistant">
+                        <div class="message-content">
+                            <p>您好，我是北京巨成医学DeepSeek医疗助手。请问有什么关于诊断、治疗或医学研究的问题我可以帮您解答？</p>
+                        </div>
+                    </div>
+                    
+                    <div class="message user">
+                        <div class="message-content">
+                            <p>请问急性脑卒中的早期症状和处理方法有哪些？</p>
+                        </div>
+                    </div>
+                    
+                    <div class="message assistant">
+                        <div class="message-content">
+                            <div class="thinking-process">
+                                <p class="thinking-label">思考过程</p>
+                                <p>分析问题：用户询问急性脑卒中的早期症状和处理方法。我需要提供：</p>
+                                <ol>
+                                    <li>脑卒中的定义和分类</li>
+                                    <li>急性脑卒中的常见早期症状和识别方法</li>
+                                    <li>急性脑卒中的紧急处理流程</li>
+                                    <li>最新的治疗指南和建议</li>
+                                    <li>相关的高质量医学文献作为参考</li>
+                                </ol>
+                            </div>
+                            
+                            <p><strong>急性脑卒中的早期症状：</strong></p>
+                            <p>脑卒中是由于脑部血液供应突然中断或脑出血导致的急性神经功能障碍。早期识别对于改善预后至关重要。可使用FAST法则快速识别脑卒中症状：</p>
+                            <ul>
+                                <li><strong>F</strong>(Face): 面部不对称，一侧面部下垂</li>
+                                <li><strong>A</strong>(Arm): 手臂无力，一侧手臂不能抬起</li>
+                                <li><strong>S</strong>(Speech): 言语不清，表达困难</li>
+                                <li><strong>T</strong>(Time): 时间关键，立即拨打急救电话</li>
+                            </ul>
+                            <p>其他常见症状包括：</p>
+                            <ul>
+                                <li>突发性单侧肢体无力或麻木</li>
+                                <li>视力突然模糊或丧失</li>
+                                <li>严重头痛伴随恶心呕吐</li>
+                                <li>平衡和协调能力突然丧失</li>
+                                <li>意识水平改变</li>
+                            </ul>
+                            
+                            <p><strong>急性脑卒中的处理方法：</strong></p>
+                            <p>脑卒中治疗的黄金时间窗口较短，应遵循"时间就是大脑"的原则：</p>
+                            <ol>
+                                <li><strong>立即呼叫急救（120）</strong>：快速转运至具备卒中中心能力的医院</li>
+                                <li><strong>症状发作时间评估</strong>：记录患者最后见到正常的时间</li>
+                                <li><strong>院前评估</strong>：维持生命体征，保持气道通畅，监测血氧</li>
+                                <li><strong>快速诊断</strong>：到院后立即进行头颅CT或MRI检查，明确卒中类型</li>
+                                <li><strong>缺血性卒中治疗</strong>：对合适患者尽早静脉溶栓（4.5小时内）或机械取栓（6-24小时内选择患者）</li>
+                                <li><strong>出血性卒中处理</strong>：控制血压，必要时手术减压或清除血肿</li>
+                            </ol>
+                            
+                            <div class="reference">
+                                <p class="reference-title">参考文献 1</p>
+                                <p class="reference-content">《中国急性缺血性脑卒中诊治指南2022》</p>
+                                <p class="reference-authors">中华医学会神经病学分会, 中华医学会神经病学分会脑血管病学组</p>
+                                <p class="reference-journal">中华神经科杂志, 2022;55(6):562-589</p>
+                            </div>
+                            
+                            <div class="reference">
+                                <p class="reference-title">参考文献 2</p>
+                                <p class="reference-content">Acute Stroke Management: Prehospital, Emergency Department, and Inpatient Care</p>
+                                <p class="reference-authors">Powers WJ, Rabinstein AA, Ackerson T, et al.</p>
+                                <p class="reference-journal">Stroke. 2019;50(12):e344-e418</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-input-area">
+                    <div class="chat-input-container">
+                        <textarea class="chat-input" placeholder="请输入您的医学问题..." rows="1"></textarea>
+                        <div class="input-buttons">
+                            <button class="input-button" onclick="attachFile()">
+                                <span>📎</span>
+                                <span class="tooltip">附加文件</span>
+                            </button>
+                            <button class="input-button" onclick="toggleMic()">
+                                <span>🎤</span>
+                                <span class="tooltip">语音输入</span>
+                            </button>
+                            <button class="send-button" onclick="sendMessage()">
+                                <span>↑</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div class="footer">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk 
+    </div>
+
+    <script>
+        // 自动调整文本输入框高度
+        const chatInput = document.querySelector('.chat-input');
+        chatInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+            if(this.scrollHeight > 150) {
+                this.style.overflowY = 'auto';
+            } else {
+                this.style.overflowY = 'hidden';
+            }
+        });
+        
+        // 发送消息功能
+        function sendMessage() {
+            const input = document.querySelector('.chat-input');
+            const message = input.value.trim();
+            
+            if (message) {
+                // 添加用户消息
+                const chatMessages = document.querySelector('.chat-messages');
+                const userMessageDiv = document.createElement('div');
+                userMessageDiv.className = 'message user';
+                userMessageDiv.innerHTML = `
+                    <div class="message-content">
+                        <p>${message}</p>
+                    </div>
+                `;
+                chatMessages.appendChild(userMessageDiv);
+                
+                // 清空输入框并重置高度
+                input.value = '';
+                input.style.height = 'auto';
+                
+                // 自动滚动到底部
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // 显示正在输入的指示器
+                showTypingIndicator();
+                
+                // 模拟AI助手思考过程和回复
+                setTimeout(() => {
+                    // 移除输入指示器
+                    hideTypingIndicator();
+                    
+                    const assistantMessageDiv = document.createElement('div');
+                    assistantMessageDiv.className = 'message assistant';
+                    
+                    // 加入消息内容容器
+                    const messageContent = document.createElement('div');
+                    messageContent.className = 'message-content';
+                    
+                    // 加入思考过程
+                    const thinkingProcess = document.createElement('div');
+                    thinkingProcess.className = 'thinking-process';
+                    thinkingProcess.innerHTML = `
+                        <p class="thinking-label">思考过程</p>
+                        <p>正在分析问题：${message}</p>
+                        <p>检索相关医学知识和最新研究文献...</p>
+                        <p>整合临床指南和专家共识...</p>
+                    `;
+                    
+                    messageContent.appendChild(thinkingProcess);
+                    assistantMessageDiv.appendChild(messageContent);
+                    chatMessages.appendChild(assistantMessageDiv);
+                    
+                    // 自动滚动到底部
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    
+                    // 等待片刻后显示完整回答
+                    setTimeout(() => {
+                        // 根据问题类型，提供不同的回复内容
+                        if (message.includes('脑卒中') || message.includes('中风')) {
+                            messageContent.innerHTML += `
+                                <p>基于您的问题，我提供以下信息：</p>
+                                <p><strong>关于${message.includes('脑卒中') ? '脑卒中' : '中风'}：</strong></p>
+                                <p>脑卒中是由于脑部血管阻塞(缺血性)或破裂(出血性)导致的神经功能缺损。及时识别和治疗对预后至关重要。</p>
+                                
+                                <div class="reference">
+                                    <p class="reference-title">参考文献</p>
+                                    <p class="reference-content">Advances in Stroke Prevention, Diagnosis, and Treatment</p>
+                                    <p class="reference-authors">Wang Y, Zhao X, Liu L, et al.</p>
+                                    <p class="reference-journal">Circulation. 2021;143(15):1493-1508</p>
+                                </div>
+                            `;
+                        } else {
+                            messageContent.innerHTML += `
+                                <p>您好，关于"${message}"的问题，我需要更多信息以提供准确的医学建议。请问您能提供更多临床背景吗？</p>
+                            `;
+                        }
+                        
+                        // 自动滚动到底部
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }, 2000);
+                }, 1500);
+            }
+        }
+        
+        // 显示AI正在输入的指示器
+        function showTypingIndicator() {
+            const chatMessages = document.querySelector('.chat-messages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = `
+                <span>DeepSeek助手正在思考</span>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // 隐藏输入指示器
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        // 允许按Enter键发送消息，Shift+Enter换行
+        document.querySelector('.chat-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        // 清空聊天记录
+        function clearChat() {
+            if(confirm('确定要清空所有聊天记录吗？')) {
+                const chatMessages = document.querySelector('.chat-messages');
+                chatMessages.innerHTML = `
+                    <div class="message assistant">
+                        <div class="message-content">
+                            <p>您好，我是北京巨成医学DeepSeek医疗助手。请问有什么关于诊断、治疗或医学研究的问题我可以帮您解答？</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        // 导出聊天记录
+        function exportChat() {
+            const messages = document.querySelectorAll('.message');
+            let chatText = "===== DeepSeek医疗助手聊天记录 =====\n\n";
+            
+            messages.forEach(msg => {
+                if(msg.classList.contains('user')) {
+                    chatText += "👤 用户: " + msg.textContent.trim() + "\n\n";
+                } else if(msg.classList.contains('assistant')) {
+                    chatText += "🤖 DeepSeek助手: " + msg.textContent.trim() + "\n\n";
+                }
+            });
+            
+            // 创建并下载文本文件
+            const blob = new Blob([chatText], {type: "text/plain;charset=utf-8"});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = "DeepSeek医疗助手聊天记录_" + new Date().toISOString().slice(0,10) + ".txt";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+        
+        // 模拟文件附加功能
+        function attachFile() {
+            alert("文件上传功能演示");
+            // 实际项目中，这里可以触发文件选择对话框
+        }
+        
+        // 模拟语音输入功能
+        function toggleMic() {
+            alert("语音输入功能演示");
+            // 实际项目中，这里可以启动语音识别API
+        }
+        
+        // 页面加载完成后自动聚焦到输入框
+        window.addEventListener('load', function() {
+            document.querySelector('.chat-input').focus();
+        });
+        
+        // 知识库选择功能
+        document.querySelectorAll('.kb-item').forEach(item => {
+            // 添加点击动画效果
+            item.addEventListener('mousedown', function() {
+                this.style.transform = 'scale(0.98)';
+            });
+            
+            item.addEventListener('mouseup', function() {
+                this.style.transform = '';
+            });
+            
+            // 原有的点击事件监听
+            item.addEventListener('click', function() {
+                // 移除之前的激活状态
+                document.querySelectorAll('.kb-item').forEach(el => {
+                    el.classList.remove('active');
+                });
+                
+                // 添加新的激活状态
+                this.classList.add('active');
+                
+                // 获取选中的知识库ID
+                const kbId = this.getAttribute('data-kb-id');
+                
+                // 更新聊天标题
+                updateChatTitle(kbId);
+                
+                // 清空之前的聊天记录并显示欢迎消息
+                const chatMessages = document.querySelector('.chat-messages');
+                chatMessages.innerHTML = '';
+                
+                const welcomeMessage = document.createElement('div');
+                welcomeMessage.className = 'message assistant';
+                
+                // 根据选择的知识库显示不同的欢迎消息
+                let welcomeText = '您好，我是DeepSeek医疗助手。请问有什么可以帮助您的？';
+                
+                switch(kbId) {
+                    case 'neuro':
+                        welcomeText = '您好，我是神经外科专业知识库助手。请咨询有关神经外科手术、诊疗的问题。';
+                        break;
+                    case 'cardio':
+                        welcomeText = '您好，我是冠心病介入治疗知识库助手。请咨询有关冠心病介入诊疗的问题。';
+                        break;
+                    case 'chest':
+                        welcomeText = '您好，我是胸部影像学知识库助手。请咨询有关胸部CT、X光等影像诊断的问题。';
+                        break;
+                    case 'pharma':
+                        welcomeText = '您好，我是临床用药知识库助手。请咨询有关药物使用、剂量、副作用等问题。';
+                        break;
+                    case 'nejm':
+                        welcomeText = '您好，我是NEJM文献知识库助手。请咨询最新医学研究和临床试验相关问题。';
+                        break;
+                    case 'pathology':
+                        welcomeText = '您好，我是病理学知识库助手。请咨询有关病理诊断和图像解读的问题。';
+                        break;
+                    default:
+                        welcomeText = '您好，我是北京巨成医学DeepSeek医疗助手。请问有什么关于诊断、治疗或医学研究的问题我可以帮您解答？';
+                }
+                
+                welcomeMessage.innerHTML = `
+                    <div class="message-content">
+                        <p>${welcomeText}</p>
+                    </div>
+                `;
+                
+                chatMessages.appendChild(welcomeMessage);
+            });
+        });
+        
+        // 更新聊天标题
+        function updateChatTitle(kbId) {
+            const chatTitle = document.querySelector('.chat-title');
+            let title = '智能医疗助手';
+            let icon = '🤖';
+            
+            switch(kbId) {
+                case 'neuro':
+                    title = '神经外科知识库';
+                    icon = '🧠';
+                    break;
+                case 'cardio':
+                    title = '冠心病介入知识库';
+                    icon = '❤️';
+                    break;
+                case 'chest':
+                    title = '胸部影像学知识库';
+                    icon = '🫁';
+                    break;
+                case 'pharma':
+                    title = '临床用药知识库';
+                    icon = '💊';
+                    break;
+                case 'nejm':
+                    title = 'NEJM文献知识库';
+                    icon = '📰';
+                    break;
+                case 'pathology':
+                    title = '病理学知识库';
+                    icon = '🔬';
+                    break;
+            }
+            
+            chatTitle.innerHTML = `<span>${icon}</span><span>${title}</span>`;
+        }
+        
+        // 知识库搜索功能
+        document.querySelector('.knowledge-search input').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            document.querySelectorAll('.kb-item').forEach(item => {
+                const kbName = item.querySelector('.kb-name').textContent.toLowerCase();
+                if (kbName.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
