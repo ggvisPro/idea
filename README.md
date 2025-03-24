@@ -2,6 +2,7 @@
 
 | 项目名称 | 项目描述 |
 |---------|---------|
+| [知识库0.4.2](https://ggvispro.github.io/idea/knowledge_base_042/)  | 重新做了DeepSeek助手界面 |
 | [知识库0.4.1](https://ggvispro.github.io/idea/knowledge_base_041/)  | 去姓名化；没什么其他变化 |
 | [知识库0.4](https://ggvispro.github.io/idea/knowledge_base_04/)  | ggvis做了一些调整 |
 | [知识库0.3](https://ggvispro.github.io/idea/knowledge_base_03/)  | 王经理在0.2的基础上加了导航栏和新页面 |
