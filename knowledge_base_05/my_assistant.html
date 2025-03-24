@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的智能助手 - AI医疗助手</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        /* 导航栏样式 */
+        .nav-bar {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #0071e3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-weight: 500;
+        }
+
+        .username {
+            font-weight: 500;
+        }
+
+        /* 主内容样式 - 调整以适应侧边导航 */
+        .container {
+            max-width: 1200px;
+            margin: 78px auto 40px;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            font-weight: 400;
+            color: #6e6e73;
+            margin-bottom: 40px;
+        }
+
+        /* 助手创建区域 */
+        .create-assistant {
+            background: linear-gradient(145deg, #42a1ec, #0070c9);
+            border-radius: 18px;
+            padding: 40px;
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            transition: transform 0.3s ease;
+        }
+
+        .create-assistant:hover {
+            transform: scale(1.02);
+        }
+
+        .create-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .create-description {
+            max-width: 700px;
+            margin: 0 auto 24px;
+            font-size: 17px;
+            opacity: 0.9;
+        }
+
+        .create-button {
+            background-color: white;
+            color: #0070c9;
+            border: none;
+            border-radius: 100px;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .create-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 模板区域 */
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .view-all {
+            font-size: 16px;
+            color: #0071e3;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .template-scroll {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 0 30px;
+            scroll-behavior: smooth;
+        }
+
+        .template-scroll::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .template-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .template-scroll::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        .template-card {
+            min-width: 300px;
+            background-color: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-right: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .template-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .template-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 20px;
+            color: white;
+        }
+
+        .template-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .template-description {
+            color: #6e6e73;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 16px;
+        }
+
+        .use-template {
+            color: #0071e3;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* 我的助手区域 */
+        .my-assistants {
+            margin-bottom: 60px;
+        }
+
+        .assistants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .assistant-card {
+            background-color: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .assistant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .assistant-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .assistant-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            margin-right: 16px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .assistant-info {
+            flex: 1;
+        }
+
+        .assistant-name {
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .assistant-type {
+            color: #6e6e73;
+            font-size: 14px;
+        }
+
+        .assistant-body {
+            padding: 0 20px 20px;
+        }
+
+        .assistant-stats {
+            display: flex;
+            margin-bottom: 16px;
+        }
+
+        .stat {
+            flex: 1;
+            text-align: center;
+            padding: 8px 0;
+            border-right: 1px solid #e5e5e5;
+        }
+
+        .stat:last-child {
+            border-right: none;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6e6e73;
+        }
+
+        .assistant-actions {
+            display: flex;
+        }
+
+        .action-button {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            background-color: #f5f5f7;
+            border-radius: 8px;
+            margin-right: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .action-button:last-child {
+            margin-right: 0;
+        }
+
+        .action-button:hover {
+            background-color: #e5e5e5;
+        }
+
+        .action-button.primary {
+            background-color: #0071e3;
+            color: white;
+        }
+
+        .action-button.primary:hover {
+            background-color: #0060c0;
+        }
+
+        /* 功能区块 */
+        .features-section {
+            margin-bottom: 60px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .feature-card {
+            background-color: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .feature-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .feature-description {
+            color: #6e6e73;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        /* 底部信息 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #86868b;
+            font-size: 12px;
+        }
+
+        /* 颜色定义 */
+        .bg-blue { background-color: #0071e3; }
+        .bg-green { background-color: #34c759; }
+        .bg-orange { background-color: #ff9500; }
+        .bg-red { background-color: #ff3b30; }
+        .bg-purple { background-color: #af52de; }
+        .bg-teal { background-color: #5ac8fa; }
+        .bg-yellow { background-color: #ffcc00; }
+        .bg-indigo { background-color: #5856d6; }
+
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                margin-left: 20px;
+                padding-top: 70px;
+            }
+            .footer {
+                margin-left: 0;
+            }
+        }
+    </style>
+    <!-- 引入侧边栏JS -->
+    <script src="js/sidebar.js"></script>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="logo">临床知识库</div>
+        <div class="user-info" style="cursor: pointer;" onclick="window.location.href='user_profile.html'">
+            <img src="./皮卡丘像素.png" class="user-avatar" alt="用户头像">
+            <div class="username">主任</div>
+        </div>
+    </div>
+
+    <!-- 移除静态侧边栏 - 将由JS动态插入 -->
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <!-- 欢迎信息 -->
+        <h1 class="welcome">我的智能助手</h1>
+        <p class="subtitle">定制您专属的AI助手，提高教学和临床工作效率</p>
+
+        <!-- 创建助手区域 -->
+        <div class="create-assistant">
+            <h2 class="create-title">创建专属智能助手</h2>
+            <p class="create-description">根据您的需求定制智能助手，可以添加专业知识库，设计工作流程，定义角色技能，让AI助手成为您的得力帮手。</p>
+            <button class="create-button" onclick="window.location.href='create_assistant.html'">+ 创建新助手</button>
+        </div>
+
+        <!-- 助手模板 -->
+        <div class="template-section">
+            <div class="section-title">
+                <span>助手模板</span>
+                <a href="all_templates.html" class="view-all">查看全部</a>
+            </div>
+            <div class="template-scroll">
+                <div class="template-card">
+                    <div class="template-icon bg-blue">📊</div>
+                    <h3 class="template-title">临床教学助手</h3>
+                    <p class="template-description">专为医学教育设计，包含病例讲解、问题解答、模拟考试和学生评估功能。</p>
+                    <div class="use-template">使用此模板 →</div>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon bg-purple">🔬</div>
+                    <h3 class="template-title">科研文献助手</h3>
+                    <p class="template-description">帮助检索、分析和总结最新医学文献，协助撰写研究报告和学术论文。</p>
+                    <div class="use-template">使用此模板 →</div>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon bg-green">📋</div>
+                    <h3 class="template-title">临床决策支持</h3>
+                    <p class="template-description">基于最新临床指南提供诊断建议和治疗方案，辅助医疗决策制定。</p>
+                    <div class="use-template">使用此模板 →</div>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon bg-orange">💊</div>
+                    <h3 class="template-title">药物顾问</h3>
+                    <p class="template-description">提供药物信息、剂量计算、不良反应和药物相互作用的专业建议。</p>
+                    <div class="use-template">使用此模板 →</div>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon bg-red">📝</div>
+                    <h3 class="template-title">医疗记录助手</h3>
+                    <p class="template-description">协助记录、整理和分析病历，生成报告和总结，提高工作效率。</p>
+                    <div class="use-template">使用此模板 →</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 我的助手区域 -->
+        <div class="my-assistants">
+            <div class="section-title">
+                <span>我的助手</span>
+                <a href="manage_assistants.html" class="view-all">管理</a>
+            </div>
+            <div class="assistants-grid">
+                <div class="assistant-card">
+                    <div class="assistant-header">
+                        <div class="assistant-avatar" style="background-color: #0071e3; color: white; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                            👨‍⚕️
+                        </div>
+                        <div class="assistant-info">
+                            <div class="assistant-name">临床教学专家</div>
+                            <div class="assistant-type">教育型助手</div>
+                        </div>
+                    </div>
+                    <div class="assistant-body">
+                        <div class="assistant-stats">
+                            <div class="stat">
+                                <div class="stat-value">10</div>
+                                <div class="stat-label">知识库</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">5</div>
+                                <div class="stat-label">工作流</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">87%</div>
+                                <div class="stat-label">满意度</div>
+                            </div>
+                        </div>
+                        <div class="assistant-actions">
+                            <div class="action-button">编辑</div>
+                            <div class="action-button primary">使用</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="assistant-card">
+                    <div class="assistant-header">
+                        <div class="assistant-avatar" style="background-color: #34c759; color: white; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                            📊
+                        </div>
+                        <div class="assistant-info">
+                            <div class="assistant-name">科研数据分析师</div>
+                            <div class="assistant-type">研究型助手</div>
+                        </div>
+                    </div>
+                    <div class="assistant-body">
+                        <div class="assistant-stats">
+                            <div class="stat">
+                                <div class="stat-value">8</div>
+                                <div class="stat-label">知识库</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">3</div>
+                                <div class="stat-label">工作流</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">92%</div>
+                                <div class="stat-label">满意度</div>
+                            </div>
+                        </div>
+                        <div class="assistant-actions">
+                            <div class="action-button">编辑</div>
+                            <div class="action-button primary">使用</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="assistant-card">
+                    <div class="assistant-header">
+                        <div class="assistant-avatar" style="background-color: #af52de; color: white; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                            🏥
+                        </div>
+                        <div class="assistant-info">
+                            <div class="assistant-name">临床指南顾问</div>
+                            <div class="assistant-type">参考型助手</div>
+                        </div>
+                    </div>
+                    <div class="assistant-body">
+                        <div class="assistant-stats">
+                            <div class="stat">
+                                <div class="stat-value">15</div>
+                                <div class="stat-label">知识库</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">2</div>
+                                <div class="stat-label">工作流</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">95%</div>
+                                <div class="stat-label">满意度</div>
+                            </div>
+                        </div>
+                        <div class="assistant-actions">
+                            <div class="action-button">编辑</div>
+                            <div class="action-button primary">使用</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 助手功能区域 -->
+        <div class="features-section">
+            <h2 class="section-title">智能助手功能</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon bg-blue">📚</div>
+                    <h3 class="feature-title">专业知识库集成</h3>
+                    <p class="feature-description">将您的专业资料、文献、指南和经验整合到助手中，让AI更了解您的专业领域，提供更精准的支持。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon bg-purple">🔄</div>
+                    <h3 class="feature-title">自定义工作流</h3>
+                    <p class="feature-description">设计适合您工作方式的流程，让助手按照您的习惯和需求提供帮助，提高工作效率。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon bg-green">🎯</div>
+                    <h3 class="feature-title">角色技能定制</h3>
+                    <p class="feature-description">为助手定义特定的专业角色和技能，例如教学指导、医学顾问、研究助理等，满足您的专业需求。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon bg-yellow">👥</div>
+                    <h3 class="feature-title">多Agent协作</h3>
+                    <p class="feature-description">设置多个专业AI角色协同工作，模拟团队合作，从不同角度分析问题并提供全面解决方案。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon bg-indigo">🔍</div>
+                    <h3 class="feature-title">智能学习适应</h3>
+                    <p class="feature-description">助手会根据您的使用习惯和反馈不断优化，提供越来越贴合您需求的服务。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon bg-teal">🔒</div>
+                    <h3 class="feature-title">隐私安全保护</h3>
+                    <p class="feature-description">严格的数据保护措施确保您的专业信息和患者数据安全，符合医疗隐私法规要求。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div class="footer">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk
+    </div>
+
+    <script>
+        // 简单的滚动效果
+        document.addEventListener('DOMContentLoaded', function() {
+            const createButton = document.querySelector('.create-button');
+            createButton.addEventListener('mouseover', function() {
+                this.style.transform = 'scale(1.05)';
+            });
+            createButton.addEventListener('mouseout', function() {
+                this.style.transform = 'scale(1)';
+            });
+
+            // 为模板卡片添加点击事件
+            const templateCards = document.querySelectorAll('.template-card');
+            templateCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const templateName = this.querySelector('.template-title').textContent;
+                    // 这里可以添加实际跳转或其他操作
+                    console.log(`选择了模板: ${templateName}`);
+                    window.location.href = `edit_template.html?template=${encodeURIComponent(templateName)}`;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
