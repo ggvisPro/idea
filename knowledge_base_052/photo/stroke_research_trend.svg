@@ -1,0 +1,217 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <!-- Background -->
+  <rect width="800" height="600" fill="transparent" />
+  
+  <!-- Title -->
+  <text x="400" y="40" font-family="Arial" font-size="24" text-anchor="middle" font-weight="bold">脑卒中研究趋势 (2014-2025)</text>
+  
+  <!-- X and Y Axes -->
+  <line x1="100" y1="450" x2="740" y2="450" stroke="#333" stroke-width="1.5" />
+  <line x1="100" y1="450" x2="100" y2="100" stroke="#333" stroke-width="1.5" />
+  
+  <!-- X-axis labels (years) -->
+  <text x="100" y="480" font-family="Arial" font-size="12" text-anchor="middle">2014</text>
+  <text x="154" y="480" font-family="Arial" font-size="12" text-anchor="middle">2015</text>
+  <text x="208" y="480" font-family="Arial" font-size="12" text-anchor="middle">2016</text>
+  <text x="262" y="480" font-family="Arial" font-size="12" text-anchor="middle">2017</text>
+  <text x="316" y="480" font-family="Arial" font-size="12" text-anchor="middle">2018</text>
+  <text x="370" y="480" font-family="Arial" font-size="12" text-anchor="middle">2019</text>
+  <text x="424" y="480" font-family="Arial" font-size="12" text-anchor="middle">2020</text>
+  <text x="478" y="480" font-family="Arial" font-size="12" text-anchor="middle">2021</text>
+  <text x="532" y="480" font-family="Arial" font-size="12" text-anchor="middle">2022</text>
+  <text x="586" y="480" font-family="Arial" font-size="12" text-anchor="middle">2023</text>
+  <text x="640" y="480" font-family="Arial" font-size="12" text-anchor="middle">2024</text>
+  <text x="694" y="480" font-family="Arial" font-size="12" text-anchor="middle">2025</text>
+  
+  <!-- Y-axis labels (publication numbers) -->
+  <text x="90" y="450" font-family="Arial" font-size="12" text-anchor="end">0</text>
+  <text x="90" y="380" font-family="Arial" font-size="12" text-anchor="end">500</text>
+  <text x="90" y="310" font-family="Arial" font-size="12" text-anchor="end">1000</text>
+  <text x="90" y="240" font-family="Arial" font-size="12" text-anchor="end">1500</text>
+  <text x="90" y="170" font-family="Arial" font-size="12" text-anchor="end">2000</text>
+  <text x="90" y="100" font-family="Arial" font-size="12" text-anchor="end">2500</text>
+  
+  <!-- Y-axis title -->
+  <text x="50" y="275" font-family="Arial" font-size="14" text-anchor="middle" transform="rotate(-90 50 275)">研究文献数量</text>
+  
+  <!-- Grid lines -->
+  <line x1="100" y1="380" x2="740" y2="380" stroke="#ddd" stroke-width="0.8" stroke-dasharray="5,5" />
+  <line x1="100" y1="310" x2="740" y2="310" stroke="#ddd" stroke-width="0.8" stroke-dasharray="5,5" />
+  <line x1="100" y1="240" x2="740" y2="240" stroke="#ddd" stroke-width="0.8" stroke-dasharray="5,5" />
+  <line x1="100" y1="170" x2="740" y2="170" stroke="#ddd" stroke-width="0.8" stroke-dasharray="5,5" />
+  <line x1="100" y1="100" x2="740" y2="100" stroke="#ddd" stroke-width="0.8" stroke-dasharray="5,5" />
+  
+  <!-- Research trend lines -->
+  <!-- Mechanical thrombectomy - orange -->
+  <polyline
+    points="
+      100,440
+      154,420
+      208,390
+      262,360
+      316,330
+      370,290
+      424,250
+      478,220
+      532,190
+      586,170
+      640,150
+      694,130
+    "
+    fill="none"
+    stroke="#ff7f0e"
+    stroke-width="1.5"
+  />
+  
+  <!-- Endovascular treatment - green -->
+  <polyline
+    points="
+      100,430
+      154,410
+      208,380
+      262,350
+      316,310
+      370,270
+      424,230
+      478,190
+      532,160
+      586,140
+      640,120
+      694,100
+    "
+    fill="none"
+    stroke="#2ca02c"
+    stroke-width="1.5"
+  />
+  
+  <!-- Precision rehabilitation - red -->
+  <polyline
+    points="
+      100,445
+      154,435
+      208,420
+      262,400
+      316,370
+      370,330
+      424,280
+      478,230
+      532,180
+      586,150
+      640,130
+      694,110
+    "
+    fill="none"
+    stroke="#d62728"
+    stroke-width="1.5"
+  />
+  
+  <!-- AI-assisted diagnosis - purple -->
+  <polyline
+    points="
+      100,448
+      154,445
+      208,440
+      262,430
+      316,410
+      370,380
+      424,330
+      478,270
+      532,210
+      586,160
+      640,120
+      694,100
+    "
+    fill="none"
+    stroke="#9467bd"
+    stroke-width="1.5"
+  />
+  
+  <!-- Machine learning prediction models - brown -->
+  <polyline
+    points="
+      100,447
+      154,445
+      208,442
+      262,438
+      316,425
+      370,390
+      424,340
+      478,280
+      532,220
+      586,170
+      640,130
+      694,110
+    "
+    fill="none"
+    stroke="#8c564b"
+    stroke-width="1.5"
+  />
+  
+  <!-- Minimally invasive surgery - pink -->
+  <polyline
+    points="
+      100,420
+      154,400
+      208,380
+      262,360
+      316,340
+      370,320
+      424,300
+      478,280
+      532,260
+      586,240
+      640,220
+      694,200
+    "
+    fill="none"
+    stroke="#e377c2"
+    stroke-width="1.5"
+  />
+  
+  <!-- Neuroprotection - grey -->
+  <polyline
+    points="
+      100,350
+      154,330
+      208,310
+      262,300
+      316,295
+      370,290
+      424,285
+      478,280
+      532,275
+      586,270
+      640,265
+      694,260
+    "
+    fill="none"
+    stroke="#7f7f7f"
+    stroke-width="1.5"
+  />
+  
+  <!-- Legend -->
+  <rect x="150" y="500" width="500" height="85" fill="#f8f9fa" rx="5" stroke="#e0e0e0" stroke-width="0.8" />
+  <text x="400" y="520" font-family="Arial" font-size="16" text-anchor="middle" font-weight="bold">图例</text>
+  
+  <!-- Legend items -->
+  <line x1="170" y1="535" x2="200" y2="535" stroke="#ff7f0e" stroke-width="1.5" />
+  <text x="205" y="540" font-family="Arial" font-size="12">机械取栓</text>
+  
+  <line x1="270" y1="535" x2="300" y2="535" stroke="#2ca02c" stroke-width="1.5" />
+  <text x="305" y="540" font-family="Arial" font-size="12">血管内治疗</text>
+  
+  <line x1="380" y1="535" x2="410" y2="535" stroke="#d62728" stroke-width="1.5" />
+  <text x="415" y="540" font-family="Arial" font-size="12">精准康复</text>
+  
+  <line x1="480" y1="535" x2="510" y2="535" stroke="#9467bd" stroke-width="1.5" />
+  <text x="515" y="540" font-family="Arial" font-size="12">AI辅助诊断</text>
+  
+  <line x1="170" y1="560" x2="200" y2="560" stroke="#8c564b" stroke-width="1.5" />
+  <text x="205" y="565" font-family="Arial" font-size="12">机器学习预测模型</text>
+  
+  <line x1="350" y1="560" x2="380" y2="560" stroke="#e377c2" stroke-width="1.5" />
+  <text x="385" y="565" font-family="Arial" font-size="12">微创手术</text>
+  
+  <line x1="470" y1="560" x2="500" y2="560" stroke="#7f7f7f" stroke-width="1.5" />
+  <text x="505" y="565" font-family="Arial" font-size="12">神经保护</text>
+</svg>

@@ -2,6 +2,7 @@
 
 | 项目名称 | 项目描述 |
 |---------|---------|
+| [知识库0.5.2](https://ggvispro.github.io/idea/knowledge_base_052/)  | 加入了纯净版DeepSeek |
 | [知识库0.5.1](https://ggvispro.github.io/idea/knowledge_base_051/)  | 绘制了“文献检索”的趋势线图 |
 | [知识库0.5](https://ggvispro.github.io/idea/knowledge_base_05/)  | 新增了“AI可视化页面” |
 | [知识库0.4.2](https://ggvispro.github.io/idea/knowledge_base_042/)  | 重新做了DeepSeek助手界面 |

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>外科知识库 - 临床知识库</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        /* 导航栏样式 */
+        .nav-bar {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #0071e3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-weight: 500;
+        }
+
+        .username {
+            font-weight: 500;
+        }
+
+        /* 返回按钮 */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: #f5f5f7;
+            border: 1px solid #d2d2d7;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #1d1d1f;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .back-button:hover {
+            background-color: #e8e8ed;
+        }
+
+
+        /* 主内容样式 */
+        .container {
+            max-width: 1200px;
+            margin: 78px auto 40px;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .title-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .subtitle {
+            font-size: 22px;
+            font-weight: 400;
+            color: #6e6e73;
+            margin-bottom: 40px;
+        }
+
+        /* 搜索框样式 */
+        .search-container {
+            margin-bottom: 50px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 18px;
+            border-radius: 12px;
+            border: none;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 4px rgba(0, 125, 250, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #86868b;
+        }
+
+        /* 分类标题 */
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        /* 知识库卡片样式 */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            color: #6e6e73;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        /* 资源列表 */
+        .resource-list {
+            background-color: white;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 60px;
+        }
+
+        .resource-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .resource-item:last-child {
+            border-bottom: none;
+        }
+
+        .resource-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-size: 20px;
+            color: white;
+        }
+
+        .resource-info {
+            flex: 1;
+        }
+
+        .resource-title {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .resource-description {
+            color: #6e6e73;
+            font-size: 14px;
+        }
+
+        .resource-button {
+            background-color: #f5f5f7;
+            color: #0071e3;
+            border: none;
+            border-radius: 100px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .resource-button:hover {
+            background-color: #e5e5ea;
+        }
+
+        /* 底部信息 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #86868b;
+            font-size: 12px;
+        }
+
+        /* 颜色定义 */
+        .bg-blue { background-color: #0071e3; }
+        .bg-green { background-color: #34c759; }
+        .bg-orange { background-color: #ff9500; }
+        .bg-red { background-color: #ff3b30; }
+        .bg-purple { background-color: #af52de; }
+        .bg-teal { background-color: #5ac8fa; }
+        .bg-pink { background-color: #ff2d55; }
+        .bg-indigo { background-color: #5856d6; }
+        .bg-brown { background-color: #a2845e; }
+        .bg-gray { background-color: #8e8e93; }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="logo" onclick="window.location.href='main.html'">临床知识库</div>
+        <div class="user-info" style="cursor: pointer;" onclick="window.location.href='user_profile.html'">
+            <img src="photo/皮卡丘像素.png" class="user-avatar" alt="用户头像">
+            <div class="username">主任</div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <!-- 返回按钮 -->
+        <div class="back-button" onclick="window.location.href='main.html'">
+            ← 返回首页
+        </div>
+        
+        <!-- 页面标题 -->
+        <div class="page-title">
+            外科知识库
+        </div>
+        <p class="subtitle">提供外科各专科的诊疗指南、手术方案和围手术期管理的专业知识</p>
+
+        <!-- 搜索区域 -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="搜索外科疾病、手术方法或治疗指南...">
+                <div class="search-icon">🔍</div>
+            </div>
+        </div>
+
+        <!-- 外科专科分类 -->
+        <h2 class="section-title">外科专科</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon bg-green">普</div>
+                <h3 class="card-title">普通外科</h3>
+                <p class="card-description">胃肠外科、肝胆胰外科、乳腺甲状腺外科等诊疗指南与手术方案。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-orange">骨</div>
+                <h3 class="card-title">骨科</h3>
+                <p class="card-description">骨折、关节疾病、脊柱疾病等骨科疾病的诊断与治疗方案。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-purple">神</div>
+                <h3 class="card-title">神经外科</h3>
+                <p class="card-description">颅脑损伤、脑血管疾病、脑肿瘤的外科治疗方案。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-red">胸</div>
+                <h3 class="card-title">胸心外科</h3>
+                <p class="card-description">心脏、肺部疾病的外科治疗及手术方案。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-blue">泌</div>
+                <h3 class="card-title">泌尿外科</h3>
+                <p class="card-description">泌尿系统疾病的诊断与外科治疗指南。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-teal">整</div>
+                <h3 class="card-title">整形外科</h3>
+                <p class="card-description">创伤修复、美容整形等整形外科手术指南。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-pink">烧</div>
+                <h3 class="card-title">烧伤科</h3>
+                <p class="card-description">烧伤、烫伤的急救处理与治疗方案。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-indigo">麻</div>
+                <h3 class="card-title">麻醉科</h3>
+                <p class="card-description">各类手术麻醉、疼痛管理的专业知识。</p>
+            </div>
+        </div>
+
+        <!-- 外科常见疾病 -->
+        <h2 class="section-title">常见外科疾病</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon" style="background: linear-gradient(145deg, #ff3b30, #ff9500);">急</div>
+                <h3 class="card-title">急腹症</h3>
+                <p class="card-description">阑尾炎、胆囊炎、肠梗阻等急腹症的快速诊断与处理。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-orange">骨</div>
+                <h3 class="card-title">骨折</h3>
+                <p class="card-description">各部位骨折的诊断、复位、固定及康复指南。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-blue">疝</div>
+                <h3 class="card-title">疝气</h3>
+                <p class="card-description">各类疝气的诊断与手术治疗方案。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-purple">脑</div>
+                <h3 class="card-title">颅内出血</h3>
+                <p class="card-description">脑出血、硬膜外/下出血的诊断与紧急处理。</p>
+            </div>
+        </div>
+        
+        <!-- 手术指南 -->
+        <h2 class="section-title">手术指南</h2>
+        <div class="resource-list">
+            <div class="resource-item">
+                <div class="resource-icon bg-green">术</div>
+                <div class="resource-info">
+                    <div class="resource-title">外科手术操作规范</div>
+                    <div class="resource-description">最新版各类外科手术操作指南与标准流程</div>
+                </div>
+                <button class="resource-button">查看详情</button>
+            </div>
+            <div class="resource-item">
+                <div class="resource-icon bg-blue">微</div>
+                <div class="resource-info">
+                    <div class="resource-title">微创手术指南</div>
+                    <div class="resource-description">腹腔镜、胸腔镜等微创手术技术与操作要点</div>
+                </div>
+                <button class="resource-button">查看详情</button>
+            </div>
+            <div class="resource-item">
+                <div class="resource-icon bg-orange">围</div>
+                <div class="resource-info">
+                    <div class="resource-title">围手术期管理</div>
+                    <div class="resource-description">术前准备、术中监测、术后康复的全流程管理指南</div>
+                </div>
+                <button class="resource-button">查看详情</button>
+            </div>
+            <div class="resource-item">
+                <div class="resource-icon bg-red">并</div>
+                <div class="resource-info">
+                    <div class="resource-title">手术并发症防治</div>
+                    <div class="resource-description">常见手术并发症的预防与处理方案</div>
+                </div>
+                <button class="resource-button">查看详情</button>
+            </div>
+        </div>
+
+        <!-- 外科视频资源 -->
+        <h2 class="section-title">手术视频资源</h2>
+        <div class="resource-list">
+            <div class="resource-item">
+                <div class="resource-icon bg-purple">视</div>
+                <div class="resource-info">
+                    <div class="resource-title">经典手术视频教学</div>
+                    <div class="resource-description">各类外科手术的高清示范视频与步骤讲解</div>
+                </div>
+                <button class="resource-button">查看视频</button>
+            </div>
+            <div class="resource-item">
+                <div class="resource-icon bg-teal">讲</div>
+                <div class="resource-info">
+                    <div class="resource-title">外科专家讲座</div>
+                    <div class="resource-description">知名外科专家的学术讲座与疑难病例分析</div>
+                </div>
+                <button class="resource-button">查看视频</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div class="footer">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk 
+    </div>
+</body>
+</html>
