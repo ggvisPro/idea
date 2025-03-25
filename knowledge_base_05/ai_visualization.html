@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI可视化 - 临床知识库</title>
+    <!-- 侧边栏JS -->
+    <script src="js/sidebar.js"></script>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        /* 导航栏样式 */
+        .nav-bar {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #0071e3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-weight: 500;
+        }
+
+        .username {
+            font-weight: 500;
+        }
+
+        /* 主内容样式 */
+        .container {
+            max-width: 1200px;
+            margin: 78px auto 40px;
+            padding: 0 20px;
+        }
+
+        /* 欢迎标题样式 */
+        .welcome {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            font-weight: 400;
+            color: #6e6e73;
+            margin-bottom: 40px;
+        }
+
+        /* 搜索框样式 */
+        .search-container {
+            margin-bottom: 50px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 18px;
+            border-radius: 12px;
+            border: none;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 4px rgba(0, 125, 250, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #86868b;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 20px;
+        }
+
+        /* 问题区域样式 */
+        .question-container {
+            background-color: white;
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            display: none; /* 默认隐藏 */
+        }
+
+        .question-header {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #0071e3;
+        }
+
+        .question-text {
+            font-size: 22px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        /* 可视化结果区域 */
+        .visualization-container {
+            background-color: white;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            display: none; /* 默认隐藏 */
+        }
+
+        .visualization-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        /* 标签切换样式 */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e5e5e5;
+            margin-bottom: 24px;
+        }
+
+        .tab-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #6e6e73;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab-item:hover {
+            color: #0071e3;
+        }
+
+        .tab-item.active {
+            color: #0071e3;
+            border-bottom-color: #0071e3;
+        }
+
+        /* 可视化内容区域 */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 流程图样式 */
+        .flow-chart {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 12px;
+            overflow: auto;
+        }
+
+        /* 思维导图样式 */
+        .mind-map {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 12px;
+            min-height: 400px;
+        }
+
+        /* 文本列表样式 */
+        .text-list {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 12px;
+        }
+
+        .text-list ul {
+            padding-left: 20px;
+        }
+
+        .text-list li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* 表格样式 */
+        .data-table {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 12px;
+            overflow: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* 参考文献样式 */
+        .references {
+            background-color: white;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            display: none; /* 默认隐藏 */
+        }
+
+        .reference-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .reference-list {
+            list-style-type: decimal;
+            padding-left: 20px;
+        }
+
+        .reference-item {
+            margin-bottom: 10px;
+            line-height: 1.5;
+            color: #3a3a3c;
+        }
+
+        .reference-link {
+            color: #0071e3;
+            text-decoration: none;
+        }
+
+        .reference-link:hover {
+            text-decoration: underline;
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #0071e3;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 底部信息 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #86868b;
+            font-size: 12px;
+        }
+
+        /* 热门搜索词样式 */
+        .popular-searches {
+            margin-bottom: 40px;
+            background-color: white;
+            border-radius: 18px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .popular-searches h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1d1d1f;
+        }
+
+        .search-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .search-tag {
+            background-color: #f5f5f7;
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-size: 14px;
+            color: #0071e3;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .search-tag:hover {
+            background-color: #e0e0e5;
+            transform: translateY(-2px);
+        }
+
+        /* 功能卡片样式 */
+        .feature-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background-color: white;
+            border-radius: 18px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #1d1d1f;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: #6e6e73;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .feature-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .preview-caption {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .preview-caption p {
+                max-width: 100%;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="logo">临床知识库</div>
+        <div class="user-info" style="cursor: pointer;" onclick="window.location.href='user_profile.html'">
+            <img src="photo/皮卡丘像素.png" class="user-avatar" alt="用户头像">
+            <div class="username">主任</div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <!-- 欢迎信息 -->
+        <h1 class="welcome">AI 可视化</h1>
+        <p class="subtitle">通过AI可视化，让复杂医学知识一目了然</p>
+
+        <!-- 搜索区域 -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="query-input" class="search-input" placeholder="输入临床问题、疾病、诊疗路径..." value="社区获得性肺炎的诊疗路径">
+                <button id="search-button" class="search-icon">🔍</button>
+            </div>
+        </div>
+
+        <!-- 初始界面内容 - 新增 -->
+        <div id="initial-content">
+            <!-- 热门搜索词 -->
+            <div class="popular-searches">
+                <h3>热门搜索</h3>
+                <div class="search-tags">
+                    <span class="search-tag" onclick="setSearchQuery('高血压诊疗指南')">高血压诊疗指南</span>
+                    <span class="search-tag" onclick="setSearchQuery('2型糖尿病治疗方案')">2型糖尿病治疗方案</span>
+                    <span class="search-tag" onclick="setSearchQuery('新冠肺炎康复建议')">新冠肺炎康复建议</span>
+                    <span class="search-tag" onclick="setSearchQuery('心房颤动抗凝治疗')">心房颤动抗凝治疗</span>
+                    <span class="search-tag" onclick="setSearchQuery('慢性阻塞性肺疾病')">慢性阻塞性肺疾病</span>
+                </div>
+            </div>
+
+            <!-- 功能介绍卡片 -->
+            <div class="feature-cards">
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>智能流程图</h3>
+                    <p>将复杂的临床决策过程转化为清晰的流程图，帮助您快速理解诊疗路径</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>思维导图</h3>
+                    <p>以放射状结构呈现医学知识，展示概念之间的关联，便于整体把握</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💊</div>
+                    <h3>药物治疗表</h3>
+                    <p>药物、剂量、适应症等关键信息一目了然，辅助临床用药决策</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⏱️</div>
+                    <h3>诊疗时间轴</h3>
+                    <p>以时间为轴线，展示疾病诊疗的关键时间节点和干预措施</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 加载动画 -->
+        <div id="loading" class="loading">
+            <div class="loading-spinner"></div>
+            <p>AI正在生成可视化内容，请稍候...</p>
+        </div>
+
+        <!-- 问题区域 -->
+        <div id="question-container" class="question-container">
+            <div class="question-header">您的问题</div>
+            <div id="question-text" class="question-text">社区获得性肺炎的诊疗路径</div>
+        </div>
+
+        <!-- 可视化结果区域 -->
+        <div id="visualization-container" class="visualization-container">
+            <h2 class="visualization-title">AI 回答可视化</h2>
+            
+            <!-- 标签切换 -->
+            <div class="tabs">
+                <div class="tab-item active" data-tab="flowchart">流程图</div>
+                <div class="tab-item" data-tab="mindmap">思维导图</div>
+                <div class="tab-item" data-tab="table">药物治疗</div>
+                <div class="tab-item" data-tab="timeline">时间轴</div>
+            </div>
+
+            <!-- 内容区域 -->
+            <div class="tab-content active" id="flowchart">
+                <div class="flow-chart">
+                    <!-- 使用SVG图片替代Mermaid流程图，并调整大小 -->
+                    <img src="photo/CAP_diagram.svg" alt="社区获得性肺炎诊疗流程图" style="width:80%; margin: 0 auto; display: block;">
+                </div>
+            </div>
+
+            <div class="tab-content" id="mindmap">
+                <div class="mind-map">
+                    <!-- 使用SVG图片替代Mermaid思维导图，并调整大小 -->
+                    <img src="photo/CAP_mindmap.svg" alt="社区获得性肺炎诊疗思维导图" style="width:75%; margin: 0 auto; display: block;">
+                </div>
+            </div>
+
+            <div class="tab-content" id="table">
+                <div class="data-table">
+                    <!-- 美化的表格标题和内容 -->
+                    <h3 style="margin-bottom: 24px; color: #0071e3; font-size: 20px;">社区获得性肺炎常用抗生素治疗方案</h3>
+                    <table style="border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                        <thead>
+                            <tr style="background-color: #f2f7fd;">
+                                <th style="padding: 16px; border-bottom: 2px solid #e0e7ff;">严重程度</th>
+                                <th style="padding: 16px; border-bottom: 2px solid #e0e7ff;">治疗场所</th>
+                                <th style="padding: 16px; border-bottom: 2px solid #e0e7ff;">推荐抗生素</th>
+                                <th style="padding: 16px; border-bottom: 2px solid #e0e7ff;">剂量</th>
+                                <th style="padding: 16px; border-bottom: 2px solid #e0e7ff;">疗程</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="background-color: #fafafa;">
+                                <td rowspan="3" style="padding: 14px; text-align: center; font-weight: 500;">轻度</td>
+                                <td rowspan="3" style="padding: 14px; text-align: center;">门诊</td>
+                                <td style="padding: 14px;">阿莫西林</td>
+                                <td style="padding: 14px;">500mg，每8小时一次</td>
+                                <td style="padding: 14px;">5-7天</td>
+                            </tr>
+                            <tr style="background-color: #ffffff;">
+                                <td style="padding: 14px;">阿奇霉素</td>
+                                <td style="padding: 14px;">首日500mg，随后250mg，每日一次</td>
+                                <td style="padding: 14px;">3-5天</td>
+                            </tr>
+                            <tr style="background-color: #fafafa;">
+                                <td style="padding: 14px;">莫西沙星</td>
+                                <td style="padding: 14px;">400mg，每日一次</td>
+                                <td style="padding: 14px;">5-7天</td>
+                            </tr>
+                            <tr style="background-color: #ffffff;">
+                                <td rowspan="2" style="padding: 14px; text-align: center; font-weight: 500;">中度</td>
+                                <td rowspan="2" style="padding: 14px; text-align: center;">普通病房</td>
+                                <td style="padding: 14px;">头孢曲松+阿奇霉素</td>
+                                <td style="padding: 14px;">2g/日 + 500mg/日</td>
+                                <td style="padding: 14px;">7-10天</td>
+                            </tr>
+                            <tr style="background-color: #fafafa;">
+                                <td style="padding: 14px;">左氧氟沙星</td>
+                                <td style="padding: 14px;">750mg，每日一次</td>
+                                <td style="padding: 14px;">5-7天</td>
+                            </tr>
+                            <tr style="background-color: #ffffff;">
+                                <td rowspan="2" style="padding: 14px; text-align: center; font-weight: 500;">重度</td>
+                                <td rowspan="2" style="padding: 14px; text-align: center;">ICU</td>
+                                <td style="padding: 14px;">哌拉西林/他唑巴坦+阿奇霉素</td>
+                                <td style="padding: 14px;">4.5g，每6小时一次 + 500mg/日</td>
+                                <td style="padding: 14px;">7-14天</td>
+                            </tr>
+                            <tr style="background-color: #fafafa;">
+                                <td style="padding: 14px;">亚胺培南+左氧氟沙星</td>
+                                <td style="padding: 14px;">500mg，每6小时一次 + 750mg/日</td>
+                                <td style="padding: 14px;">7-14天</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="tab-content" id="timeline">
+                <div class="flow-chart">
+                    <!-- 使用SVG图片替代Mermaid时间轴 -->
+                    <img src="photo/CAP_timeline.svg" alt="社区获得性肺炎诊疗时间轴" style="width:100%;">
+                </div>
+            </div>
+        </div>
+
+        <!-- 参考文献 -->
+        <div id="references" class="references">
+            <h3 class="reference-title">参考文献</h3>
+            <ol class="reference-list">
+                <li class="reference-item">
+                    中华医学会呼吸病学分会. 社区获得性肺炎诊断和治疗指南(2016年版). 中华结核和呼吸杂志, 2016, 39(4): 253-279.
+                </li>
+                <li class="reference-item">
+                    Metlay JP, Waterer GW, Long AC, et al. Diagnosis and Treatment of Adults with Community-acquired Pneumonia. An Official Clinical Practice Guideline of the American Thoracic Society and Infectious Diseases Society of America. Am J Respir Crit Care Med. 2019;200(7):e45-e67.
+                </li>
+                <li class="reference-item">
+                    National Institute for Health and Care Excellence. Pneumonia (community-acquired): antimicrobial prescribing. NICE guideline [NG138]. 2019.
+                </li>
+                <li class="reference-item">
+                    Prina E, Ranzani OT, Torres A. Community-acquired pneumonia. Lancet. 2015;386(9998):1097-1108.
+                </li>
+                <li class="reference-item">
+                    Mandell LA, Wunderink RG, Anzueto A, et al. Infectious Diseases Society of America/American Thoracic Society consensus guidelines on the management of community-acquired pneumonia in adults. Clin Infect Dis. 2007;44 Suppl 2:S27-S72.
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div class="footer">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk 
+    </div>
+
+    <script>
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 标签切换功能
+            const tabs = document.querySelectorAll('.tab-item');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // 移除所有活跃状态
+                    tabs.forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // 添加当前活跃状态
+                    tab.classList.add('active');
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // 搜索按钮点击事件
+            document.getElementById('search-button').addEventListener('click', function() {
+                performSearch();
+            });
+            
+            // 回车键搜索
+            document.getElementById('query-input').addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    performSearch();
+                }
+            });
+            
+            // 搜索函数
+            function performSearch() {
+                // 获取输入内容
+                const query = document.getElementById('query-input').value.trim();
+                
+                if (query === '') {
+                    alert('请输入搜索内容');
+                    return;
+                }
+                
+                // 隐藏初始界面内容
+                document.getElementById('initial-content').style.display = 'none';
+                
+                // 显示加载动画
+                document.getElementById('loading').style.display = 'block';
+                
+                // 隐藏任何已经显示的结果
+                document.getElementById('question-container').style.display = 'none';
+                document.getElementById('visualization-container').style.display = 'none';
+                document.getElementById('references').style.display = 'none';
+                
+                // 更新问题文本
+                document.getElementById('question-text').textContent = query + '?';
+                
+                // 模拟API请求延迟 - 严格等待2秒后才显示结果
+                setTimeout(function() {
+                    // 隐藏加载动画
+                    document.getElementById('loading').style.display = 'none';
+                    
+                    // 显示结果
+                    document.getElementById('question-container').style.display = 'block';
+                    document.getElementById('visualization-container').style.display = 'block';
+                    document.getElementById('references').style.display = 'block';
+                    
+                    // 模拟不同搜索词的不同结果
+                    if (query.toLowerCase().includes('糖尿病')) {
+                        // 这里可以根据不同的查询显示不同的结果
+                    }
+                }, 2000); // 确保严格等待2秒
+            }
+            
+            // 添加设置搜索查询的函数
+            window.setSearchQuery = function(query) {
+                document.getElementById('query-input').value = query;
+                document.getElementById('search-button').click();
+            };
+            
+            // 页面加载时不自动显示内容，需要搜索后才显示
+            // 移除下面三行，使初始状态为空白
+            // document.getElementById('question-container').style.display = 'block';
+            // document.getElementById('visualization-container').style.display = 'block';
+            // document.getElementById('references').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
