@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中医知识库 - AI医疗助手</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        /* 导航栏样式 */
+        .nav-bar {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #0071e3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-weight: 500;
+        }
+
+        .username {
+            font-weight: 500;
+        }
+
+        /* 主内容样式 */
+        .container {
+            max-width: 1200px;
+            margin: 78px auto 40px;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #34c759;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            font-weight: 400;
+            color: #6e6e73;
+            margin-bottom: 40px;
+        }
+
+        /* 搜索框样式 */
+        .search-container {
+            margin-bottom: 50px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 18px;
+            border-radius: 12px;
+            border: none;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 4px rgba(52, 199, 89, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #86868b;
+        }
+
+        /* 知识库卡片样式 */
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            color: #6e6e73;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        /* 中医经典区域 */
+        .classics-area {
+            background: linear-gradient(145deg, #34c759, #5ac8fa);
+            border-radius: 18px;
+            padding: 40px;
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        .classics-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .classics-list {
+            margin-bottom: 24px;
+        }
+
+        .classic-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 12px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .classic-item:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+
+        .classic-icon {
+            margin-right: 12px;
+            font-size: 24px;
+        }
+
+        .classic-info {
+            flex: 1;
+        }
+
+        .classic-title {
+            font-weight: 500;
+            font-size: 17px;
+            margin-bottom: 4px;
+        }
+
+        .classic-author {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .view-all-button {
+            background-color: white;
+            color: #34c759;
+            border: none;
+            border-radius: 100px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .view-all-button:hover {
+            transform: scale(1.05);
+        }
+
+        /* 常见证型区域 */
+        .syndromes-section {
+            background-color: white;
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 60px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .syndromes-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1d1d1f;
+        }
+
+        .syndromes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .syndrome-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 10px;
+            background-color: #f5f5f7;
+            transition: transform 0.2s, background-color 0.2s;
+            cursor: pointer;
+        }
+
+        .syndrome-item:hover {
+            background-color: #e8e8ed;
+            transform: translateY(-2px);
+        }
+
+        .syndrome-icon {
+            margin-right: 12px;
+            font-size: 20px;
+        }
+
+        .syndrome-name {
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        /* 返回按钮 */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: #f5f5f7;
+            border: 1px solid #d2d2d7;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #1d1d1f;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .back-button:hover {
+            background-color: #e8e8ed;
+        }
+
+        /* 底部信息 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #86868b;
+            font-size: 12px;
+        }
+
+        /* 颜色定义 */
+        .bg-blue { background-color: #0071e3; }
+        .bg-light-blue { background-color: #42a1ec; }
+        .bg-red { background-color: #ff3b30; }
+        .bg-orange { background-color: #ff9500; }
+        .bg-green { background-color: #34c759; }
+        .bg-yellow { background-color: #ffcc00; }
+        .bg-purple { background-color: #af52de; }
+        .bg-teal { background-color: #5ac8fa; }
+        .bg-wood { background-color: #8D6E63; }
+        .bg-fire { background-color: #FF5722; }
+        .bg-earth { background-color: #FFC107; }
+        .bg-metal { background-color: #9E9E9E; }
+        .bg-water { background-color: #03A9F4; }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="logo" onclick="window.location.href='main.html'">临床知识库</div>
+        <div class="user-info" style="cursor: pointer;" onclick="window.location.href='user_profile.html'">
+            <img src="photo/皮卡丘像素.png" class="user-avatar" alt="用户头像">
+            <div class="username">主任</div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <!-- 返回按钮 -->
+        <div class="back-button" onclick="window.location.href='main.html'">
+            ← 返回首页
+        </div>
+
+        <!-- 欢迎信息 -->
+        <h1 class="welcome">中医知识库</h1>
+        <p class="subtitle">源远流长的中医理论、辨证施治、方剂针灸及现代中医临床应用</p>
+
+        <!-- 搜索区域 -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="搜索中医理论、证型、方剂、穴位或中草药...">
+                <div class="search-icon">🔍</div>
+            </div>
+        </div>
+
+        <!-- 中医基础理论 -->
+        <h2 class="section-title">中医基础理论</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon bg-yellow">阴阳</div>
+                <h3 class="card-title">阴阳五行</h3>
+                <p class="card-description">中医基础理论，阴阳五行学说在人体生理、病理及治疗中的应用。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-purple">藏象</div>
+                <h3 class="card-title">藏象理论</h3>
+                <p class="card-description">脏腑功能、形态、精神活动及其相互关系的系统理论。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-teal">经络</div>
+                <h3 class="card-title">经络学说</h3>
+                <p class="card-description">十二经脉、奇经八脉、络脉及其运行路径与功能的理论体系。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-red">气血</div>
+                <h3 class="card-title">气血津液</h3>
+                <p class="card-description">中医对人体基本物质的认识，包括气、血、津、液的生成与功能。</p>
+            </div>
+        </div>
+
+        <!-- 中医诊断与治疗 -->
+        <h2 class="section-title">诊断与治疗</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon" style="background: linear-gradient(145deg, #ff3b30, #ff9500);">四诊</div>
+                <h3 class="card-title">四诊法</h3>
+                <p class="card-description">望、闻、问、切四种诊断方法，包括舌诊、脉诊等特色诊法。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon" style="background: linear-gradient(145deg, #34c759, #5ac8fa);">辨证</div>
+                <h3 class="card-title">辨证论治</h3>
+                <p class="card-description">八纲辨证、脏腑辨证、气血辨证、六经辨证等辨证体系。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-orange">方剂</div>
+                <h3 class="card-title">中药方剂</h3>
+                <p class="card-description">经典方剂组成、功效、主治病症及加减应用原则。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-blue">针灸</div>
+                <h3 class="card-title">针灸推拿</h3>
+                <p class="card-description">针灸治疗原理、常用穴位、操作技术及临床应用指南。</p>
+            </div>
+        </div>
+
+        <!-- 常见证型区域 -->
+        <div class="syndromes-section">
+            <h3 class="syndromes-title">常见证型</h3>
+            <div class="syndromes-grid">
+                <div class="syndrome-item">
+                    <div class="syndrome-icon">🔥</div>
+                    <div class="syndrome-name">肝火上炎</div>
+                </div>
+                <div class="syndrome-item">
+                    <div class="syndrome-icon">💧</div>
+                    <div class="syndrome-name">脾虚湿盛</div>
+                </div>
+                <div class="syndrome-item">
+                    <div class="syndrome-icon">❄️</div>
+                    <div class="syndrome-name">肾阳虚</div>
+                </div>
+                <div class="syndrome-item">
+                    <div class="syndrome-icon">🌊</div>
+                    <div class="syndrome-name">肺阴虚</div>
+                </div>
+                <div class="syndrome-item">
+                    <div class="syndrome-icon">⚡</div>
+                    <div class="syndrome-name">心血虚</div>
+                </div>
+                <div class="syndrome-item">
+                    <div class="syndrome-icon">🌫️</div>
+                    <div class="syndrome-name">痰湿阻滞</div>
+                </div>
+                <div class="syndrome-item">
+                    <div class="syndrome-icon">🧊</div>
+                    <div class="syndrome-name">寒滞肝脉</div>
+                </div>
+                <div class="syndrome-item">
+                    <div class="syndrome-icon">🩸</div>
+                    <div class="syndrome-name">血瘀证</div>
+                </div>
+                <div class="syndrome-item">
+                    <div class="syndrome-icon">💨</div>
+                    <div class="syndrome-name">气滞证</div>
+                </div>
+                <div class="syndrome-item">
+                    <div class="syndrome-icon">💪</div>
+                    <div class="syndrome-name">气虚证</div>
+                </div>
+                <div class="syndrome-item">
+                    <div class="syndrome-icon">🔄</div>
+                    <div class="syndrome-name">阴阳两虚</div>
+                </div>
+                <div class="syndrome-item">
+                    <div class="syndrome-icon">☯️</div>
+                    <div class="syndrome-name">阴阳失调</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 中医专科 -->
+        <h2 class="section-title">中医专科</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon bg-wood">内</div>
+                <h3 class="card-title">中医内科</h3>
+                <p class="card-description">感冒、咳嗽、胃痛、头痛等内科疾病的中医诊疗与用药。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-fire">外</div>
+                <h3 class="card-title">中医外科</h3>
+                <p class="card-description">疮疡、痈肿、骨伤科等外科疾病的中医诊疗方法。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-earth">妇</div>
+                <h3 class="card-title">中医妇科</h3>
+                <p class="card-description">月经不调、带下、胎前产后等妇科疾病的中医治疗。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon bg-metal">儿</div>
+                <h3 class="card-title">中医儿科</h3>
+                <p class="card-description">小儿脏腑特点、病因病机及常见疾病的中医治疗。</p>
+            </div>
+        </div>
+
+        <!-- 中医经典著作区域 -->
+        <div class="classics-area">
+            <h2 class="classics-title">中医经典著作</h2>
+            <div class="classics-list">
+                <div class="classic-item">
+                    <div class="classic-icon">📚</div>
+                    <div class="classic-info">
+                        <div class="classic-title">《黄帝内经》</div>
+                        <div class="classic-author">作者：佚名 | 约成书于战国至西汉时期</div>
+                    </div>
+                </div>
+                <div class="classic-item">
+                    <div class="classic-icon">📚</div>
+                    <div class="classic-info">
+                        <div class="classic-title">《伤寒杂病论》</div>
+                        <div class="classic-author">作者：张仲景 | 东汉末年</div>
+                    </div>
+                </div>
+                <div class="classic-item">
+                    <div class="classic-icon">📚</div>
+                    <div class="classic-info">
+                        <div class="classic-title">《本草纲目》</div>
+                        <div class="classic-author">作者：李时珍 | 明代</div>
+                    </div>
+                </div>
+            </div>
+            <button class="view-all-button">查看全部经典</button>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div class="footer">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk
+    </div>
+</body>
+</html>
