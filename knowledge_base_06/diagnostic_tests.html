@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>辅助检查 - 临床知识库</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // 配置Tailwind主题 - 使用蓝色/青色作为辅助检查的主色调
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#ecfeff',
+                            100: '#cffafe',
+                            200: '#a5f3fc',
+                            300: '#67e8f9',
+                            400: '#22d3ee',
+                            500: '#06b6d4',
+                            600: '#0891b2',
+                            700: '#0e7490',
+                            800: '#155e75',
+                            900: '#164e63',
+                        },
+                    },
+                    transitionProperty: {
+                        'height': 'height',
+                        'spacing': 'margin, padding',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer components {
+            .card-hover {
+                @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+            }
+            
+            .card-specialty {
+                @apply relative overflow-hidden rounded-xl transition-all duration-300 
+                       hover:shadow-xl border border-transparent;
+            }
+            
+            .card-specialty:hover {
+                @apply border-gray-200 dark:border-gray-700;
+            }
+            
+            .card-red {
+                @apply bg-red-50 dark:bg-red-900/20;
+            }
+            
+            .card-blue {
+                @apply bg-blue-50 dark:bg-blue-900/20;
+            }
+            
+            .card-yellow {
+                @apply bg-yellow-50 dark:bg-yellow-900/20;
+            }
+            
+            .card-green {
+                @apply bg-green-50 dark:bg-green-900/20;
+            }
+            
+            .card-purple {
+                @apply bg-purple-50 dark:bg-purple-900/20;
+            }
+            
+            .card-teal {
+                @apply bg-teal-50 dark:bg-teal-900/20;
+            }
+            
+            .card-orange {
+                @apply bg-orange-50 dark:bg-orange-900/20;
+            }
+            
+            .search-input {
+                @apply w-full py-3 px-5 rounded-xl border border-gray-200 
+                       focus:ring-4 focus:ring-primary-200 focus:border-primary-500 
+                       outline-none transition-all duration-200
+                       dark:bg-gray-800 dark:border-gray-700 dark:focus:ring-primary-800 dark:focus:border-primary-600;
+            }
+            
+            .btn-primary {
+                @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 
+                       rounded-full transition duration-300 ease-in-out 
+                       hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50
+                       dark:bg-primary-700 dark:hover:bg-primary-600;
+            }
+            
+            .icon-circle {
+                @apply flex items-center justify-center rounded-full w-12 h-12 text-white;
+            }
+            
+            .search-chip {
+                @apply px-4 py-1.5 rounded-full text-sm font-medium bg-primary-100 text-primary-700 
+                      transition-all duration-200 cursor-pointer hover:bg-primary-200
+                      dark:bg-primary-900/30 dark:text-primary-300 dark:hover:bg-primary-900/50;
+            }
+            
+            .result-abnormal {
+                @apply text-red-600 dark:text-red-400 font-medium;
+            }
+            
+            .result-normal {
+                @apply text-green-600 dark:text-green-400 font-medium;
+            }
+        }
+    </style>
+    <!-- 引入主题切换脚本 -->
+    <script src="js/theme-toggle.js"></script>
+    <!-- 引入导航栏脚本 -->
+    <script src="js/navbar.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <!-- 导航栏由JS自动插入 -->
+
+    <!-- 主内容区域 -->
+    <main class="container mx-auto px-4 pt-24 pb-12">
+        <!-- 返回按钮 -->
+        <div class="mb-6">
+            <a href="main.html" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i> 返回首页
+            </a>
+        </div>
+
+        <!-- 欢迎信息 -->
+        <div class="mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-primary-600 dark:text-primary-400 mb-3">辅助检查</h1>
+            <p class="text-xl text-gray-600 dark:text-gray-400">提供常见检验检查结果解读、影像学检查指南及参考值查询</p>
+        </div>
+
+        <!-- 搜索区域 -->
+        <div class="mb-12">
+            <div class="max-w-3xl mx-auto relative">
+                <input type="text" class="search-input" placeholder="搜索检查项目名称或缩写...">
+                <button type="submit" class="absolute right-4 top-1/2 transform -translate-y-1/2">
+                    <i class="fas fa-search text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors"></i>
+                </button>
+            </div>
+            <div class="flex flex-wrap justify-center gap-2 mt-4">
+                <div class="search-chip">血常规</div>
+                <div class="search-chip">肝功能</div>
+                <div class="search-chip">肾功能</div>
+                <div class="search-chip">血脂</div>
+                <div class="search-chip">电解质</div>
+                <div class="search-chip">胸部CT</div>
+            </div>
+        </div>
+
+        <!-- 检查分类 -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+                <i class="fas fa-microscope text-primary-500 dark:text-primary-400 mr-3"></i>
+                检查分类
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- 血液检验 -->
+                <div class="card-specialty card-hover card-red p-6">
+                    <div class="icon-circle bg-gradient-to-r from-red-500 to-red-600 mb-5">
+                        <i class="fas fa-vial"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">血液检验</h3>
+                    <p class="text-gray-600 dark:text-gray-300">血常规、生化检查、免疫学检查、内分泌相关检查等血液学检验项目。</p>
+                </div>
+                
+                <!-- 尿液检验 -->
+                <div class="card-specialty card-hover card-yellow p-6">
+                    <div class="icon-circle bg-gradient-to-r from-yellow-500 to-yellow-600 mb-5">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">尿液检验</h3>
+                    <p class="text-gray-600 dark:text-gray-300">尿常规、尿沉渣、24小时尿蛋白定量等尿液检查项目。</p>
+                </div>
+                
+                <!-- 影像学检查 -->
+                <div class="card-specialty card-hover card-teal p-6">
+                    <div class="icon-circle bg-gradient-to-r from-teal-500 to-teal-600 mb-5">
+                        <i class="fas fa-x-ray"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">影像学检查</h3>
+                    <p class="text-gray-600 dark:text-gray-300">X线、CT、核磁共振、超声、PET-CT等影像学检查技术。</p>
+                </div>
+                
+                <!-- 心电图检查 -->
+                <div class="card-specialty card-hover card-blue p-6">
+                    <div class="icon-circle bg-gradient-to-r from-blue-500 to-blue-600 mb-5">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">心电图检查</h3>
+                    <p class="text-gray-600 dark:text-gray-300">常规心电图、动态心电图、运动心电图、心脏电生理检查等。</p>
+                </div>
+                
+                <!-- 内镜检查 -->
+                <div class="card-specialty card-hover card-purple p-6">
+                    <div class="icon-circle bg-gradient-to-r from-purple-500 to-purple-600 mb-5">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">内镜检查</h3>
+                    <p class="text-gray-600 dark:text-gray-300">胃镜、肠镜、支气管镜、膀胱镜等内镜检查技术。</p>
+                </div>
+                
+                <!-- 病理检查 -->
+                <div class="card-specialty card-hover card-green p-6">
+                    <div class="icon-circle bg-gradient-to-r from-green-500 to-green-600 mb-5">
+                        <i class="fas fa-microscope"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">病理检查</h3>
+                    <p class="text-gray-600 dark:text-gray-300">组织病理、细胞病理、特殊染色、免疫组化等病理学诊断。</p>
+                </div>
+                
+                <!-- 功能检查 -->
+                <div class="card-specialty card-hover card-orange p-6">
+                    <div class="icon-circle bg-gradient-to-r from-orange-500 to-orange-600 mb-5">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">功能检查</h3>
+                    <p class="text-gray-600 dark:text-gray-300">肺功能、心功能、肝功能、肾功能等器官功能评估。</p>
+                </div>
+                
+                <!-- 微生物检验 -->
+                <div class="card-specialty card-hover card-teal p-6">
+                    <div class="icon-circle bg-gradient-to-r from-teal-500 to-teal-600 mb-5">
+                        <i class="fas fa-bacteria"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">微生物检验</h3>
+                    <p class="text-gray-600 dark:text-gray-300">细菌培养、药敏试验、真菌检查、病毒学检测等。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 参考值查询工具 -->
+        <section class="mb-16 bg-gradient-to-r from-primary-600 to-primary-800 dark:from-primary-800 dark:to-primary-900 rounded-xl text-white p-8">
+            <h2 class="text-2xl font-bold mb-4 flex items-center">
+                <i class="fas fa-search-plus mr-3"></i>
+                实验室检查参考值查询
+            </h2>
+            <p class="text-lg mb-6 opacity-90">输入检验项目名称或缩写，快速查询成人、儿童、老年人和孕妇的正常参考值范围</p>
+            <div class="flex gap-3 max-w-3xl">
+                <input type="text" class="flex-1 py-3 px-4 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50" placeholder="输入检验项目（如：血红蛋白、ALT、TSH等）">
+                <button class="bg-white text-primary-600 hover:bg-gray-100 font-medium py-2.5 px-6 rounded-full transition duration-300 hover:scale-105">
+                    查询
+                </button>
+            </div>
+        </section>
+
+        <!-- 异常结果解读 -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+                <i class="fas fa-file-medical-alt text-primary-500 dark:text-primary-400 mr-3"></i>
+                常见异常检验结果解读
+            </h2>
+            <div class="overflow-x-auto bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr class="bg-primary-600 dark:bg-primary-700 text-white">
+                            <th class="py-4 px-6 text-left w-1/4">检验项目</th>
+                            <th class="py-4 px-6 text-left w-1/5">异常结果</th>
+                            <th class="py-4 px-6 text-left w-1/2">临床意义</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <td class="py-4 px-6 font-medium">白细胞计数(WBC)</td>
+                            <td class="py-4 px-6 result-abnormal"><i class="fas fa-arrow-up mr-1"></i> 升高</td>
+                            <td class="py-4 px-6">常见于细菌感染、炎症反应、白血病、组织损伤等</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <td class="py-4 px-6 font-medium">白细胞计数(WBC)</td>
+                            <td class="py-4 px-6 result-abnormal"><i class="fas fa-arrow-down mr-1"></i> 降低</td>
+                            <td class="py-4 px-6">可见于病毒感染、骨髓抑制、脾功能亢进、自身免疫性疾病等</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <td class="py-4 px-6 font-medium">血红蛋白(Hb)</td>
+                            <td class="py-4 px-6 result-abnormal"><i class="fas fa-arrow-down mr-1"></i> 降低</td>
+                            <td class="py-4 px-6">各类贫血、失血、血液稀释、营养不良、慢性疾病等</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <td class="py-4 px-6 font-medium">血小板计数(PLT)</td>
+                            <td class="py-4 px-6 result-abnormal"><i class="fas fa-arrow-down mr-1"></i> 降低</td>
+                            <td class="py-4 px-6">免疫性血小板减少症、DIC、脾功能亢进、药物因素等</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <td class="py-4 px-6 font-medium">丙氨酸氨基转移酶(ALT)</td>
+                            <td class="py-4 px-6 result-abnormal"><i class="fas fa-arrow-up mr-1"></i> 升高</td>
+                            <td class="py-4 px-6">肝细胞损伤，如病毒性肝炎、药物性肝损伤、酒精性肝病等</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 报告解读工具 -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+                <i class="fas fa-file-medical text-primary-500 dark:text-primary-400 mr-3"></i>
+                医学影像报告解读助手
+            </h2>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-8">
+                <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-10 text-center cursor-pointer hover:border-primary-500 dark:hover:border-primary-400 transition-colors">
+                    <i class="fas fa-file-upload text-gray-400 dark:text-gray-500 text-4xl mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">上传医学影像报告进行智能解读</h3>
+                    <p class="text-gray-500 dark:text-gray-400">支持CT、MRI、X光、超声等影像检查报告的文字识别和解读</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 检查指南 -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+                <i class="fas fa-book-medical text-primary-500 dark:text-primary-400 mr-3"></i>
+                检查指南
+            </h2>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm divide-y divide-gray-200 dark:divide-gray-700">
+                <div class="flex items-center py-5 px-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <div class="icon-circle bg-gradient-to-r from-teal-500 to-teal-600 flex-shrink-0 mr-4">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold">检查前准备指南</h3>
+                        <p class="text-gray-600 dark:text-gray-400">各类检查前的注意事项、禁忌症、准备工作等专业指导</p>
+                    </div>
+                    <button class="px-4 py-2 rounded-full text-primary-600 bg-primary-50 hover:bg-primary-100 font-medium transition-colors dark:bg-primary-900/20 dark:text-primary-400 dark:hover:bg-primary-900/30">
+                        查看详情
+                    </button>
+                </div>
+                
+                <div class="flex items-center py-5 px-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <div class="icon-circle bg-gradient-to-r from-blue-500 to-blue-600 flex-shrink-0 mr-4">
+                        <i class="fas fa-route"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold">临床路径推荐</h3>
+                        <p class="text-gray-600 dark:text-gray-400">各种常见疾病的合理检查顺序与组合推荐</p>
+                    </div>
+                    <button class="px-4 py-2 rounded-full text-primary-600 bg-primary-50 hover:bg-primary-100 font-medium transition-colors dark:bg-primary-900/20 dark:text-primary-400 dark:hover:bg-primary-900/30">
+                        查看详情
+                    </button>
+                </div>
+                
+                <div class="flex items-center py-5 px-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <div class="icon-circle bg-gradient-to-r from-green-500 to-green-600 flex-shrink-0 mr-4">
+                        <i class="fas fa-notes-medical"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold">典型病例解析</h3>
+                        <p class="text-gray-600 dark:text-gray-400">通过临床案例学习检查结果的解读与鉴别诊断</p>
+                    </div>
+                    <button class="px-4 py-2 rounded-full text-primary-600 bg-primary-50 hover:bg-primary-100 font-medium transition-colors dark:bg-primary-900/20 dark:text-primary-400 dark:hover:bg-primary-900/30">
+                        查看详情
+                    </button>
+                </div>
+                
+                <div class="flex items-center py-5 px-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <div class="icon-circle bg-gradient-to-r from-purple-500 to-purple-600 flex-shrink-0 mr-4">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold">专家讲解视频</h3>
+                        <p class="text-gray-600 dark:text-gray-400">资深临床医师讲解检验、影像检查结果的诊断价值</p>
+                    </div>
+                    <button class="px-4 py-2 rounded-full text-primary-600 bg-primary-50 hover:bg-primary-100 font-medium transition-colors dark:bg-primary-900/20 dark:text-primary-400 dark:hover:bg-primary-900/30">
+                        观看视频
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 底部信息 -->
+    <footer class="py-6 text-center text-gray-500 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-800">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk
+    </footer>
+</body>
+</html>

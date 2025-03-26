@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>临床指南 - 临床知识库</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // 配置Tailwind主题 - 使用蓝色作为临床指南的主色调
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                    },
+                    transitionProperty: {
+                        'height': 'height',
+                        'spacing': 'margin, padding',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer components {
+            .card-hover {
+                @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+            }
+            
+            .card-specialty {
+                @apply relative overflow-hidden rounded-xl transition-all duration-300 
+                       hover:shadow-xl border border-transparent;
+            }
+            
+            .card-specialty:hover {
+                @apply border-gray-200 dark:border-gray-700;
+            }
+            
+            .card-red {
+                @apply bg-red-50 dark:bg-red-900/20;
+            }
+            
+            .card-blue {
+                @apply bg-blue-50 dark:bg-blue-900/20;
+            }
+            
+            .card-yellow {
+                @apply bg-yellow-50 dark:bg-yellow-900/20;
+            }
+            
+            .card-green {
+                @apply bg-green-50 dark:bg-green-900/20;
+            }
+            
+            .card-purple {
+                @apply bg-purple-50 dark:bg-purple-900/20;
+            }
+            
+            .card-teal {
+                @apply bg-teal-50 dark:bg-teal-900/20;
+            }
+            
+            .card-orange {
+                @apply bg-orange-50 dark:bg-orange-900/20;
+            }
+            
+            .card-gray {
+                @apply bg-gray-50 dark:bg-gray-900/20;
+            }
+            
+            .search-input {
+                @apply w-full py-3 px-5 rounded-xl border border-gray-200 
+                       focus:ring-4 focus:ring-primary-200 focus:border-primary-500 
+                       outline-none transition-all duration-200
+                       dark:bg-gray-800 dark:border-gray-700 dark:focus:ring-primary-800 dark:focus:border-primary-600;
+            }
+            
+            .btn-primary {
+                @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 
+                       rounded-full transition duration-300 ease-in-out 
+                       hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50
+                       dark:bg-primary-700 dark:hover:bg-primary-600;
+            }
+            
+            .icon-circle {
+                @apply flex items-center justify-center rounded-full w-12 h-12 text-white;
+            }
+            
+            .update-badge {
+                @apply px-2 py-1 text-xs font-medium rounded bg-primary-600 text-white dark:bg-primary-700;
+            }
+        }
+    </style>
+    <!-- 引入主题切换脚本 -->
+    <script src="js/theme-toggle.js"></script>
+    <!-- 引入导航栏脚本 -->
+    <script src="js/navbar.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <!-- 导航栏由JS自动插入 -->
+
+    <!-- 主内容区域 -->
+    <main class="container mx-auto px-4 pt-24 pb-12">
+        <!-- 返回按钮 -->
+        <div class="mb-6">
+            <a href="main.html" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i> 返回首页
+            </a>
+        </div>
+
+        <!-- 欢迎信息 -->
+        <div class="mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-primary-600 dark:text-primary-400 mb-3">临床指南</h1>
+            <p class="text-xl text-gray-600 dark:text-gray-400">中国及国际权威医学组织发布的最新临床诊疗指南</p>
+        </div>
+
+        <!-- 搜索区域 -->
+        <div class="mb-12">
+            <div class="max-w-3xl mx-auto relative">
+                <input type="text" class="search-input" placeholder="搜索疾病、药物或诊疗指南...">
+                <button type="submit" class="absolute right-4 top-1/2 transform -translate-y-1/2">
+                    <i class="fas fa-search text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 专科指南 -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+                <i class="fas fa-stethoscope text-primary-500 dark:text-primary-400 mr-3"></i>
+                专科指南
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- 内科指南 -->
+                <div class="card-specialty card-hover card-blue p-6">
+                    <div class="icon-circle bg-gradient-to-r from-blue-500 to-blue-600 mb-5">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">内科指南</h3>
+                    <p class="text-gray-600 dark:text-gray-300">涵盖心血管、呼吸、消化、内分泌等内科疾病的诊疗指南。</p>
+                </div>
+                
+                <!-- 外科指南 -->
+                <div class="card-specialty card-hover card-green p-6">
+                    <div class="icon-circle bg-gradient-to-r from-green-500 to-green-600 mb-5">
+                        <i class="fas fa-procedures"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">外科指南</h3>
+                    <p class="text-gray-600 dark:text-gray-300">普外科、骨科、神经外科等手术规范与围手术期管理指南。</p>
+                </div>
+                
+                <!-- 妇产科指南 -->
+                <div class="card-specialty card-hover card-purple p-6">
+                    <div class="icon-circle bg-gradient-to-r from-purple-500 to-purple-600 mb-5">
+                        <i class="fas fa-female"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">妇产科指南</h3>
+                    <p class="text-gray-600 dark:text-gray-300">妇科疾病、产前检查、妊娠管理及分娩相关指南。</p>
+                </div>
+                
+                <!-- 儿科指南 -->
+                <div class="card-specialty card-hover card-orange p-6">
+                    <div class="icon-circle bg-gradient-to-r from-orange-500 to-orange-600 mb-5">
+                        <i class="fas fa-baby"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">儿科指南</h3>
+                    <p class="text-gray-600 dark:text-gray-300">小儿疾病诊疗、预防接种及生长发育监测指南。</p>
+                </div>
+                
+                <!-- 神经精神指南 -->
+                <div class="card-specialty card-hover card-teal p-6">
+                    <div class="icon-circle bg-gradient-to-r from-teal-500 to-teal-600 mb-5">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">神经精神指南</h3>
+                    <p class="text-gray-600 dark:text-gray-300">神经系统疾病与精神疾病的诊断、治疗及康复指南。</p>
+                </div>
+                
+                <!-- 急诊医学指南 -->
+                <div class="card-specialty card-hover card-red p-6">
+                    <div class="icon-circle bg-gradient-to-r from-red-500 to-red-600 mb-5">
+                        <i class="fas fa-ambulance"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">急诊医学指南</h3>
+                    <p class="text-gray-600 dark:text-gray-300">急危重症识别、急救处理及院前急救流程指南。</p>
+                </div>
+                
+                <!-- 老年医学指南 -->
+                <div class="card-specialty card-hover card-yellow p-6">
+                    <div class="icon-circle bg-gradient-to-r from-yellow-500 to-yellow-600 mb-5">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">老年医学指南</h3>
+                    <p class="text-gray-600 dark:text-gray-300">老年综合评估、老年疾病特点及老年人用药指南。</p>
+                </div>
+                
+                <!-- 康复医学指南 -->
+                <div class="card-specialty card-hover card-gray p-6">
+                    <div class="icon-circle bg-gradient-to-r from-gray-500 to-gray-600 mb-5">
+                        <i class="fas fa-walking"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">康复医学指南</h3>
+                    <p class="text-gray-600 dark:text-gray-300">各类疾病的康复评定、康复治疗及功能训练指南。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 疾病指南 -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+                <i class="fas fa-book-medical text-primary-500 dark:text-primary-400 mr-3"></i>
+                疾病指南
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- 心血管疾病 -->
+                <div class="card-specialty card-hover card-red p-6">
+                    <div class="icon-circle bg-gradient-to-r from-red-500 to-orange-500 mb-5">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">心血管疾病</h3>
+                    <p class="text-gray-600 dark:text-gray-300">高血压、冠心病、心力衰竭、心律失常等心血管疾病指南。</p>
+                </div>
+                
+                <!-- 呼吸系统疾病 -->
+                <div class="card-specialty card-hover card-blue p-6">
+                    <div class="icon-circle bg-gradient-to-r from-blue-500 to-teal-500 mb-5">
+                        <i class="fas fa-lungs"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">呼吸系统疾病</h3>
+                    <p class="text-gray-600 dark:text-gray-300">哮喘、COPD、肺炎、肺癌等呼吸系统疾病诊疗指南。</p>
+                </div>
+                
+                <!-- 消化系统疾病 -->
+                <div class="card-specialty card-hover card-yellow p-6">
+                    <div class="icon-circle bg-gradient-to-r from-yellow-500 to-orange-500 mb-5">
+                        <i class="fas fa-stomach"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">消化系统疾病</h3>
+                    <p class="text-gray-600 dark:text-gray-300">胃食管反流、消化性溃疡、肝炎、炎症性肠病指南。</p>
+                </div>
+                
+                <!-- 代谢性疾病 -->
+                <div class="card-specialty card-hover card-green p-6">
+                    <div class="icon-circle bg-gradient-to-r from-green-500 to-teal-500 mb-5">
+                        <i class="fas fa-vial"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">代谢性疾病</h3>
+                    <p class="text-gray-600 dark:text-gray-300">糖尿病、痛风、高脂血症等代谢性疾病诊疗指南。</p>
+                </div>
+                
+                <!-- 神经系统疾病 -->
+                <div class="card-specialty card-hover card-purple p-6">
+                    <div class="icon-circle bg-gradient-to-r from-purple-500 to-indigo-500 mb-5">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">神经系统疾病</h3>
+                    <p class="text-gray-600 dark:text-gray-300">脑卒中、癫痫、阿尔茨海默病等神经系统疾病指南。</p>
+                </div>
+                
+                <!-- 肿瘤疾病 -->
+                <div class="card-specialty card-hover card-red p-6">
+                    <div class="icon-circle bg-gradient-to-r from-pink-500 to-red-500 mb-5">
+                        <i class="fas fa-disease"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">肿瘤疾病</h3>
+                    <p class="text-gray-600 dark:text-gray-300">各系统恶性肿瘤的筛查、诊断、分期及治疗指南。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 热门临床指南 -->
+        <section class="mb-16 bg-gradient-to-r from-primary-600 to-primary-800 dark:from-primary-800 dark:to-primary-900 rounded-xl text-white p-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <i class="fas fa-star mr-3"></i>
+                热门临床指南
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white bg-opacity-10 hover:bg-opacity-20 rounded-xl p-5 transition-all hover:-translate-y-1 hover:shadow-lg cursor-pointer">
+                    <h3 class="text-lg font-semibold mb-2">2型糖尿病防治指南（2023版）</h3>
+                    <p class="text-sm text-white opacity-90 mb-2">中华医学会内分泌学分会</p>
+                    <p class="text-xs text-white opacity-70">更新于：2023-08-15</p>
+                </div>
+                <div class="bg-white bg-opacity-10 hover:bg-opacity-20 rounded-xl p-5 transition-all hover:-translate-y-1 hover:shadow-lg cursor-pointer">
+                    <h3 class="text-lg font-semibold mb-2">高血压诊疗指南（2024版）</h3>
+                    <p class="text-sm text-white opacity-90 mb-2">中国高血压联盟</p>
+                    <p class="text-xs text-white opacity-70">更新于：2024-03-22</p>
+                </div>
+                <div class="bg-white bg-opacity-10 hover:bg-opacity-20 rounded-xl p-5 transition-all hover:-translate-y-1 hover:shadow-lg cursor-pointer">
+                    <h3 class="text-lg font-semibold mb-2">冠状动脉疾病诊断与治疗指南</h3>
+                    <p class="text-sm text-white opacity-90 mb-2">中华心血管病学会</p>
+                    <p class="text-xs text-white opacity-70">更新于：2024-01-10</p>
+                </div>
+                <div class="bg-white bg-opacity-10 hover:bg-opacity-20 rounded-xl p-5 transition-all hover:-translate-y-1 hover:shadow-lg cursor-pointer">
+                    <h3 class="text-lg font-semibold mb-2">社区获得性肺炎管理指南</h3>
+                    <p class="text-sm text-white opacity-90 mb-2">中华医学会呼吸病学分会</p>
+                    <p class="text-xs text-white opacity-70">更新于：2023-11-05</p>
+                </div>
+                <div class="bg-white bg-opacity-10 hover:bg-opacity-20 rounded-xl p-5 transition-all hover:-translate-y-1 hover:shadow-lg cursor-pointer">
+                    <h3 class="text-lg font-semibold mb-2">急性缺血性脑卒中诊治指南</h3>
+                    <p class="text-sm text-white opacity-90 mb-2">中华神经科学会</p>
+                    <p class="text-xs text-white opacity-70">更新于：2024-02-18</p>
+                </div>
+                <div class="bg-white bg-opacity-10 hover:bg-opacity-20 rounded-xl p-5 transition-all hover:-translate-y-1 hover:shadow-lg cursor-pointer">
+                    <h3 class="text-lg font-semibold mb-2">慢性阻塞性肺疾病诊疗规范</h3>
+                    <p class="text-sm text-white opacity-90 mb-2">中华医学会呼吸病学分会</p>
+                    <p class="text-xs text-white opacity-70">更新于：2023-12-25</p>
+                </div>
+            </div>
+            <div class="text-center">
+                <button class="btn-primary bg-white text-primary-600 hover:bg-gray-100">
+                    <i class="fas fa-list-ul mr-2"></i> 查看全部热门指南
+                </button>
+            </div>
+        </section>
+
+        <!-- 最新更新 -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+                <i class="fas fa-clock text-primary-500 dark:text-primary-400 mr-3"></i>
+                最新更新
+            </h2>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm divide-y divide-gray-200 dark:divide-gray-700">
+                <div class="flex items-start p-5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <span class="update-badge mr-3 mt-1">新增</span>
+                    <div>
+                        <h3 class="font-medium mb-1">肺癌早期筛查与精准治疗专家共识（2025版）</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">2025-04-01</p>
+                    </div>
+                </div>
+                <div class="flex items-start p-5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <span class="update-badge mr-3 mt-1">更新</span>
+                    <div>
+                        <h3 class="font-medium mb-1">帕金森病诊断与治疗指南（第五版）</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">2025-03-28</p>
+                    </div>
+                </div>
+                <div class="flex items-start p-5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <span class="update-badge mr-3 mt-1">新增</span>
+                    <div>
+                        <h3 class="font-medium mb-1">心血管疾病康复治疗中国专家共识</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">2025-03-20</p>
+                    </div>
+                </div>
+                <div class="flex items-start p-5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <span class="update-badge mr-3 mt-1">更新</span>
+                    <div>
+                        <h3 class="font-medium mb-1">中国炎症性肠病诊断与治疗指南</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">2025-03-15</p>
+                    </div>
+                </div>
+                <div class="flex items-start p-5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <span class="update-badge mr-3 mt-1">更新</span>
+                    <div>
+                        <h3 class="font-medium mb-1">妊娠期糖尿病筛查与管理指南（2025版）</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">2025-03-10</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 底部信息 -->
+    <footer class="py-6 text-center text-gray-500 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-800">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk
+    </footer>
+</body>
+</html>

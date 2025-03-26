@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医学文献检索 - AI医疗助手</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // 配置Tailwind主题
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                    },
+                    transitionProperty: {
+                        'height': 'height',
+                        'spacing': 'margin, padding',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 自定义样式补充 */
+        @layer utilities {
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .search-focus:focus {
+                box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+            }
+            .btn-hover {
+                transition: transform 0.2s ease;
+            }
+            .btn-hover:hover {
+                transform: scale(1.05);
+            }
+            
+            /* 引用柱状图动画 */
+            .citation-bar {
+                transition: height 0.8s ease;
+            }
+            
+            /* 适配侧边栏收起/展开状态的主内容区域 */
+            #main-content {
+                transition: margin-left 0.3s ease, width 0.3s ease;
+            }
+        }
+    </style>
+    <!-- 引入主题切换脚本 -->
+    <script src="js/theme-toggle.js"></script>
+    <!-- 引入导航栏脚本 -->
+    <script src="js/navbar.js"></script>
+    <!-- 引入侧边栏JS -->
+    <script src="js/sidebar.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <!-- 导航栏由JS自动插入 -->
+
+    <!-- 主内容区域 - 调整上边距适配导航栏 -->
+    <div id="main-content" class="pt-24 pb-10 px-6 mx-auto max-w-7xl transition-all duration-300 ml-52">
+        <!-- 欢迎信息 -->
+        <div class="mb-12">
+            <h1 class="text-5xl font-bold mb-3">医学文献检索</h1>
+            <p class="text-xl text-gray-600">借助AI智能分析，发现最新医学研究成果和学术趋势</p>
+        </div>
+
+        <!-- AI分析区域 -->
+        <div class="bg-blue-600 text-white rounded-2xl p-8 mb-14">
+            <div class="flex items-center text-2xl font-bold mb-3">
+                <i class="fas fa-brain text-3xl mr-3"></i>
+                AI增强文献检索
+            </div>
+            <p class="text-lg mb-6 opacity-95">
+                基于DeepSeek大模型的智能文献检索系统不仅提供传统检索功能，还能分析研究趋势、识别高价值文献、汇总研究进展，并基于您的检索历史提供个性化推荐。系统实时连接PubMed、中国知网、万方等多个数据库，确保您获取最全面的研究资料。
+            </p>
+            <button class="bg-white text-blue-600 hover:bg-blue-50 font-semibold py-3 px-6 rounded-full shadow-md btn-hover">
+                了解AI检索优势
+            </button>
+        </div>
+
+        <!-- 搜索区域 -->
+        <div class="mb-14">
+            <div class="flex items-center text-2xl font-bold mb-4">
+                <i class="fas fa-search mr-3"></i>
+                智能文献检索
+            </div>
+            <div class="flex gap-4 mb-4">
+                <input type="text" class="flex-1 px-6 py-4 text-lg rounded-xl border-0 bg-white shadow-md outline-none search-focus transition-all duration-300" id="mainSearch" placeholder="输入研究主题、作者或关键词..." value="脑卒中">
+                <button id="searchBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-xl shadow-md btn-hover">
+                    检索
+                </button>
+            </div>
+
+            <button id="toggleAdvanced" class="flex items-center text-blue-600 font-semibold hover:text-blue-800 mt-4">
+                高级检索选项
+                <i id="toggleIcon" class="fas fa-chevron-down ml-2 transition-transform duration-300"></i>
+            </button>
+
+            <div id="advancedSearch" class="hidden mt-6 bg-white p-6 rounded-xl shadow-md">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">标题</label>
+                        <input type="text" id="titleSearch" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" placeholder="标题包含...">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">作者</label>
+                        <input type="text" id="authorSearch" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" placeholder="作者姓名...">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">期刊</label>
+                        <input type="text" id="journalSearch" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" placeholder="期刊名称...">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">发表年份范围</label>
+                        <div class="flex gap-3">
+                            <input type="number" id="yearFrom" class="w-1/2 px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" placeholder="从...">
+                            <input type="number" id="yearTo" class="w-1/2 px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" placeholder="至...">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">关键词</label>
+                        <input type="text" id="keywordSearch" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" placeholder="关键词...">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">引用次数 ≥</label>
+                        <input type="number" id="citationSearch" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" placeholder="最小引用次数...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 文献趋势分析 -->
+        <div class="mb-14">
+            <div class="bg-white rounded-2xl p-6 shadow-md mb-4 overflow-hidden">
+                <div class="relative w-full pb-[50%]">
+                    <img src="photo/stroke_research_trend.svg" alt="脑卒中研究趋势图" class="absolute inset-0 w-full h-full object-contain">
+                </div>
+            </div>
+            <p class="text-gray-600 mb-5">
+                近十年来，脑卒中研究呈现快速增长趋势，2018年后文献数量年增长率达15%。主要研究热点从早期干预转向精准治疗和康复，人工智能和机器学习应用成为近三年的新兴热点。
+            </p>
+            
+            <div class="flex flex-wrap gap-2">
+                <div class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium cursor-pointer btn-hover">机械取栓</div>
+                <div class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium cursor-pointer btn-hover">血管内治疗</div>
+                <div class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium cursor-pointer btn-hover">精准康复</div>
+                <div class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium cursor-pointer btn-hover">AI辅助诊断</div>
+                <div class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium cursor-pointer btn-hover">机器学习预测模型</div>
+                <div class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium cursor-pointer btn-hover">微创手术</div>
+                <div class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium cursor-pointer btn-hover">神经保护</div>
+            </div>
+        </div>
+
+        <!-- 过滤器 -->
+        <div class="flex flex-wrap gap-2 mb-8">
+            <button class="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium btn-hover">所有文献</button>
+            <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-xl text-sm font-medium btn-hover">临床研究</button>
+            <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-xl text-sm font-medium btn-hover">系统评价</button>
+            <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-xl text-sm font-medium btn-hover">荟萃分析</button>
+            <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-xl text-sm font-medium btn-hover">随机对照试验</button>
+            <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-xl text-sm font-medium btn-hover">指南共识</button>
+            <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-xl text-sm font-medium btn-hover">中文文献</button>
+            <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-xl text-sm font-medium btn-hover">最近五年</button>
+        </div>
+
+        <!-- 结果统计和排序 -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+            <div class="text-lg font-semibold mb-3 md:mb-0">找到 2,845 篇关于"脑卒中"的相关文献</div>
+            <div class="flex items-center">
+                <span class="mr-3 text-gray-700 font-medium">排序方式:</span>
+                <select class="bg-white px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                    <option value="relevance">AI推荐</option>
+                    <option value="citations">引用次数</option>
+                    <option value="date-desc">最新发表</option>
+                    <option value="date-asc">最早发表</option>
+                    <option value="impact">影响因子</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 文献结果列表 -->
+        <div class="space-y-6 mb-14">
+            <!-- 文献项目1 -->
+            <div class="bg-white rounded-2xl p-6 shadow-md card-hover">
+                <h3 class="text-xl font-bold mb-2">急性缺血性脑卒中的中国血管内治疗指南（2022）</h3>
+                <div class="text-gray-600 mb-1">中华神经科杂志, 2022, 55(11): 1121-1132</div>
+                <div class="text-gray-600 mb-3">中国卒中学会脑血管病介入治疗专业委员会, 中华医学会神经病学分会脑血管病学组</div>
+                
+                <div class="flex flex-wrap gap-4 mb-4">
+                    <div class="flex items-center text-gray-600 text-sm">
+                        <i class="fas fa-calendar-alt mr-2"></i> 2022.11.02
+                    </div>
+                    <div class="flex items-center text-gray-600 text-sm">
+                        <i class="fas fa-chart-line mr-2"></i> 引用: 246
+                    </div>
+                    <div class="flex items-center text-gray-600 text-sm">
+                        <i class="fas fa-award mr-2"></i> IF: 4.532
+                    </div>
+                    <div class="flex items-center bg-blue-100 text-blue-700 px-2 py-1 rounded-lg text-xs">
+                        <i class="fas fa-file-medical mr-1"></i> 指南
+                    </div>
+                </div>
+                
+                <p class="text-gray-700 mb-5">
+                    本指南更新了急性缺血性脑卒中血管内治疗的适应症，明确了治疗时间窗、影像学选择标准及操作规范。基于最新临床研究证据，建议对发病6-24小时内的后循环脑卒中患者和特定影像学特征的患者扩大治疗时间窗，同时强调多学科协作和标准化流程对改善患者预后的重要性。
+                </p>
+                
+                <!-- 引用情况可视化 -->
+                <div class="flex mb-5">
+                    <div class="flex flex-col items-center mr-4">
+                        <div class="h-20 w-8 bg-gray-100 rounded-md flex items-end overflow-hidden">
+                            <div class="citation-bar w-full bg-blue-500 rounded-t-md" style="height: 0%"></div>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">2022</div>
+                    </div>
+                    <div class="flex flex-col items-center mr-4">
+                        <div class="h-20 w-8 bg-gray-100 rounded-md flex items-end overflow-hidden">
+                            <div class="citation-bar w-full bg-blue-500 rounded-t-md" style="height: 40%"></div>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">2023</div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="h-20 w-8 bg-gray-100 rounded-md flex items-end overflow-hidden">
+                            <div class="citation-bar w-full bg-blue-500 rounded-t-md" style="height: 90%"></div>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">2024</div>
+                    </div>
+                </div>
+                
+                <div class="flex flex-wrap gap-8 mb-5">
+                    <div class="flex flex-col items-center">
+                        <div class="text-xl font-bold">246</div>
+                        <div class="text-xs text-gray-500">总引用次数</div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="text-xl font-bold">123.0</div>
+                        <div class="text-xs text-gray-500">年均引用</div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="text-xl font-bold">8.9</div>
+                        <div class="text-xs text-gray-500">Altmetric</div>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row justify-between">
+                    <div class="flex gap-2 mb-3 sm:mb-0">
+                        <button class="flex items-center bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg text-sm font-medium btn-hover">
+                            <i class="fas fa-save mr-2"></i>保存
+                        </button>
+                        <button class="flex items-center bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg text-sm font-medium btn-hover">
+                            <i class="fas fa-download mr-2"></i>导出
+                        </button>
+                    </div>
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium btn-hover">
+                        阅读全文
+                    </button>
+                </div>
+            </div>
+
+            <!-- 文献项目2 -->
+            <div class="bg-white rounded-2xl p-6 shadow-md card-hover">
+                <h3 class="text-xl font-bold mb-2">使用深度学习算法基于CT灌注成像预测急性脑卒中患者的功能预后</h3>
+                <div class="text-gray-600 mb-1">Stroke, 2023, 54(6): 1683-1692</div>
+                <div class="text-gray-600 mb-3">王霄, 陈明, 张立, 李强, Liu J, Smith P, Johnson K</div>
+                
+                <div class="flex flex-wrap gap-4 mb-4">
+                    <div class="flex items-center text-gray-600 text-sm">
+                        <i class="fas fa-calendar-alt mr-2"></i> 2023.06.10
+                    </div>
+                    <div class="flex items-center text-gray-600 text-sm">
+                        <i class="fas fa-chart-line mr-2"></i> 引用: 87
+                    </div>
+                    <div class="flex items-center text-gray-600 text-sm">
+                        <i class="fas fa-award mr-2"></i> IF: 7.914
+                    </div>
+                    <div class="flex items-center bg-green-100 text-green-700 px-2 py-1 rounded-lg text-xs">
+                        <i class="fas fa-microscope mr-1"></i> 原创研究
+                    </div>
+                </div>
+                
+                <p class="text-gray-700 mb-5">
+                    本研究开发并验证了一种基于深度卷积神经网络的算法，通过分析急性脑卒中患者的CT灌注成像数据预测90天后的功能预后。研究纳入1,248名患者，采用10折交叉验证，算法在测试集上的AUC达0.89，优于传统临床预测模型(AUC 0.76)和单纯影像学评估(AUC 0.81)，为临床决策提供了更精准的支持工具。
+                </p>
+                
+                <!-- 引用情况可视化 -->
+                <div class="flex mb-5">
+                    <div class="flex flex-col items-center mr-4">
+                        <div class="h-20 w-8 bg-gray-100 rounded-md flex items-end overflow-hidden">
+                            <div class="citation-bar w-full bg-blue-500 rounded-t-md" style="height: 30%"></div>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">2023</div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="h-20 w-8 bg-gray-100 rounded-md flex items-end overflow-hidden">
+                            <div class="citation-bar w-full bg-blue-500 rounded-t-md" style="height: 90%"></div>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">2024</div>
+                    </div>
+                </div>
+                
+                <div class="flex flex-wrap gap-8 mb-5">
+                    <div class="flex flex-col items-center">
+                        <div class="text-xl font-bold">87</div>
+                        <div class="text-xs text-gray-500">总引用次数</div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="text-xl font-bold">72.5</div>
+                        <div class="text-xs text-gray-500">年均引用</div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="text-xl font-bold">27.8</div>
+                        <div class="text-xs text-gray-500">Altmetric</div>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row justify-between">
+                    <div class="flex gap-2 mb-3 sm:mb-0">
+                        <button class="flex items-center bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg text-sm font-medium btn-hover">
+                            <i class="fas fa-save mr-2"></i>保存
+                        </button>
+                        <button class="flex items-center bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg text-sm font-medium btn-hover">
+                            <i class="fas fa-download mr-2"></i>导出
+                        </button>
+                    </div>
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium btn-hover">
+                        阅读全文
+                    </button>
+                </div>
+            </div>
+
+            <!-- 文献项目3 -->
+            <div class="bg-white rounded-2xl p-6 shadow-md card-hover">
+                <h3 class="text-xl font-bold mb-2">脑卒中后认知障碍的病理生理机制和治疗策略的系统综述</h3>
+                <div class="text-gray-600 mb-1">Nature Reviews Neurology, 2022, 18(5): 267-282</div>
+                <div class="text-gray-600 mb-3">赵明, 陈光, 何伟, 王丽, Brown T, Wilson M</div>
+                
+                <div class="flex flex-wrap gap-4 mb-4">
+                    <div class="flex items-center text-gray-600 text-sm">
+                        <i class="fas fa-calendar-alt mr-2"></i> 2022.05.12
+                    </div>
+                    <div class="flex items-center text-gray-600 text-sm">
+                        <i class="fas fa-chart-line mr-2"></i> 引用: 163
+                    </div>
+                    <div class="flex items-center text-gray-600 text-sm">
+                        <i class="fas fa-award mr-2"></i> IF: 35.624
+                    </div>
+                    <div class="flex items-center bg-purple-100 text-purple-700 px-2 py-1 rounded-lg text-xs">
+                        <i class="fas fa-book-open mr-1"></i> 综述
+                    </div>
+                </div>
+                
+                <p class="text-gray-700 mb-5">
+                    本综述系统总结了脑卒中后认知障碍(PSCI)的最新研究进展，涵盖流行病学、危险因素、病理生理机制和治疗策略。文章强调了血管性认知障碍与神经退行性疾病的相互作用，血脑屏障破坏、神经炎症和神经递质失调在PSCI发病机制中的重要作用，并分析了药物和非药物干预的临床证据，为未来研究和临床实践提供了方向。
+                </p>
+                
+                <!-- 引用情况可视化 -->
+                <div class="flex mb-5">
+                    <div class="flex flex-col items-center mr-4">
+                        <div class="h-20 w-8 bg-gray-100 rounded-md flex items-end overflow-hidden">
+                            <div class="citation-bar w-full bg-blue-500 rounded-t-md" style="height: 40%"></div>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">2022</div>
+                    </div>
+                    <div class="flex flex-col items-center mr-4">
+                        <div class="h-20 w-8 bg-gray-100 rounded-md flex items-end overflow-hidden">
+                            <div class="citation-bar w-full bg-blue-500 rounded-t-md" style="height: 90%"></div>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">2023</div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="h-20 w-8 bg-gray-100 rounded-md flex items-end overflow-hidden">
+                            <div class="citation-bar w-full bg-blue-500 rounded-t-md" style="height: 60%"></div>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">2024</div>
+                    </div>
+                </div>
+                
+                <div class="flex flex-wrap gap-8 mb-5">
+                    <div class="flex flex-col items-center">
+                        <div class="text-xl font-bold">163</div>
+                        <div class="text-xs text-gray-500">总引用次数</div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="text-xl font-bold">81.5</div>
+                        <div class="text-xs text-gray-500">年均引用</div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="text-xl font-bold">98.2</div>
+                        <div class="text-xs text-gray-500">Altmetric</div>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row justify-between">
+                    <div class="flex gap-2 mb-3 sm:mb-0">
+                        <button class="flex items-center bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg text-sm font-medium btn-hover">
+                            <i class="fas fa-save mr-2"></i>保存
+                        </button>
+                        <button class="flex items-center bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg text-sm font-medium btn-hover">
+                            <i class="fas fa-download mr-2"></i>导出
+                        </button>
+                    </div>
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium btn-hover">
+                        阅读全文
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI文献总结 -->
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl p-8 mb-14">
+            <div class="flex items-center text-2xl font-bold mb-3">
+                <i class="fas fa-chart-pie text-3xl mr-3"></i>
+                AI文献智能总结
+            </div>
+            <p class="text-lg mb-6 opacity-95"></p>
+                基于检索结果的2,845篇脑卒中相关文献，AI分析发现近三年研究热点主要集中在以下方向：1）基于人工智能的影像诊断和预后预测；2）扩大血管内治疗时间窗的临床实践；3）精准化康复方案；4）神经保护药物研究；5）脑卒中后认知障碍的防治策略。中国研究团队在血管内治疗和AI辅助诊断领域发表的高质量文献数量显著增加，引用影响力持续提升。
+            </p>
+            <button class="bg-white text-blue-600 hover:bg-blue-50 font-semibold py-3 px-6 rounded-full shadow-md btn-hover">
+                <i class="fas fa-file-alt mr-2"></i>生成详细研究报告
+            </button>
+        </div>
+
+        <!-- 分页导航 -->
+        <div class="flex justify-center items-center flex-wrap gap-2">
+            <button class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 text-sm font-medium btn-hover">
+                <i class="fas fa-chevron-left mr-1"></i>上一页
+            </button>
+            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium">1</button>
+            <button class="bg-white hover:bg-gray-100 text-gray-800 px-4 py-2 rounded-lg text-sm font-medium btn-hover">2</button>
+            <button class="bg-white hover:bg-gray-100 text-gray-800 px-4 py-2 rounded-lg text-sm font-medium btn-hover">3</button>
+            <button class="bg-white hover:bg-gray-100 text-gray-800 px-4 py-2 rounded-lg text-sm font-medium btn-hover">4</button>
+            <button class="bg-white hover:bg-gray-100 text-gray-800 px-4 py-2 rounded-lg text-sm font-medium btn-hover">5</button>
+            <button class="bg-white hover:bg-gray-100 text-gray-800 px-4 py-2 rounded-lg text-sm font-medium">...</button>
+            <button class="bg-white hover:bg-gray-100 text-gray-800 px-4 py-2 rounded-lg text-sm font-medium btn-hover">95</button>
+            <button class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 text-sm font-medium btn-hover">
+                下一页<i class="fas fa-chevron-right ml-1"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <footer class="py-6 text-center text-gray-500 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-800">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk 
+    </footer>
+
+    <!-- 处理侧边栏状态变化的脚本 -->
+    <script>
+        // 高级搜索切换
+        const toggleAdvanced = document.getElementById('toggleAdvanced');
+        const advancedSearch = document.getElementById('advancedSearch');
+        const toggleIcon = document.getElementById('toggleIcon');
+        
+        toggleAdvanced.addEventListener('click', function() {
+            advancedSearch.classList.toggle('hidden');
+            toggleIcon.classList.toggle('rotate-180');
+        });
+        
+        // 过滤按钮交互
+        const filterButtons = document.querySelectorAll('.bg-gray-200');
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                document.querySelector('.bg-blue-600').classList.remove('bg-blue-600', 'text-white');
+                document.querySelector('.bg-blue-600').classList.add('bg-gray-200', 'hover:bg-gray-300', 'text-gray-800');
+                
+                this.classList.remove('bg-gray-200', 'hover:bg-gray-300', 'text-gray-800');
+                this.classList.add('bg-blue-600', 'text-white');
+            });
+        });
+        
+        // 文献引用柱状图动画
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const bars = document.querySelectorAll('.citation-bar');
+                bars.forEach(bar => {
+                    const originalHeight = bar.style.height;
+                    bar.style.height = '0%';
+                    setTimeout(() => {
+                        bar.style.height = originalHeight;
+                    }, 300);
+                });
+            }, 500);
+        });
+        
+        // 搜索按钮效果
+        const searchBtn = document.getElementById('searchBtn');
+        searchBtn.addEventListener('click', function() {
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>检索中...';
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                // 这里可以添加实际搜索逻辑
+            }, 1000);
+        });
+        
+        // 话题标签点击
+        const topicTags = document.querySelectorAll('.bg-blue-600.hover\\:bg-blue-700.text-white.px-4.py-2');
+        topicTags.forEach(tag => {
+            tag.addEventListener('click', function() {
+                const tagText = this.textContent;
+                document.getElementById('mainSearch').value = tagText;
+            });
+        });
+        
+        // 监听侧边栏状态变化
+        document.addEventListener('sidebar-toggle', function(e) {
+            const mainContent = document.getElementById('main-content');
+            
+            if (e.detail.expanded) {
+                // 侧边栏展开
+                mainContent.classList.remove('ml-16');
+                mainContent.classList.add('ml-52');
+            } else {
+                // 侧边栏收起
+                mainContent.classList.remove('ml-52');
+                mainContent.classList.add('ml-16');
+            }
+        });
+        
+        // 页面加载时根据侧边栏状态设置
+        document.addEventListener('sidebar-loaded', function(e) {
+            const mainContent = document.getElementById('main-content');
+            
+            if (e.detail.expanded) {
+                mainContent.classList.add('ml-52');
+            } else {
+                mainContent.classList.add('ml-16');
+            }
+        });
+    </script>
+</body>
+</html>

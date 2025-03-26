@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员看板 - 临床知识库</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0071e3',
+                        secondary: '#5856d6',
+                        success: '#34c759',
+                        danger: '#ff3b30',
+                        warning: '#ff9500',
+                        info: '#5ac8fa',
+                    },
+                    transitionProperty: {
+                        'transform': 'transform',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @layer utilities {
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .btn-hover {
+                transition: transform 0.2s ease;
+            }
+            .btn-hover:hover {
+                transform: scale(1.05);
+            }
+            .input-focus:focus {
+                box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.3);
+                border-color: rgba(0, 113, 227, 0.6);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <!-- 导航栏 -->
+    <div class="fixed top-0 left-0 right-0 h-12 bg-white bg-opacity-80 backdrop-blur-md flex justify-between items-center px-5 shadow-sm z-50">
+        <div class="text-xl font-semibold cursor-pointer" onclick="window.location.href='main.html'">临床知识库</div>
+        <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.href='user_profile.html'">
+            <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="w-8 h-8 rounded-full object-cover" alt="用户头像">
+            <div class="font-medium">主任</div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="container max-w-6xl mx-auto pt-16 pb-10 px-4 sm:px-6">
+        <!-- 返回按钮 -->
+        <button onclick="window.location.href='user_profile.html'" class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm font-medium transition-colors duration-200 mb-6">
+            <i class="fas fa-arrow-left mr-2"></i> 返回个人账户
+        </button>
+
+        <!-- 看板标题 -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold mb-2">管理员看板</h1>
+            <p class="text-gray-600">医学教育数据分析与管理平台</p>
+        </div>
+
+        <!-- 概览数据卡片 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                <div class="text-gray-500 text-sm font-medium mb-2">活跃用户</div>
+                <div class="text-3xl font-bold">3,587</div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                <div class="text-gray-500 text-sm font-medium mb-2">总学习时长</div>
+                <div class="text-3xl font-bold">7,248<span class="text-xl">小时</span></div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                <div class="text-gray-500 text-sm font-medium mb-2">知识库访问量</div>
+                <div class="text-3xl font-bold">28,456</div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                <div class="text-gray-500 text-sm font-medium mb-2">系统使用率</div>
+                <div class="text-3xl font-bold">76.4%</div>
+            </div>
+        </div>
+
+        <!-- 标签页 -->
+        <div class="mb-6">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-primary text-white" data-tab="teaching">
+                    <i class="fas fa-chart-line mr-1"></i> 教学数据
+                </button>
+                <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-gray-200 text-gray-700 hover:bg-gray-300" data-tab="student">
+                    <i class="fas fa-user-graduate mr-1"></i> 学生表现
+                </button>
+                <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-gray-200 text-gray-700 hover:bg-gray-300" data-tab="research">
+                    <i class="fas fa-flask mr-1"></i> 科研项目
+                </button>
+                <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-gray-200 text-gray-700 hover:bg-gray-300" data-tab="resources">
+                    <i class="fas fa-cubes mr-1"></i> 资源分配
+                </button>
+            </div>
+            
+            <!-- 教学数据内容 -->
+            <div class="tab-content bg-white rounded-2xl shadow-md p-6" id="teaching-content">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-semibold">教学数据分析</h3>
+                </div>
+                
+                <div class="flex flex-wrap justify-between items-center mb-6 gap-3">
+                    <div class="flex flex-wrap gap-2">
+                        <select class="border rounded-md px-3 py-2 text-sm focus:outline-none input-focus bg-gray-50">
+                            <option>最近30天</option>
+                            <option>最近90天</option>
+                            <option>本学期</option>
+                            <option>全部时间</option>
+                        </select>
+                        <select class="border rounded-md px-3 py-2 text-sm focus:outline-none input-focus bg-gray-50">
+                            <option>所有学科</option>
+                            <option>内科学</option>
+                            <option>外科学</option>
+                            <option>妇产科学</option>
+                            <option>儿科学</option>
+                            <option>神经科学</option>
+                        </select>
+                    </div>
+                    <button class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium bg-white hover:bg-gray-50 btn-hover">
+                        <i class="fas fa-download mr-1"></i> 导出报告
+                    </button>
+                </div>
+                
+                <!-- 总体使用情况图表 -->
+                <h4 class="text-base font-semibold mb-3">知识库使用趋势</h4>
+                <div class="bg-gray-50 rounded-xl p-4 mb-6 overflow-hidden">
+                    <div class="w-full h-[300px]">
+                        <svg width="100%" height="100%" viewBox="0 0 1000 300" class="rounded-lg">
+                            <!-- 坐标轴 -->
+                            <line x1="50" y1="250" x2="950" y2="250" stroke="#d2d2d7" stroke-width="2" />
+                            <line x1="50" y1="250" x2="50" y2="50" stroke="#d2d2d7" stroke-width="2" />
+                            
+                            <!-- Y轴标签 -->
+                            <text x="30" y="250" text-anchor="end" font-size="12" fill="#6e6e73">0</text>
+                            <text x="30" y="200" text-anchor="end" font-size="12" fill="#6e6e73">2500</text>
+                            <text x="30" y="150" text-anchor="end" font-size="12" fill="#6e6e73">5000</text>
+                            <text x="30" y="100" text-anchor="end" font-size="12" fill="#6e6e73">7500</text>
+                            <text x="30" y="50" text-anchor="end" font-size="12" fill="#6e6e73">10000</text>
+                            
+                            <!-- 月份标签 -->
+                            <text x="125" y="270" text-anchor="middle" font-size="12" fill="#6e6e73">一月</text>
+                            <text x="275" y="270" text-anchor="middle" font-size="12" fill="#6e6e73">二月</text>
+                            <text x="425" y="270" text-anchor="middle" font-size="12" fill="#6e6e73">三月</text>
+                            <text x="575" y="270" text-anchor="middle" font-size="12" fill="#6e6e73">四月</text>
+                            <text x="725" y="270" text-anchor="middle" font-size="12" fill="#6e6e73">五月</text>
+                            <text x="875" y="270" text-anchor="middle" font-size="12" fill="#6e6e73">六月</text>
+                            
+                            <!-- 网格线 -->
+                            <line x1="50" y1="200" x2="950" y2="200" stroke="#e5e5e7" stroke-width="1" stroke-dasharray="5,5" />
+                            <line x1="50" y1="150" x2="950" y2="150" stroke="#e5e5e7" stroke-width="1" stroke-dasharray="5,5" />
+                            <line x1="50" y1="100" x2="950" y2="100" stroke="#e5e5e7" stroke-width="1" stroke-dasharray="5,5" />
+                            <line x1="50" y1="50" x2="950" y2="50" stroke="#e5e5e7" stroke-width="1" stroke-dasharray="5,5" />
+                            
+                            <!-- 内科知识库数据 -->
+                            <rect x="80" y="140" width="40" height="110" fill="#0071e3" opacity="0.8" rx="4" />
+                            <rect x="230" y="130" width="40" height="120" fill="#0071e3" opacity="0.8" rx="4" />
+                            <rect x="380" y="110" width="40" height="140" fill="#0071e3" opacity="0.8" rx="4" />
+                            <rect x="530" y="100" width="40" height="150" fill="#0071e3" opacity="0.8" rx="4" />
+                            <rect x="680" y="90" width="40" height="160" fill="#0071e3" opacity="0.8" rx="4" />
+                            <rect x="830" y="80" width="40" height="170" fill="#0071e3" opacity="0.8" rx="4" />
+                            
+                            <!-- 外科知识库数据 -->
+                            <rect x="130" y="160" width="40" height="90" fill="#34c759" opacity="0.8" rx="4" />
+                            <rect x="280" y="150" width="40" height="100" fill="#34c759" opacity="0.8" rx="4" />
+                            <rect x="430" y="140" width="40" height="110" fill="#34c759" opacity="0.8" rx="4" />
+                            <rect x="580" y="130" width="40" height="120" fill="#34c759" opacity="0.8" rx="4" />
+                            <rect x="730" y="120" width="40" height="130" fill="#34c759" opacity="0.8" rx="4" />
+                            <rect x="880" y="110" width="40" height="140" fill="#34c759" opacity="0.8" rx="4" />
+                            
+                            <!-- 总体趋势线 -->
+                            <polyline 
+                                points="100,130 250,120 400,100 550,90 700,80 850,70" 
+                                fill="none" 
+                                stroke="#ff9500" 
+                                stroke-width="3" 
+                                stroke-linejoin="round"
+                                stroke-linecap="round" />
+                            <!-- 趋势点 -->
+                            <circle cx="100" cy="130" r="5" fill="#ff9500" />
+                            <circle cx="250" cy="120" r="5" fill="#ff9500" />
+                            <circle cx="400" cy="100" r="5" fill="#ff9500" />
+                            <circle cx="550" cy="90" r="5" fill="#ff9500" />
+                            <circle cx="700" cy="80" r="5" fill="#ff9500" />
+                            <circle cx="850" cy="70" r="5" fill="#ff9500" />
+                            
+                            <!-- 图例 -->
+                            <rect x="730" y="20" width="15" height="15" fill="#0071e3" opacity="0.8" rx="2" />
+                            <text x="750" y="33" font-size="14" fill="#1d1d1f">内科知识库</text>
+                            
+                            <rect x="850" y="20" width="15" height="15" fill="#34c759" opacity="0.8" rx="2" />
+                            <text x="870" y="33" font-size="14" fill="#1d1d1f">外科知识库</text>
+                            
+                            <line x1="570" y1="27" x2="590" y2="27" stroke="#ff9500" stroke-width="3" />
+                            <circle cx="580" cy="27" r="5" fill="#ff9500" />
+                            <text x="600" y="33" font-size="14" fill="#1d1d1f">总体趋势</text>
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- 统计数字 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-gray-50 rounded-xl p-5 card-hover">
+                        <div class="text-gray-500 text-sm font-medium mb-2">最活跃知识库</div>
+                        <div class="text-xl font-bold mb-1">内科诊断学</div>
+                        <div class="text-sm text-green-600">
+                            <i class="fas fa-arrow-up mr-1"></i> 较上月访问增长 23%
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-5 card-hover">
+                        <div class="text-gray-500 text-sm font-medium mb-2">平均内容停留时间</div>
+                        <div class="text-xl font-bold mb-1">6分32秒</div>
+                        <div class="text-sm text-green-600">
+                            <i class="fas fa-arrow-up mr-1"></i> 较上月增加 12%
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-5 card-hover">
+                        <div class="text-gray-500 text-sm font-medium mb-2">知识库资源总数</div>
+                        <div class="text-xl font-bold mb-1">4,582</div>
+                        <div class="text-sm text-green-600">
+                            <i class="fas fa-plus mr-1"></i> 本月新增 47 项
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 知识库使用排行 -->
+                <h4 class="text-base font-semibold mb-3">知识库访问排行</h4>
+                <div class="overflow-x-auto mb-6">
+                    <table class="w-full min-w-[640px]">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="text-left p-3 text-sm font-medium text-gray-500 rounded-l-lg">知识库名称</th>
+                                <th class="text-left p-3 text-sm font-medium text-gray-500">访问次数</th>
+                                <th class="text-left p-3 text-sm font-medium text-gray-500">活跃用户数</th>
+                                <th class="text-left p-3 text-sm font-medium text-gray-500">平均停留时间</th>
+                                <th class="text-left p-3 text-sm font-medium text-gray-500">满意度评分</th>
+                                <th class="text-left p-3 text-sm font-medium text-gray-500 rounded-r-lg">使用趋势</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3">内科诊疗指南库</td>
+                                <td class="p-3">8,456</td>
+                                <td class="p-3">1,203</td>
+                                <td class="p-3">7分28秒</td>
+                                <td class="p-3">4.8/5.0</td>
+                                <td class="p-3">
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-success rounded-full h-2" style="width: 92%"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3">临床药物数据库</td>
+                                <td class="p-3">7,128</td>
+                                <td class="p-3">1,054</td>
+                                <td class="p-3">5分42秒</td>
+                                <td class="p-3">4.6/5.0</td>
+                                <td class="p-3">
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-success rounded-full h-2" style="width: 85%"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3">外科手术图谱</td>
+                                <td class="p-3">5,872</td>
+                                <td class="p-3">896</td>
+                                <td class="p-3">9分12秒</td>
+                                <td class="p-3">4.7/5.0</td>
+                                <td class="p-3">
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-success rounded-full h-2" style="width: 78%"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3">影像学诊断库</td>
+                                <td class="p-3">4,956</td>
+                                <td class="p-3">732</td>
+                                <td class="p-3">6分08秒</td>
+                                <td class="p-3">4.5/5.0</td>
+                                <td class="p-3">
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-warning rounded-full h-2" style="width: 65%"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3">医学检验参考值库</td>
+                                <td class="p-3">3,821</td>
+                                <td class="p-3">1,426</td>
+                                <td class="p-3">3分44秒</td>
+                                <td class="p-3">4.3/5.0</td>
+                                <td class="p-3">
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-warning rounded-full h-2" style="width: 58%"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- 热门内容 -->
+                <h4 class="text-base font-semibold mb-3">热门内容分析</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="border border-gray-200 rounded-xl p-4 card-hover">
+                        <div class="flex justify-between items-center mb-3">
+                            <h5 class="font-semibold">2型糖尿病诊疗规范（2024版）</h5>
+                            <span class="text-xs px-2 py-1 bg-gray-100 rounded-full">指南</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-3">访问量：2,487次 | 平均停留：8分46秒</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-500">使用情况：</span>
+                            <span class="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">高频使用</span>
+                        </div>
+                    </div>
+                    <div class="border border-gray-200 rounded-xl p-4 card-hover">
+                        <div class="flex justify-between items-center mb-3">
+                            <h5 class="font-semibold">腹腔镜胆囊切除术操作流程</h5>
+                            <span class="text-xs px-2 py-1 bg-gray-100 rounded-full">手术</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-3">访问量：1,876次 | 平均停留：10分12秒</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-500">使用情况：</span>
+                            <span class="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">高频使用</span>
+                        </div>
+                    </div>
+                    <div class="border border-gray-200 rounded-xl p-4 card-hover">
+                        <div class="flex justify-between items-center mb-3">
+                            <h5 class="font-semibold">抗生素合理使用指南</h5>
+                            <span class="text-xs px-2 py-1 bg-gray-100 rounded-full">药物</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-3">访问量：1,658次 | 平均停留：6分32秒</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-500">使用情况：</span>
+                            <span class="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full">中频使用</span>
+                        </div>
+                    </div>
+                    <div class="border border-gray-200 rounded-xl p-4 card-hover">
+                        <div class="flex justify-between items-center mb-3">
+                            <h5 class="font-semibold">CT与MRI影像对比分析</h5>
+                            <span class="text-xs px-2 py-1 bg-gray-100 rounded-full">影像</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-3">访问量：1,435次 | 平均停留：7分58秒</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-500">使用情况：</span>
+                            <span class="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full">中频使用</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 用户群体分析 -->
+                <h4 class="text-base font-semibold mb-3">用户群体分析</h4>
+                <div class="bg-gray-50 rounded-xl p-4 mb-6 overflow-auto">
+                    <p class="text-sm text-gray-500 text-center mb-3">不同专业背景用户访问各知识库的热力分布图</p>
+                    <div class="min-w-[700px]">
+                        <table class="w-full">
+                            <thead>
+                                <tr>
+                                    <th class="text-right p-2 text-sm font-medium text-gray-500 w-[120px]">专业 / 知识库</th>
+                                    <th class="p-2 text-sm font-medium text-gray-500">内科知识库</th>
+                                    <th class="p-2 text-sm font-medium text-gray-500">外科知识库</th>
+                                    <th class="p-2 text-sm font-medium text-gray-500">影像学知识库</th>
+                                    <th class="p-2 text-sm font-medium text-gray-500">药理学知识库</th>
+                                    <th class="p-2 text-sm font-medium text-gray-500">病理学知识库</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-right p-2 text-sm font-medium text-gray-500">内科医师</td>
+                                    <td class="p-1"><div class="bg-success bg-opacity-90 text-white p-2 rounded-md text-center">92%</div></td>
+                                    <td class="p-1"><div class="bg-success bg-opacity-30 p-2 rounded-md text-center">34%</div></td>
+                                    <td class="p-1"><div class="bg-success bg-opacity-50 p-2 rounded-md text-center">56%</div></td>
+                                    <td class="p-1"><div class="bg-success bg-opacity-70 text-white p-2 rounded-md text-center">72%</div></td>
+                                    <td class="p-1"><div class="bg-success bg-opacity-60 p-2 rounded-md text-center">61%</div></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right p-2 text-sm font-medium text-gray-500">外科医师</td>
+                                    <td class="p-1"><div class="bg-primary bg-opacity-40 p-2 rounded-md text-center">42%</div></td>
+                                    <td class="p-1"><div class="bg-primary bg-opacity-90 text-white p-2 rounded-md text-center">88%</div></td>
+                                    <td class="p-1"><div class="bg-primary bg-opacity-70 text-white p-2 rounded-md text-center">67%</div></td>
+                                    <td class="p-1"><div class="bg-primary bg-opacity-50 p-2 rounded-md text-center">48%</div></td>
+                                    <td class="p-1"><div class="bg-primary bg-opacity-60 p-2 rounded-md text-center">58%</div></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right p-2 text-sm font-medium text-gray-500">影像科医师</td>
+                                    <td class="p-1"><div class="bg-secondary bg-opacity-30 p-2 rounded-md text-center">31%</div></td>
+                                    <td class="p-1"><div class="bg-secondary bg-opacity-40 p-2 rounded-md text-center">37%</div></td>
+                                    <td class="p-1"><div class="bg-secondary bg-opacity-90 text-white p-2 rounded-md text-center">95%</div></td>
+                                    <td class="p-1"><div class="bg-secondary bg-opacity-20 p-2 rounded-md text-center">22%</div></td>
+                                    <td class="p-1"><div class="bg-secondary bg-opacity-50 p-2 rounded-md text-center">49%</div></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right p-2 text-sm font-medium text-gray-500">医学生</td>
+                                    <td class="p-1"><div class="bg-warning bg-opacity-70 text-white p-2 rounded-md text-center">76%</div></td>
+                                    <td class="p-1"><div class="bg-warning bg-opacity-80 text-white p-2 rounded-md text-center">79%</div></td>
+                                    <td class="p-1"><div class="bg-warning bg-opacity-60 p-2 rounded-md text-center">62%</div></td>
+                                    <td class="p-1"><div class="bg-warning bg-opacity-70 text-white p-2 rounded-md text-center">74%</div></td>
+                                    <td class="p-1"><div class="bg-warning bg-opacity-90 text-white p-2 rounded-md text-center">85%</div></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right p-2 text-sm font-medium text-gray-500">护士</td>
+                                    <td class="p-1"><div class="bg-danger bg-opacity-50 p-2 rounded-md text-center">54%</div></td>
+                                    <td class="p-1"><div class="bg-danger bg-opacity-30 p-2 rounded-md text-center">28%</div></td>
+                                    <td class="p-1"><div class="bg-danger bg-opacity-20 p-2 rounded-md text-center">19%</div></td>
+                                    <td class="p-1"><div class="bg-danger bg-opacity-90 text-white p-2 rounded-md text-center">86%</div></td>
+                                    <td class="p-1"><div class="bg-danger bg-opacity-40 p-2 rounded-md text-center">41%</div></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-xs text-gray-500 text-right mt-2">* 数据显示各专业用户对不同知识库的访问比例</p>
+                </div>
+                
+                <!-- 知识内容更新需求 -->
+                <h4 class="text-base font-semibold mb-3">知识内容更新需求</h4>
+                <div class="overflow-x-auto">
+                    <table class="w-full min-w-[640px]">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="text-left p-3 text-sm font-medium text-gray-500 rounded-l-lg">知识模块</th>
+                                <th class="text-left p-3 text-sm font-medium text-gray-500">最近更新时间</th>
+                                <th class="text-left p-3 text-sm font-medium text-gray-500">建议更新频率</th>
+                                <th class="text-left p-3 text-sm font-medium text-gray-500">更新优先级</th>
+                                <th class="text-left p-3 text-sm font-medium text-gray-500 rounded-r-lg">用户反馈</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3">高血压诊疗指南</td>
+                                <td class="p-3">2023年12月</td>
+                                <td class="p-3">每年</td>
+                                <td class="p-3"><span class="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full">中</span></td>
+                                <td class="p-3">需要更新药物治疗部分</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3">心肺复苏规范</td>
+                                <td class="p-3">2022年5月</td>
+                                <td class="p-3">每2年</td>
+                                <td class="p-3"><span class="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">高</span></td>
+                                <td class="p-3">需要同步最新国际指南</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3">实习生临床技能手册</td>
+                                <td class="p-3">2023年9月</td>
+                                <td class="p-3">每学期</td>
+                                <td class="p-3"><span class="text-xs px-2 py-1 bg-red-100 text-red-700 rounded-full">低</span></td>
+                                <td class="p-3">内容基本符合要求</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3">常用抗肿瘤药物指南</td>
+                                <td class="p-3">2023年3月</td>
+                                <td class="p-3">每半年</td>
+                                <td class="p-3"><span class="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">高</span></td>
+                                <td class="p-3">需要补充新药信息</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- 学生表现内容 -->
+            <div class="tab-content bg-white rounded-2xl shadow-md p-6 hidden" id="student-content">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-semibold">学生学习表现</h3>
+                </div>
+                
+                <div class="flex items-center justify-center h-[300px]">
+                    <div class="text-center">
+                        <i class="fas fa-user-graduate text-5xl text-gray-300 mb-3"></i>
+                        <p class="text-lg text-gray-500">学生学习表现和成长轨迹分析模块正在开发中</p>
+                        <p class="text-sm text-gray-400 mt-2">敬请期待</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 科研项目内容 -->
+            <div class="tab-content bg-white rounded-2xl shadow-md p-6 hidden" id="research-content">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-semibold">科研项目管理</h3>
+                </div>
+                
+                <div class="flex items-center justify-center h-[300px]">
+                    <div class="text-center">
+                        <i class="fas fa-flask text-5xl text-gray-300 mb-3"></i>
+                        <p class="text-lg text-gray-500">科研项目管理模块正在开发中</p>
+                        <p class="text-sm text-gray-400 mt-2">敬请期待</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 资源分配内容 -->
+            <div class="tab-content bg-white rounded-2xl shadow-md p-6 hidden" id="resources-content">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-semibold">教学资源分配</h3>
+                </div>
+                
+                <div class="flex items-center justify-center h-[300px]">
+                    <div class="text-center">
+                        <i class="fas fa-cubes text-5xl text-gray-300 mb-3"></i>
+                        <p class="text-lg text-gray-500">教学资源分配模块正在开发中</p>
+                        <p class="text-sm text-gray-400 mt-2">敬请期待</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div class="text-center py-5 text-gray-500 text-sm">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk 
+    </div>
+
+    <script>
+        // 标签页切换功能
+        document.querySelectorAll('.tab-btn').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // 更新按钮状态
+                document.querySelectorAll('.tab-btn').forEach(t => {
+                    t.classList.remove('bg-primary', 'text-white');
+                    t.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                });
+                this.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                this.classList.add('bg-primary', 'text-white');
+                
+                // 获取目标内容区域id
+                const targetId = this.getAttribute('data-tab') + '-content';
+                
+                // 隐藏所有内容
+                document.querySelectorAll('.tab-content').forEach(section => {
+                    section.classList.add('hidden');
+                });
+                
+                // 显示目标内容
+                document.getElementById(targetId).classList.remove('hidden');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人账户 - 临床知识库</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0071e3',
+                        secondary: '#5856d6',
+                        success: '#34c759',
+                        danger: '#ff3b30',
+                        warning: '#ff9500',
+                        info: '#5ac8fa',
+                    },
+                    transitionProperty: {
+                        'transform': 'transform',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @layer utilities {
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .btn-hover {
+                transition: transform 0.2s ease;
+            }
+            .btn-hover:hover {
+                transform: scale(1.05);
+            }
+            .input-focus:focus {
+                box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.3);
+                border-color: rgba(0, 113, 227, 0.6);
+            }
+            .toggle-handle {
+                transform: translateX(0);
+                transition: transform 0.2s ease;
+            }
+            .toggle-active .toggle-handle {
+                transform: translateX(18px);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <!-- 导航栏 -->
+    <div class="fixed top-0 left-0 right-0 h-12 bg-white bg-opacity-80 backdrop-blur-md flex justify-between items-center px-5 shadow-sm z-50">
+        <div class="text-xl font-semibold cursor-pointer" onclick="window.location.href='main.html'">临床知识库</div>
+        <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.href='user_profile.html'">
+            <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="w-8 h-8 rounded-full object-cover" alt="用户头像">
+            <div class="font-medium">主任</div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="container max-w-6xl mx-auto pt-16 pb-10 px-4 sm:px-6">
+        <!-- 返回按钮 -->
+        <button onclick="window.location.href='main.html'" class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm font-medium transition-colors duration-200 mb-6">
+            <i class="fas fa-arrow-left mr-2"></i> 返回首页
+        </button>
+
+        <!-- 个人信息卡片 -->
+        <div class="bg-white rounded-2xl shadow-md p-6 sm:p-8 mb-8 flex flex-col sm:flex-row items-center sm:items-start gap-6">
+            <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="w-28 h-28 rounded-full object-cover" alt="用户头像">
+            <div class="flex-1 text-center sm:text-left">
+                <h1 class="text-3xl font-bold mb-2">主任</h1>
+                <p class="text-gray-600 mb-3">主任医师 | 妇产科 | 北京巨成医学</p>
+                <div class="flex flex-wrap justify-center sm:justify-start gap-4 mb-4">
+                    <div class="flex items-center">
+                        <i class="fas fa-envelope text-gray-500 mr-2"></i>
+                        <span class="text-gray-600 text-sm">wangzhikun@pku.edu.cn</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-phone text-gray-500 mr-2"></i>
+                        <span class="text-gray-600 text-sm">+86 188****8888</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-hospital text-gray-500 mr-2"></i>
+                        <span class="text-gray-600 text-sm">北京巨成医学 妇产科</span>
+                    </div>
+                </div>
+                <div class="flex justify-center sm:justify-start gap-3">
+                    <button class="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium btn-hover">
+                        <i class="fas fa-user-edit mr-1"></i> 编辑个人资料
+                    </button>
+                    <button onclick="window.location.href='admin_dashboard.html'" class="px-4 py-2 bg-secondary text-white rounded-full text-sm font-medium btn-hover">
+                        <i class="fas fa-shield-alt mr-1"></i> 管理员看板
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 统计信息 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white rounded-xl shadow-sm p-6 text-center card-hover">
+                <div class="text-4xl font-bold text-primary mb-2">78</div>
+                <div class="text-gray-600 font-medium">使用天数</div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-6 text-center card-hover">
+                <div class="text-4xl font-bold text-primary mb-2">156</div>
+                <div class="text-gray-600 font-medium">查询次数</div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-6 text-center card-hover">
+                <div class="text-4xl font-bold text-primary mb-2">23</div>
+                <div class="text-gray-600 font-medium">收藏资料</div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-6 text-center card-hover">
+                <div class="text-4xl font-bold text-primary mb-2">12</div>
+                <div class="text-gray-600 font-medium">病例分析</div>
+            </div>
+        </div>
+
+        <!-- 标签页 -->
+        <div class="mb-6">
+            <div class="flex flex-wrap gap-2 mb-6">
+                <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-primary text-white" data-tab="history">
+                    <i class="fas fa-history mr-1"></i> 历史记录
+                </button>
+                <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-gray-200 text-gray-700 hover:bg-gray-300" data-tab="favorites">
+                    <i class="fas fa-bookmark mr-1"></i> 我的收藏
+                </button>
+                <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-gray-200 text-gray-700 hover:bg-gray-300" data-tab="settings">
+                    <i class="fas fa-cog mr-1"></i> 账号设置
+                </button>
+            </div>
+            
+            <!-- 历史记录内容 -->
+            <div class="tab-content bg-white rounded-2xl shadow-md p-6" id="history-content">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-semibold">最近访问记录</h3>
+                    <button class="text-primary hover:text-blue-700 text-sm font-medium">
+                        <i class="fas fa-trash-alt mr-1"></i> 清除历史记录
+                    </button>
+                </div>
+                <div class="space-y-4">
+                    <div class="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer flex items-center">
+                        <div class="w-10 h-10 rounded-lg bg-red-500 text-white flex items-center justify-center mr-4">
+                            <i class="fas fa-stethoscope"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium mb-1">高血压 - AI病例分析</div>
+                            <div class="flex justify-between text-sm text-gray-500">
+                                <span>病例分析</span>
+                                <span>今天 14:23</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer flex items-center">
+                        <div class="w-10 h-10 rounded-lg bg-blue-500 text-white flex items-center justify-center mr-4">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium mb-1">2型糖尿病防治指南（2024版）</div>
+                            <div class="flex justify-between text-sm text-gray-500">
+                                <span>内科知识库</span>
+                                <span>昨天 09:45</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer flex items-center">
+                        <div class="w-10 h-10 rounded-lg bg-green-500 text-white flex items-center justify-center mr-4">
+                            <i class="fas fa-procedures"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium mb-1">急性阑尾炎诊疗方案</div>
+                            <div class="flex justify-between text-sm text-gray-500">
+                                <span>外科知识库</span>
+                                <span>2天前</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer flex items-center">
+                        <div class="w-10 h-10 rounded-lg bg-purple-500 text-white flex items-center justify-center mr-4">
+                            <i class="fas fa-pills"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium mb-1">阿司匹林药物说明书</div>
+                            <div class="flex justify-between text-sm text-gray-500">
+                                <span>用药助手</span>
+                                <span>3天前</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer flex items-center">
+                        <div class="w-10 h-10 rounded-lg bg-orange-500 text-white flex items-center justify-center mr-4">
+                            <i class="fas fa-vial"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium mb-1">血常规检查结果解读</div>
+                            <div class="flex justify-between text-sm text-gray-500">
+                                <span>辅助检查</span>
+                                <span>上周</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 收藏内容 -->
+            <div class="tab-content bg-white rounded-2xl shadow-md p-6 hidden" id="favorites-content">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-semibold">我的收藏</h3>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="p-5 bg-gray-50 rounded-xl card-hover cursor-pointer">
+                        <div class="w-10 h-10 rounded-lg bg-blue-500 text-white flex items-center justify-center mb-3">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <h4 class="font-semibold mb-2">高血压诊疗指南</h4>
+                        <p class="text-gray-600 text-sm mb-3">中国高血压防治指南（2024年版）</p>
+                        <div class="flex justify-between text-xs text-gray-500">
+                            <span>内科知识库</span>
+                            <span>2024-01-15</span>
+                        </div>
+                    </div>
+                    <div class="p-5 bg-gray-50 rounded-xl card-hover cursor-pointer">
+                        <div class="w-10 h-10 rounded-lg bg-green-500 text-white flex items-center justify-center mb-3">
+                            <i class="fas fa-procedures"></i>
+                        </div>
+                        <h4 class="font-semibold mb-2">腹腔镜胆囊切除术</h4>
+                        <p class="text-gray-600 text-sm mb-3">微创手术详细操作指南</p>
+                        <div class="flex justify-between text-xs text-gray-500">
+                            <span>外科知识库</span>
+                            <span>2023-12-05</span>
+                        </div>
+                    </div>
+                    <div class="p-5 bg-gray-50 rounded-xl card-hover cursor-pointer">
+                        <div class="w-10 h-10 rounded-lg bg-red-500 text-white flex items-center justify-center mb-3">
+                            <i class="fas fa-pills"></i>
+                        </div>
+                        <h4 class="font-semibold mb-2">口服降糖药物对比</h4>
+                        <p class="text-gray-600 text-sm mb-3">各类口服降糖药物效果与不良反应对比</p>
+                        <div class="flex justify-between text-xs text-gray-500">
+                            <span>用药助手</span>
+                            <span>2023-11-18</span>
+                        </div>
+                    </div>
+                    <div class="p-5 bg-gray-50 rounded-xl card-hover cursor-pointer">
+                        <div class="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-400 to-blue-600 text-white flex items-center justify-center mb-3">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <h4 class="font-semibold mb-2">心力衰竭诊断与治疗指南</h4>
+                        <p class="text-gray-600 text-sm mb-3">2024版心力衰竭诊断与治疗最新指南</p>
+                        <div class="flex justify-between text-xs text-gray-500">
+                            <span>临床指南</span>
+                            <span>2024-02-03</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 设置内容 -->
+            <div class="tab-content bg-white rounded-2xl shadow-md p-6 hidden" id="settings-content">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-semibold">账号设置</h3>
+                </div>
+                
+                <!-- 通知设置 -->
+                <div class="mb-6">
+                    <h4 class="text-gray-500 font-medium mb-2">通知设置</h4>
+                    <div class="divide-y">
+                        <div class="py-3 flex justify-between items-center">
+                            <div class="font-medium">新指南更新提醒</div>
+                            <div class="w-11 h-6 bg-success rounded-full relative cursor-pointer toggle toggle-active">
+                                <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 toggle-handle"></div>
+                            </div>
+                        </div>
+                        <div class="py-3 flex justify-between items-center">
+                            <div class="font-medium">知识库更新提醒</div>
+                            <div class="w-11 h-6 bg-success rounded-full relative cursor-pointer toggle toggle-active">
+                                <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 toggle-handle"></div>
+                            </div>
+                        </div>
+                        <div class="py-3 flex justify-between items-center">
+                            <div class="font-medium">病例分析完成提醒</div>
+                            <div class="w-11 h-6 bg-success rounded-full relative cursor-pointer toggle toggle-active">
+                                <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 toggle-handle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 隐私设置 -->
+                <div class="mb-6">
+                    <h4 class="text-gray-500 font-medium mb-2">隐私设置</h4>
+                    <div class="divide-y">
+                        <div class="py-3 flex justify-between items-center">
+                            <div class="font-medium">自动保存查询历史</div>
+                            <div class="w-11 h-6 bg-success rounded-full relative cursor-pointer toggle toggle-active">
+                                <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 toggle-handle"></div>
+                            </div>
+                        </div>
+                        <div class="py-3 flex justify-between items-center">
+                            <div class="font-medium">分享使用数据以改进服务</div>
+                            <div class="w-11 h-6 bg-gray-300 rounded-full relative cursor-pointer toggle">
+                                <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 toggle-handle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 应用设置 -->
+                <div class="mb-6">
+                    <h4 class="text-gray-500 font-medium mb-2">应用设置</h4>
+                    <div class="divide-y">
+                        <div class="py-3 flex justify-between items-center">
+                            <div class="font-medium">默认主页</div>
+                            <select class="border rounded-md px-3 py-1.5 text-sm focus:outline-none input-focus">
+                                <option>首页</option>
+                                <option>内科知识库</option>
+                                <option>病例分析</option>
+                                <option>临床指南</option>
+                            </select>
+                        </div>
+                        <div class="py-3 flex justify-between items-center">
+                            <div class="font-medium">专业领域</div>
+                            <select class="border rounded-md px-3 py-1.5 text-sm focus:outline-none input-focus">
+                                <option>内科</option>
+                                <option>外科</option>
+                                <option selected>妇产科</option>
+                                <option>儿科</option>
+                                <option>麻醉科</option>
+                                <option>影像科</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 账号操作 -->
+                <div>
+                    <h4 class="text-gray-500 font-medium mb-2">账号操作</h4>
+                    <div class="divide-y">
+                        <div class="py-3 flex justify-between items-center">
+                            <div class="font-medium">修改密码</div>
+                            <div class="flex items-center">
+                                <span class="text-gray-500 mr-3">********</span>
+                                <span class="text-primary cursor-pointer hover:text-blue-700">更改</span>
+                            </div>
+                        </div>
+                        <div class="py-3 flex justify-between items-center">
+                            <div class="font-medium">退出登录</div>
+                            <span class="text-red-500 cursor-pointer hover:text-red-700">退出</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div class="text-center py-5 text-gray-500 text-sm">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk 
+    </div>
+
+    <script>
+        // 标签页切换功能
+        document.querySelectorAll('.tab-btn').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // 更新按钮状态
+                document.querySelectorAll('.tab-btn').forEach(t => {
+                    t.classList.remove('bg-primary', 'text-white');
+                    t.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                });
+                this.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                this.classList.add('bg-primary', 'text-white');
+                
+                // 获取目标内容区域id
+                const targetId = this.getAttribute('data-tab') + '-content';
+                
+                // 隐藏所有内容
+                document.querySelectorAll('.tab-content').forEach(section => {
+                    section.classList.add('hidden');
+                });
+                
+                // 显示目标内容
+                document.getElementById(targetId).classList.remove('hidden');
+            });
+        });
+        
+        // 开关切换功能
+        document.querySelectorAll('.toggle').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                this.classList.toggle('toggle-active');
+                this.classList.toggle('bg-success');
+                this.classList.toggle('bg-gray-300');
+            });
+        });
+
+        // 页面加载时添加一个示例逻辑，用于测试显示"我的收藏"和"账号设置"
+        document.addEventListener('DOMContentLoaded', function() {
+            // 添加点击测试按钮的事件监听
+            const showFavoritesBtn = document.querySelector('[data-tab="favorites"]');
+            const showSettingsBtn = document.querySelector('[data-tab="settings"]');
+            
+            // 演示按钮功能
+            if(showFavoritesBtn && showSettingsBtn) {
+                // 如需直接展示某个标签页，取消下面注释即可
+                // setTimeout(() => showFavoritesBtn.click(), 1000); // 1秒后显示"我的收藏"
+                // setTimeout(() => showSettingsBtn.click(), 3000);  // 3秒后显示"账号设置"
+            }
+        });
+    </script>
+</body>
+</html>

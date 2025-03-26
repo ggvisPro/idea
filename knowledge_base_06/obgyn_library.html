@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>妇产科知识库 - 临床知识库</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // 配置Tailwind主题
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#faf5ff',
+                            100: '#f3e8ff',
+                            200: '#e9d5ff',
+                            300: '#d8b4fe',
+                            400: '#c084fc',
+                            500: '#a855f7',
+                            600: '#9333ea',
+                            700: '#7e22ce',
+                            800: '#6b21a8',
+                            900: '#581c87',
+                        },
+                    },
+                    transitionProperty: {
+                        'height': 'height',
+                        'spacing': 'margin, padding',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer components {
+            .card-hover {
+                @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+            }
+            
+            .card-specialty {
+                @apply relative overflow-hidden rounded-xl transition-all duration-300 
+                       hover:shadow-xl border border-transparent;
+            }
+            
+            .card-specialty:hover {
+                @apply border-gray-200 dark:border-gray-700;
+            }
+            
+            .card-red {
+                @apply bg-red-50 dark:bg-red-900/20;
+            }
+            
+            .card-blue {
+                @apply bg-blue-50 dark:bg-blue-900/20;
+            }
+            
+            .card-yellow {
+                @apply bg-yellow-50 dark:bg-yellow-900/20;
+            }
+            
+            .card-green {
+                @apply bg-green-50 dark:bg-green-900/20;
+            }
+            
+            .card-purple {
+                @apply bg-purple-50 dark:bg-purple-900/20;
+            }
+            
+            .card-teal {
+                @apply bg-teal-50 dark:bg-teal-900/20;
+            }
+            
+            .card-orange {
+                @apply bg-orange-50 dark:bg-orange-900/20;
+            }
+            
+            .card-pink {
+                @apply bg-pink-50 dark:bg-pink-900/20;
+            }
+            
+            .search-input {
+                @apply w-full py-3 px-5 rounded-xl border border-gray-200 
+                       focus:ring-4 focus:ring-primary-200 focus:border-primary-500 
+                       outline-none transition-all duration-200
+                       dark:bg-gray-800 dark:border-gray-700 dark:focus:ring-primary-800 dark:focus:border-primary-600;
+            }
+            
+            .btn-primary {
+                @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 
+                       rounded-full transition duration-300 ease-in-out 
+                       hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50
+                       dark:bg-primary-700 dark:hover:bg-primary-600;
+            }
+            
+            .icon-circle {
+                @apply flex items-center justify-center rounded-full w-12 h-12 text-white;
+            }
+        }
+    </style>
+    <!-- 引入主题切换脚本 -->
+    <script src="js/theme-toggle.js"></script>
+    <!-- 引入导航栏脚本 -->
+    <script src="js/navbar.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <!-- 导航栏由JS自动插入 -->
+
+    <!-- 主内容区域 -->
+    <main class="container mx-auto px-4 pt-24 pb-12">
+        <!-- 返回按钮 -->
+        <div class="mb-6">
+            <a href="main.html" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i> 返回首页
+            </a>
+        </div>
+
+        <!-- 欢迎信息 -->
+        <div class="mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-primary-600 dark:text-primary-400 mb-3">妇产科知识库</h1>
+            <p class="text-xl text-gray-600 dark:text-gray-400">全面的妇产科疾病诊疗指南、操作规范及最新研究进展</p>
+        </div>
+
+        <!-- 搜索区域 -->
+        <div class="mb-12">
+            <div class="max-w-3xl mx-auto relative">
+                <input type="text" class="search-input" placeholder="搜索妇产科疾病、检查、手术或药物...">
+                <button type="submit" class="absolute right-4 top-1/2 transform -translate-y-1/2">
+                    <i class="fas fa-search text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 妇科分类 -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+                <i class="fas fa-female text-primary-500 dark:text-primary-400 mr-3"></i>
+                妇科疾病
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- 妇科炎症 -->
+                <div class="card-specialty card-hover card-purple p-6">
+                    <div class="icon-circle bg-gradient-to-r from-purple-500 to-purple-600 mb-5">
+                        <i class="fas fa-fire-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">妇科炎症</h3>
+                    <p class="text-gray-600 dark:text-gray-300">阴道炎、宫颈炎、盆腔炎等常见妇科炎症的诊断标准与治疗方案。</p>
+                </div>
+                
+                <!-- 妇科肿瘤 -->
+                <div class="card-specialty card-hover card-pink p-6">
+                    <div class="icon-circle bg-gradient-to-r from-pink-500 to-pink-600 mb-5">
+                        <i class="fas fa-disease"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">妇科肿瘤</h3>
+                    <p class="text-gray-600 dark:text-gray-300">子宫肌瘤、卵巢肿瘤、宫颈癌等妇科肿瘤的筛查、诊断与治疗。</p>
+                </div>
+                
+                <!-- 月经疾病 -->
+                <div class="card-specialty card-hover card-blue p-6">
+                    <div class="icon-circle bg-gradient-to-r from-blue-500 to-blue-600 mb-5">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">月经疾病</h3>
+                    <p class="text-gray-600 dark:text-gray-300">月经失调、痛经、闭经、更年期综合征等月经相关疾病诊疗。</p>
+                </div>
+                
+                <!-- 内分泌疾病 -->
+                <div class="card-specialty card-hover card-orange p-6">
+                    <div class="icon-circle bg-gradient-to-r from-orange-500 to-orange-600 mb-5">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">内分泌疾病</h3>
+                    <p class="text-gray-600 dark:text-gray-300">多囊卵巢综合征、子宫内膜异位症等内分泌失调相关疾病。</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 产科管理 -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+                <i class="fas fa-baby text-primary-500 dark:text-primary-400 mr-3"></i>
+                产科管理
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- 孕期保健 -->
+                <div class="card-specialty card-hover card-green p-6">
+                    <div class="icon-circle bg-gradient-to-r from-green-500 to-green-600 mb-5">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">孕期保健</h3>
+                    <p class="text-gray-600 dark:text-gray-300">正常孕期管理、营养指导、产检规范及孕期常见问题处理。</p>
+                </div>
+                
+                <!-- 高危妊娠 -->
+                <div class="card-specialty card-hover card-red p-6">
+                    <div class="icon-circle bg-gradient-to-r from-red-500 to-red-600 mb-5">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">高危妊娠</h3>
+                    <p class="text-gray-600 dark:text-gray-300">妊娠期高血压、妊娠期糖尿病等高危妊娠的诊断与管理。</p>
+                </div>
+                
+                <!-- 分娩指南 -->
+                <div class="card-specialty card-hover card-teal p-6">
+                    <div class="icon-circle bg-gradient-to-r from-teal-500 to-teal-600 mb-5">
+                        <i class="fas fa-baby-carriage"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">分娩指南</h3>
+                    <p class="text-gray-600 dark:text-gray-300">自然分娩、剖宫产、难产处理及产后管理专业指南。</p>
+                </div>
+                
+                <!-- 胎儿医学 -->
+                <div class="card-specialty card-hover card-purple p-6">
+                    <div class="icon-circle bg-gradient-to-r from-purple-500 to-purple-600 mb-5">
+                        <i class="fas fa-child"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">胎儿医学</h3>
+                    <p class="text-gray-600 dark:text-gray-300">产前诊断、胎儿监护、胎儿异常与宫内治疗技术指南。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 专科技术 -->
+        <section class="mb-16 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <i class="fas fa-stethoscope text-primary-500 dark:text-primary-400 mr-3"></i>
+                专科技术
+            </h2>
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="flex flex-col items-center p-4 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <div class="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-r from-purple-500 to-pink-500 text-white mb-3">
+                        <i class="fas fa-hand-holding-medical"></i>
+                    </div>
+                    <span class="font-medium text-center">妇产科手术</span>
+                </div>
+                <div class="flex flex-col items-center p-4 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <div class="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-r from-blue-500 to-teal-500 text-white mb-3">
+                        <i class="fas fa-wave-square"></i>
+                    </div>
+                    <span class="font-medium text-center">超声诊断</span>
+                </div>
+                <div class="flex flex-col items-center p-4 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <div class="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-r from-blue-500 to-blue-600 text-white mb-3">
+                        <i class="fas fa-dna"></i>
+                    </div>
+                    <span class="font-medium text-center">生殖医学</span>
+                </div>
+                <div class="flex flex-col items-center p-4 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <div class="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-r from-orange-500 to-orange-600 text-white mb-3">
+                        <i class="fas fa-ambulance"></i>
+                    </div>
+                    <span class="font-medium text-center">急诊救治</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 常见症状与体征 -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+                <i class="fas fa-clipboard-list text-primary-500 dark:text-primary-400 mr-3"></i>
+                常见症状与体征
+            </h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div class="flex items-center p-3 rounded-lg bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors cursor-pointer shadow-sm">
+                    <i class="fas fa-tint text-red-500 mr-3"></i>
+                    <span class="font-medium">异常出血</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors cursor-pointer shadow-sm">
+                    <i class="fas fa-exclamation-circle text-orange-500 mr-3"></i>
+                    <span class="font-medium">腹痛</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors cursor-pointer shadow-sm">
+                    <i class="fas fa-thermometer-half text-red-500 mr-3"></i>
+                    <span class="font-medium">发热</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors cursor-pointer shadow-sm">
+                    <i class="fas fa-water text-blue-500 mr-3"></i>
+                    <span class="font-medium">白带异常</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors cursor-pointer shadow-sm">
+                    <i class="fas fa-weight text-green-500 mr-3"></i>
+                    <span class="font-medium">体重变化</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors cursor-pointer shadow-sm">
+                    <i class="fas fa-baby text-pink-500 mr-3"></i>
+                    <span class="font-medium">胎动异常</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors cursor-pointer shadow-sm">
+                    <i class="fas fa-bolt text-yellow-500 mr-3"></i>
+                    <span class="font-medium">痛经</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors cursor-pointer shadow-sm">
+                    <i class="fas fa-pills text-purple-500 mr-3"></i>
+                    <span class="font-medium">不孕</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors cursor-pointer shadow-sm">
+                    <i class="fas fa-dizzy text-gray-500 mr-3"></i>
+                    <span class="font-medium">眩晕</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors cursor-pointer shadow-sm">
+                    <i class="fas fa-heartbeat text-red-500 mr-3"></i>
+                    <span class="font-medium">心悸</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors cursor-pointer shadow-sm">
+                    <i class="fas fa-head-side-cough text-teal-500 mr-3"></i>
+                    <span class="font-medium">恶心呕吐</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors cursor-pointer shadow-sm">
+                    <i class="fas fa-tired text-blue-500 mr-3"></i>
+                    <span class="font-medium">疲劳</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 最新指南区域 -->
+        <section class="mb-16 bg-gradient-to-r from-primary-600 to-primary-800 dark:from-primary-800 dark:to-primary-900 rounded-xl text-white p-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <i class="fas fa-bookmark mr-3"></i>
+                最新妇产科指南
+            </h2>
+            <div class="space-y-4 mb-6">
+                <div class="bg-white bg-opacity-10 hover:bg-opacity-20 rounded-lg p-4 transition-colors cursor-pointer">
+                    <div class="flex items-start">
+                        <i class="fas fa-file-medical text-2xl mt-1 mr-4"></i>
+                        <div>
+                            <h3 class="font-semibold text-lg">2025年妊娠期糖尿病诊疗指南</h3>
+                            <p class="text-sm text-gray-200">发布于 2025-01-15</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white bg-opacity-10 hover:bg-opacity-20 rounded-lg p-4 transition-colors cursor-pointer">
+                    <div class="flex items-start">
+                        <i class="fas fa-file-medical text-2xl mt-1 mr-4"></i>
+                        <div>
+                            <h3 class="font-semibold text-lg">子宫内膜异位症诊疗专家共识（2024版）</h3>
+                            <p class="text-sm text-gray-200">发布于 2024-11-22</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white bg-opacity-10 hover:bg-opacity-20 rounded-lg p-4 transition-colors cursor-pointer">
+                    <div class="flex items-start">
+                        <i class="fas fa-file-medical text-2xl mt-1 mr-4"></i>
+                        <div>
+                            <h3 class="font-semibold text-lg">宫颈癌筛查与防治指南更新</h3>
+                            <p class="text-sm text-gray-200">发布于 2024-10-05</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-primary">
+                <i class="fas fa-list-ul mr-2"></i> 查看全部指南
+            </button>
+        </section>
+    </main>
+
+    <!-- 底部信息 -->
+    <footer class="py-6 text-center text-gray-500 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-800">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk
+    </footer>
+</body>
+</html>

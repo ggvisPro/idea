@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用药助手 - 临床知识库</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // 配置Tailwind主题 - 用药助手使用红色作为主色调
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#fef2f2',
+                            100: '#fee2e2',
+                            200: '#fecaca',
+                            300: '#fca5a5',
+                            400: '#f87171',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                            800: '#991b1b',
+                            900: '#7f1d1d',
+                        },
+                    },
+                    transitionProperty: {
+                        'height': 'height',
+                        'spacing': 'margin, padding',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer components {
+            .card-hover {
+                @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+            }
+            
+            .card-specialty {
+                @apply relative overflow-hidden rounded-xl transition-all duration-300 
+                       hover:shadow-xl border border-transparent;
+            }
+            
+            .card-specialty:hover {
+                @apply border-gray-200 dark:border-gray-700;
+            }
+            
+            .card-red {
+                @apply bg-red-50 dark:bg-red-900/20;
+            }
+            
+            .card-blue {
+                @apply bg-blue-50 dark:bg-blue-900/20;
+            }
+            
+            .card-yellow {
+                @apply bg-yellow-50 dark:bg-yellow-900/20;
+            }
+            
+            .card-green {
+                @apply bg-green-50 dark:bg-green-900/20;
+            }
+            
+            .card-purple {
+                @apply bg-purple-50 dark:bg-purple-900/20;
+            }
+            
+            .card-teal {
+                @apply bg-teal-50 dark:bg-teal-900/20;
+            }
+            
+            .card-orange {
+                @apply bg-orange-50 dark:bg-orange-900/20;
+            }
+            
+            .card-pink {
+                @apply bg-pink-50 dark:bg-pink-900/20;
+            }
+            
+            .search-input {
+                @apply w-full py-3 px-5 rounded-xl border border-gray-200 
+                       focus:ring-4 focus:ring-primary-200 focus:border-primary-500 
+                       outline-none transition-all duration-200
+                       dark:bg-gray-800 dark:border-gray-700 dark:focus:ring-primary-800 dark:focus:border-primary-600;
+            }
+            
+            .btn-primary {
+                @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 
+                       rounded-full transition duration-300 ease-in-out 
+                       hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50
+                       dark:bg-primary-700 dark:hover:bg-primary-600;
+            }
+            
+            .icon-circle {
+                @apply flex items-center justify-center rounded-full w-12 h-12 text-white;
+            }
+            
+            .search-chip {
+                @apply px-4 py-1.5 rounded-full text-sm font-medium bg-red-100 text-red-700 
+                       transition-all duration-200 cursor-pointer hover:bg-red-200
+                       dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/50;
+            }
+            
+            .tag {
+                @apply inline-block px-2.5 py-0.5 rounded-full text-xs font-medium text-white;
+            }
+            
+            .tag-caution {
+                @apply bg-yellow-500 dark:bg-yellow-600;
+            }
+            
+            .tag-alert {
+                @apply bg-red-500 dark:bg-red-600;
+            }
+            
+            .tag-safe {
+                @apply bg-green-500 dark:bg-green-600;
+            }
+        }
+    </style>
+    <!-- 引入主题切换脚本 -->
+    <script src="js/theme-toggle.js"></script>
+    <!-- 引入导航栏脚本 -->
+    <script src="js/navbar.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <!-- 导航栏由JS自动插入 -->
+
+    <!-- 主内容区域 -->
+    <main class="container mx-auto px-4 pt-24 pb-12">
+        <!-- 返回按钮 -->
+        <div class="mb-6">
+            <a href="main.html" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i> 返回首页
+            </a>
+        </div>
+
+        <!-- 欢迎信息 -->
+        <div class="mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-primary-600 dark:text-primary-400 mb-3">用药助手</h1>
+            <p class="text-xl text-gray-600 dark:text-gray-400">提供药物说明书、用药指导、药物相互作用及不良反应速查</p>
+        </div>
+
+        <!-- 搜索区域 -->
+        <div class="mb-12">
+            <div class="max-w-3xl mx-auto relative">
+                <input type="text" class="search-input" placeholder="搜索药品名称、成分或适应症...">
+                <button type="submit" class="absolute right-4 top-1/2 transform -translate-y-1/2">
+                    <i class="fas fa-search text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors"></i>
+                </button>
+            </div>
+            <div class="flex flex-wrap justify-center gap-2 mt-4">
+                <div class="search-chip">阿司匹林</div>
+                <div class="search-chip">阿托伐他汀</div>
+                <div class="search-chip">氨氯地平</div>
+                <div class="search-chip">二甲双胍</div>
+                <div class="search-chip">奥美拉唑</div>
+                <div class="search-chip">氯沙坦</div>
+            </div>
+        </div>
+
+        <!-- 药物分类 -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+                <i class="fas fa-pills text-primary-500 dark:text-primary-400 mr-3"></i>
+                药物分类
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- 心血管用药 -->
+                <div class="card-specialty card-hover card-red p-6">
+                    <div class="icon-circle bg-gradient-to-r from-red-500 to-red-600 mb-5">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">心血管用药</h3>
+                    <p class="text-gray-600 dark:text-gray-300">抗高血压、抗心律失常、抗心绞痛、降脂药物等心血管系统药物。</p>
+                </div>
+                
+                <!-- 呼吸系统用药 -->
+                <div class="card-specialty card-hover card-teal p-6">
+                    <div class="icon-circle bg-gradient-to-r from-teal-500 to-teal-600 mb-5">
+                        <i class="fas fa-lungs"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">呼吸系统用药</h3>
+                    <p class="text-gray-600 dark:text-gray-300">支气管扩张剂、镇咳祛痰药、抗哮喘药物等呼吸系统药物。</p>
+                </div>
+                
+                <!-- 消化系统用药 -->
+                <div class="card-specialty card-hover card-yellow p-6">
+                    <div class="icon-circle bg-gradient-to-r from-yellow-500 to-yellow-600 mb-5">
+                        <i class="fas fa-stomach"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">消化系统用药</h3>
+                    <p class="text-gray-600 dark:text-gray-300">抗酸药、助消化药、胃肠动力药、抗炎药等消化系统药物。</p>
+                </div>
+                
+                <!-- 内分泌系统用药 -->
+                <div class="card-specialty card-hover card-green p-6">
+                    <div class="icon-circle bg-gradient-to-r from-green-500 to-green-600 mb-5">
+                        <i class="fas fa-vial"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">内分泌系统用药</h3>
+                    <p class="text-gray-600 dark:text-gray-300">降糖药、甲状腺功能药物、糖皮质激素等内分泌系统药物。</p>
+                </div>
+                
+                <!-- 抗感染药物 -->
+                <div class="card-specialty card-hover card-red p-6">
+                    <div class="icon-circle bg-gradient-to-r from-red-500 to-red-600 mb-5">
+                        <i class="fas fa-virus-slash"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">抗感染药物</h3>
+                    <p class="text-gray-600 dark:text-gray-300">抗生素、抗病毒药、抗真菌药、抗结核药等抗感染药物。</p>
+                </div>
+                
+                <!-- 神经系统用药 -->
+                <div class="card-specialty card-hover card-purple p-6">
+                    <div class="icon-circle bg-gradient-to-r from-purple-500 to-purple-600 mb-5">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">神经系统用药</h3>
+                    <p class="text-gray-600 dark:text-gray-300">解热镇痛药、抗精神病药、抗抑郁药、抗焦虑药物等。</p>
+                </div>
+                
+                <!-- 血液系统用药 -->
+                <div class="card-specialty card-hover card-blue p-6">
+                    <div class="icon-circle bg-gradient-to-r from-blue-500 to-blue-600 mb-5">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">血液系统用药</h3>
+                    <p class="text-gray-600 dark:text-gray-300">抗凝血药、抗血小板药、溶栓药、止血药等血液系统药物。</p>
+                </div>
+                
+                <!-- 抗肿瘤药物 -->
+                <div class="card-specialty card-hover card-pink p-6">
+                    <div class="icon-circle bg-gradient-to-r from-pink-500 to-pink-600 mb-5">
+                        <i class="fas fa-dna"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">抗肿瘤药物</h3>
+                    <p class="text-gray-600 dark:text-gray-300">化疗药物、靶向药物、激素类药物等抗肿瘤治疗药物。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 药物相互作用查询 -->
+        <section class="mb-16 bg-gradient-to-r from-primary-600 to-primary-800 dark:from-primary-800 dark:to-primary-900 rounded-xl text-white p-8">
+            <h2 class="text-2xl font-bold mb-4 flex items-center">
+                <i class="fas fa-random mr-3"></i>
+                药物相互作用查询
+            </h2>
+            <p class="text-lg mb-6 opacity-90">输入两种及以上药物名称，快速查询它们之间可能存在的相互作用及临床注意事项</p>
+            <div class="space-y-4">
+                <div class="flex gap-3">
+                    <input type="text" class="flex-1 py-3 px-4 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50" placeholder="输入药物名称">
+                    <button class="bg-white/20 hover:bg-white/30 w-12 h-12 rounded-lg flex items-center justify-center transition-colors">
+                        <i class="fas fa-plus text-xl"></i>
+                    </button>
+                </div>
+                <div class="flex gap-3">
+                    <input type="text" class="flex-1 py-3 px-4 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50" placeholder="输入另一种药物名称">
+                    <button class="bg-white/20 hover:bg-white/30 w-12 h-12 rounded-lg flex items-center justify-center transition-colors">
+                        <i class="fas fa-plus text-xl"></i>
+                    </button>
+                </div>
+                <div class="mt-4">
+                    <button class="bg-white text-primary-600 hover:bg-gray-100 font-medium py-2.5 px-6 rounded-full transition duration-300 hover:scale-105">
+                        检查相互作用
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 特殊人群用药指南 -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+                <i class="fas fa-users text-primary-500 dark:text-primary-400 mr-3"></i>
+                特殊人群用药指南
+            </h2>
+            <div class="overflow-x-auto bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr class="bg-primary-600 dark:bg-primary-700 text-white">
+                            <th class="py-4 px-6 text-left w-1/4">药物分类</th>
+                            <th class="py-4 px-6 text-left w-1/4">孕妇用药</th>
+                            <th class="py-4 px-6 text-left w-1/4">儿童用药</th>
+                            <th class="py-4 px-6 text-left w-1/4">老年人用药</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <td class="py-4 px-6 font-medium">非甾体抗炎药(NSAIDs)</td>
+                            <td class="py-4 px-6"><span class="tag tag-caution">谨慎</span> 孕晚期禁用</td>
+                            <td class="py-4 px-6"><span class="tag tag-caution">谨慎</span> 剂量需调整</td>
+                            <td class="py-4 px-6"><span class="tag tag-caution">谨慎</span> 胃肠道风险</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <td class="py-4 px-6 font-medium">抗生素</td>
+                            <td class="py-4 px-6"><span class="tag tag-safe">安全</span> 青霉素类</td>
+                            <td class="py-4 px-6"><span class="tag tag-safe">安全</span> 剂量需调整</td>
+                            <td class="py-4 px-6"><span class="tag tag-caution">谨慎</span> 肾功能监测</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <td class="py-4 px-6 font-medium">降压药</td>
+                            <td class="py-4 px-6"><span class="tag tag-alert">禁用</span> ACEI/ARB</td>
+                            <td class="py-4 px-6"><span class="tag tag-caution">谨慎</span> 专科指导</td>
+                            <td class="py-4 px-6"><span class="tag tag-safe">安全</span> 起始剂量减半</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <td class="py-4 px-6 font-medium">降糖药</td>
+                            <td class="py-4 px-6"><span class="tag tag-caution">谨慎</span> 首选胰岛素</td>
+                            <td class="py-4 px-6"><span class="tag tag-caution">谨慎</span> 多监测血糖</td>
+                            <td class="py-4 px-6"><span class="tag tag-caution">谨慎</span> 避免低血糖</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <td class="py-4 px-6 font-medium">抗凝药</td>
+                            <td class="py-4 px-6"><span class="tag tag-alert">禁用</span> 华法林</td>
+                            <td class="py-4 px-6"><span class="tag tag-alert">禁用</span> 慎用</td>
+                            <td class="py-4 px-6"><span class="tag tag-caution">谨慎</span> 出血风险</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 常用药物说明书 -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+                <i class="fas fa-file-prescription text-primary-500 dark:text-primary-400 mr-3"></i>
+                常用药物说明书
+            </h2>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm divide-y divide-gray-200 dark:divide-gray-700">
+                <div class="flex items-center py-5 px-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <div class="icon-circle bg-gradient-to-r from-red-500 to-red-600 flex-shrink-0 mr-4">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold">阿司匹林</h3>
+                        <p class="text-gray-600 dark:text-gray-400">抗血小板药物，用于预防心血管疾病和短期缓解疼痛</p>
+                    </div>
+                    <button class="px-4 py-2 rounded-full text-primary-600 bg-primary-50 hover:bg-primary-100 font-medium transition-colors dark:bg-primary-900/20 dark:text-primary-400 dark:hover:bg-primary-900/30">
+                        查看详情
+                    </button>
+                </div>
+                
+                <div class="flex items-center py-5 px-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <div class="icon-circle bg-gradient-to-r from-yellow-500 to-yellow-600 flex-shrink-0 mr-4">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold">阿托伐他汀</h3>
+                        <p class="text-gray-600 dark:text-gray-400">他汀类调脂药，降低胆固醇，预防心血管事件</p>
+                    </div>
+                    <button class="px-4 py-2 rounded-full text-primary-600 bg-primary-50 hover:bg-primary-100 font-medium transition-colors dark:bg-primary-900/20 dark:text-primary-400 dark:hover:bg-primary-900/30">
+                        查看详情
+                    </button>
+                </div>
+                
+                <div class="flex items-center py-5 px-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <div class="icon-circle bg-gradient-to-r from-blue-500 to-blue-600 flex-shrink-0 mr-4">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold">氨氯地平</h3>
+                        <p class="text-gray-600 dark:text-gray-400">钙通道阻滞剂，用于高血压和心绞痛的治疗</p>
+                    </div>
+                    <button class="px-4 py-2 rounded-full text-primary-600 bg-primary-50 hover:bg-primary-100 font-medium transition-colors dark:bg-primary-900/20 dark:text-primary-400 dark:hover:bg-primary-900/30">
+                        查看详情
+                    </button>
+                </div>
+                
+                <div class="flex items-center py-5 px-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <div class="icon-circle bg-gradient-to-r from-green-500 to-green-600 flex-shrink-0 mr-4">
+                        <i class="fas fa-prescription-bottle"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold">二甲双胍</h3>
+                        <p class="text-gray-600 dark:text-gray-400">双胍类降糖药，2型糖尿病一线用药</p>
+                    </div>
+                    <button class="px-4 py-2 rounded-full text-primary-600 bg-primary-50 hover:bg-primary-100 font-medium transition-colors dark:bg-primary-900/20 dark:text-primary-400 dark:hover:bg-primary-900/30">
+                        查看详情
+                    </button>
+                </div>
+                
+                <div class="flex items-center py-5 px-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <div class="icon-circle bg-gradient-to-r from-purple-500 to-purple-600 flex-shrink-0 mr-4">
+                        <i class="fas fa-capsules"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold">奥美拉唑</h3>
+                        <p class="text-gray-600 dark:text-gray-400">质子泵抑制剂，用于消化性溃疡和胃食管反流病</p>
+                    </div>
+                    <button class="px-4 py-2 rounded-full text-primary-600 bg-primary-50 hover:bg-primary-100 font-medium transition-colors dark:bg-primary-900/20 dark:text-primary-400 dark:hover:bg-primary-900/30">
+                        查看详情
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 底部信息 -->
+    <footer class="py-6 text-center text-gray-500 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-800">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk
+    </footer>
+</body>
+</html>

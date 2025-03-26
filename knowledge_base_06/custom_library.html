@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自定义知识库 - 临床知识库</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // 配置Tailwind主题
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                    },
+                    transitionProperty: {
+                        'height': 'height',
+                        'spacing': 'margin, padding',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 自定义Tailwind扩展 */
+        @layer utilities {
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .btn-hover {
+                transition: all 0.2s ease;
+            }
+            .btn-hover:hover {
+                transform: scale(1.05);
+            }
+            .search-focus:focus {
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+            }
+            .file-item-hover {
+                transition: all 0.15s ease;
+            }
+            .file-item-hover:hover {
+                background-color: rgba(243, 244, 246, 0.7);
+            }
+            .dark .file-item-hover:hover {
+                background-color: rgba(55, 65, 81, 0.5);
+            }
+            /* 淡入动画 */
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .fade-in {
+                animation: fadeIn 0.5s ease forwards;
+            }
+            .fade-in-delay-1 {
+                animation: fadeIn 0.5s ease 0.1s forwards;
+                opacity: 0;
+            }
+            .fade-in-delay-2 {
+                animation: fadeIn 0.5s ease 0.2s forwards;
+                opacity: 0;
+            }
+            .fade-in-delay-3 {
+                animation: fadeIn 0.5s ease 0.3s forwards;
+                opacity: 0;
+            }
+        }
+    </style>
+    <!-- 引入主题切换脚本 -->
+    <script src="js/theme-toggle.js"></script>
+    <!-- 引入导航栏脚本 -->
+    <script src="js/navbar.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <!-- 导航栏由navbar.js自动插入 -->
+    
+    <!-- 主内容区域 -->
+    <div id="main-content" class="container max-w-7xl mx-auto pt-24 pb-10 px-4 sm:px-6 transition-all duration-300">
+        <!-- 标题 -->
+        <div class="flex justify-between items-center mb-8 fade-in">
+            <div class="flex items-center">
+                <button class="mr-4 flex items-center text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg px-3 py-2 transition-colors" onclick="window.location.href='main.html'">
+                    <i class="fas fa-arrow-left mr-2"></i> 返回
+                </button>
+                <h1 class="text-3xl font-bold dark:text-white">自定义知识库</h1>
+            </div>
+            <button class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full font-medium shadow-md flex items-center btn-hover dark:bg-blue-700 dark:hover:bg-blue-800 transition-colors">
+                <i class="fas fa-plus mr-2"></i> 新建知识库
+            </button>
+        </div>
+
+        <!-- 统计信息 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 fade-in-delay-1">
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md dark:shadow-gray-800/30 transition-colors">
+                <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">文档总数</div>
+                <div class="text-3xl font-semibold mb-2 dark:text-white">14</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">最近7天新增 3 份文档</div>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md dark:shadow-gray-800/30 transition-colors">
+                <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">存储空间</div>
+                <div class="text-3xl font-semibold mb-2 dark:text-white">28.4 MB</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">剩余 971.6 MB</div>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md dark:shadow-gray-800/30 transition-colors">
+                <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">检索调用</div>
+                <div class="text-3xl font-semibold mb-2 dark:text-white">47</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">本月已使用 47/200 次</div>
+            </div>
+        </div>
+
+        <!-- 上传区域 -->
+        <div class="bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-800 rounded-xl p-6 mb-8 flex flex-col md:flex-row items-center justify-between text-white fade-in-delay-2 transition-colors">
+            <div class="md:mr-6 mb-4 md:mb-0 text-center md:text-left">
+                <h2 class="text-2xl font-semibold mb-2">上传医疗资料构建您的专业知识库</h2>
+                <p class="opacity-90">支持PDF、Word、Excel和PowerPoint格式文件，单个文件最大50MB</p>
+            </div>
+            <button onclick="window.location.href='upload_document.html'" class="bg-white text-blue-600 dark:bg-gray-800 dark:text-blue-400 px-5 py-3 rounded-full font-medium shadow-lg flex items-center btn-hover whitespace-nowrap transition-colors">
+                <i class="fas fa-file-upload mr-2"></i> 上传文档
+            </button>
+        </div>
+
+        <!-- 管理工具栏 -->
+        <div class="flex flex-col md:flex-row justify-between gap-4 mb-6 fade-in-delay-3">
+            <div class="relative">
+                <input type="text" class="w-full md:w-80 px-4 py-2.5 pl-10 rounded-lg border-0 bg-white dark:bg-gray-800 dark:text-white shadow-sm outline-none search-focus transition-colors" placeholder="搜索文档...">
+                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500"></i>
+            </div>
+            <div class="flex items-center flex-wrap gap-2">
+                <div class="flex gap-2">
+                    <button class="px-4 py-2 rounded-lg bg-blue-600 text-white dark:bg-blue-700 shadow-sm transition-colors">全部</button>
+                    <button class="px-4 py-2 rounded-lg bg-white dark:bg-gray-800 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm transition-colors">医疗指南</button>
+                    <button class="px-4 py-2 rounded-lg bg-white dark:bg-gray-800 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm transition-colors">研究资料</button>
+                    <button class="px-4 py-2 rounded-lg bg-white dark:bg-gray-800 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm transition-colors">临床方案</button>
+                </div>
+                <button class="text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 px-3 py-2 rounded-lg flex items-center ml-2 transition-colors">
+                    <i class="fas fa-folder mr-2"></i> 管理分类
+                </button>
+            </div>
+        </div>
+
+        <!-- 文件列表 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-800/30 overflow-hidden mb-8 transition-colors fade-in-delay-3">
+            <!-- 文件表头 -->
+            <div class="grid grid-cols-12 px-6 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 transition-colors">
+                <div class="col-span-6 md:col-span-5">文档名称</div>
+                <div class="col-span-3 md:col-span-2">分类</div>
+                <div class="hidden md:block md:col-span-2">大小</div>
+                <div class="hidden md:block md:col-span-2">上传日期</div>
+                <div class="col-span-3 md:col-span-1 text-center">操作</div>
+            </div>
+
+            <!-- 文件列表 -->
+            <div class="max-h-[600px] overflow-y-auto">
+                <!-- 文件项 1 -->
+                <div class="grid grid-cols-12 px-6 py-4 border-b border-gray-100 dark:border-gray-700 items-center file-item-hover transition-colors">
+                    <div class="col-span-6 md:col-span-5 flex items-center">
+                        <div class="w-10 h-10 rounded-lg bg-red-500 flex items-center justify-center text-white font-medium mr-3 text-xs">
+                            <i class="fas fa-file-pdf text-lg"></i>
+                        </div>
+                        <div>
+                            <div class="font-medium dark:text-white">2型糖尿病诊疗指南2023版</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">中华医学会内分泌学分会</div>
+                        </div>
+                    </div>
+                    <div class="col-span-3 md:col-span-2">
+                        <span class="px-2.5 py-1 text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full transition-colors">医疗指南</span>
+                    </div>
+                    <div class="hidden md:block md:col-span-2 text-sm text-gray-500 dark:text-gray-400">4.2 MB</div>
+                    <div class="hidden md:block md:col-span-2 text-sm text-gray-500 dark:text-gray-400">2023-11-12</div>
+                    <div class="col-span-3 md:col-span-1 flex justify-center gap-2">
+                        <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors" title="复制">
+                            <i class="fas fa-clipboard"></i>
+                        </button>
+                        <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors" title="更多">
+                            <i class="fas fa-ellipsis-vertical"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 文件项 2 -->
+                <div class="grid grid-cols-12 px-6 py-4 border-b border-gray-100 dark:border-gray-700 items-center file-item-hover transition-colors">
+                    <div class="col-span-6 md:col-span-5 flex items-center">
+                        <div class="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center text-white font-medium mr-3 text-xs">
+                            <i class="fas fa-file-word text-lg"></i>
+                        </div>
+                        <div>
+                            <div class="font-medium dark:text-white">高血压患者用药方案</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">内部临床参考文档</div>
+                        </div>
+                    </div>
+                    <div class="col-span-3 md:col-span-2">
+                        <span class="px-2.5 py-1 text-xs font-medium bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full transition-colors">临床方案</span>
+                    </div>
+                    <div class="hidden md:block md:col-span-2 text-sm text-gray-500 dark:text-gray-400">1.8 MB</div>
+                    <div class="hidden md:block md:col-span-2 text-sm text-gray-500 dark:text-gray-400">2023-11-05</div>
+                    <div class="col-span-3 md:col-span-1 flex justify-center gap-2">
+                        <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors" title="复制">
+                            <i class="fas fa-clipboard"></i>
+                        </button>
+                        <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors" title="更多">
+                            <i class="fas fa-ellipsis-vertical"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 文件项 3 -->
+                <div class="grid grid-cols-12 px-6 py-4 border-b border-gray-100 dark:border-gray-700 items-center file-item-hover transition-colors">
+                    <div class="col-span-6 md:col-span-5 flex items-center">
+                        <div class="w-10 h-10 rounded-lg bg-green-500 flex items-center justify-center text-white font-medium mr-3 text-xs">
+                            <i class="fas fa-file-excel text-lg"></i>
+                        </div>
+                        <div>
+                            <div class="font-medium dark:text-white">儿科常用药物剂量参考表</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">儿科用药参考</div>
+                        </div>
+                    </div>
+                    <div class="col-span-3 md:col-span-2">
+                        <span class="px-2.5 py-1 text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full transition-colors">医疗指南</span>
+                    </div>
+                    <div class="hidden md:block md:col-span-2 text-sm text-gray-500 dark:text-gray-400">2.3 MB</div>
+                    <div class="hidden md:block md:col-span-2 text-sm text-gray-500 dark:text-gray-400">2023-10-28</div>
+                    <div class="col-span-3 md:col-span-1 flex justify-center gap-2">
+                        <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors" title="复制">
+                            <i class="fas fa-clipboard"></i>
+                        </button>
+                        <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors" title="更多">
+                            <i class="fas fa-ellipsis-vertical"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 文件项 4 -->
+                <div class="grid grid-cols-12 px-6 py-4 border-b border-gray-100 dark:border-gray-700 items-center file-item-hover transition-colors">
+                    <div class="col-span-6 md:col-span-5 flex items-center">
+                        <div class="w-10 h-10 rounded-lg bg-orange-500 flex items-center justify-center text-white font-medium mr-3 text-xs">
+                            <i class="fas fa-file-powerpoint text-lg"></i>
+                        </div>
+                        <div>
+                            <div class="font-medium dark:text-white">腹腔镜胆囊切除术操作指南</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">外科手术培训资料</div>
+                        </div>
+                    </div>
+                    <div class="col-span-3 md:col-span-2">
+                        <span class="px-2.5 py-1 text-xs font-medium bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full transition-colors">手术指南</span>
+                    </div>
+                    <div class="hidden md:block md:col-span-2 text-sm text-gray-500 dark:text-gray-400">8.7 MB</div>
+                    <div class="hidden md:block md:col-span-2 text-sm text-gray-500 dark:text-gray-400">2023-10-15</div>
+                    <div class="col-span-3 md:col-span-1 flex justify-center gap-2">
+                        <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors" title="复制">
+                            <i class="fas fa-clipboard"></i>
+                        </button>
+                        <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors" title="更多">
+                            <i class="fas fa-ellipsis-vertical"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 文件项 5 -->
+                <div class="grid grid-cols-12 px-6 py-4 border-b border-gray-100 dark:border-gray-700 items-center file-item-hover transition-colors">
+                    <div class="col-span-6 md:col-span-5 flex items-center">
+                        <div class="w-10 h-10 rounded-lg bg-purple-500 flex items-center justify-center text-white font-medium mr-3 text-xs">
+                            <i class="fas fa-file-pdf text-lg"></i>
+                        </div>
+                        <div>
+                            <div class="font-medium dark:text-white">急性冠脉综合征诊治进展</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">学术研讨会资料</div>
+                        </div>
+                    </div>
+                    <div class="col-span-3 md:col-span-2">
+                        <span class="px-2.5 py-1 text-xs font-medium bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-full transition-colors">研究资料</span>
+                    </div>
+                    <div class="hidden md:block md:col-span-2 text-sm text-gray-500 dark:text-gray-400">5.1 MB</div>
+                    <div class="hidden md:block md:col-span-2 text-sm text-gray-500 dark:text-gray-400">2023-10-08</div>
+                    <div class="col-span-3 md:col-span-1 flex justify-center gap-2">
+                        <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors" title="复制">
+                            <i class="fas fa-clipboard"></i>
+                        </button>
+                        <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors" title="更多">
+                            <i class="fas fa-ellipsis-vertical"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 文件项 6 -->
+                <div class="grid grid-cols-12 px-6 py-4 border-b border-gray-100 dark:border-gray-700 items-center file-item-hover transition-colors">
+                    <div class="col-span-6 md:col-span-5 flex items-center">
+                        <div class="w-10 h-10 rounded-lg bg-red-500 flex items-center justify-center text-white font-medium mr-3 text-xs">
+                            <i class="fas fa-file-pdf text-lg"></i>
+                        </div>
+                        <div>
+                            <div class="font-medium dark:text-white">妊娠期高血压的管理策略</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">妇产科诊疗指南</div>
+                        </div>
+                    </div>
+                    <div class="col-span-3 md:col-span-2">
+                        <span class="px-2.5 py-1 text-xs font-medium bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full transition-colors">临床方案</span>
+                    </div>
+                    <div class="hidden md:block md:col-span-2 text-sm text-gray-500 dark:text-gray-400">3.4 MB</div>
+                    <div class="hidden md:block md:col-span-2 text-sm text-gray-500 dark:text-gray-400">2023-09-25</div>
+                    <div class="col-span-3 md:col-span-1 flex justify-center gap-2">
+                        <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors" title="复制">
+                            <i class="fas fa-clipboard"></i>
+                        </button>
+                        <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors" title="更多">
+                            <i class="fas fa-ellipsis-vertical"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 文件项 7 -->
+                <div class="grid grid-cols-12 px-6 py-4 items-center file-item-hover transition-colors">
+                    <div class="col-span-6 md:col-span-5 flex items-center">
+                        <div class="w-10 h-10 rounded-lg bg-yellow-500 flex items-center justify-center text-white font-medium mr-3 text-xs">
+                            <i class="fas fa-file-word text-lg"></i>
+                        </div>
+                        <div>
+                            <div class="font-medium dark:text-white">新型骨科植入物应用经验</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">临床研究报告</div>
+                        </div>
+                    </div>
+                    <div class="col-span-3 md:col-span-2">
+                        <span class="px-2.5 py-1 text-xs font-medium bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-full transition-colors">研究资料</span>
+                    </div>
+                    <div class="hidden md:block md:col-span-2 text-sm text-gray-500 dark:text-gray-400">2.9 MB</div>
+                    <div class="hidden md:block md:col-span-2 text-sm text-gray-500 dark:text-gray-400">2023-09-18</div>
+                    <div class="col-span-3 md:col-span-1 flex justify-center gap-2">
+                        <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors" title="复制">
+                            <i class="fas fa-clipboard"></i>
+                        </button>
+                        <button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors" title="更多">
+                            <i class="fas fa-ellipsis-vertical"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div class="text-center py-6 text-gray-500 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-800 transition-colors">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk
+    </div>
+
+    <!-- 侧边栏状态监听脚本 -->
+    <script>
+        // 监听侧边栏状态变化
+        document.addEventListener('sidebar-toggle', function(e) {
+            const mainContent = document.getElementById('main-content');
+            
+            if (e.detail.expanded) {
+                // 侧边栏展开
+                mainContent.classList.remove('ml-16');
+                mainContent.classList.add('ml-52');
+            } else {
+                // 侧边栏收起
+                mainContent.classList.remove('ml-52');
+                mainContent.classList.add('ml-16');
+            }
+        });
+        
+        // 页面加载时根据侧边栏状态设置
+        document.addEventListener('sidebar-loaded', function(e) {
+            const mainContent = document.getElementById('main-content');
+            
+            if (e.detail.expanded) {
+                mainContent.classList.add('ml-52');
+            } else {
+                mainContent.classList.add('ml-16');
+            }
+        });
+    </script>
+</body>
+</html>
