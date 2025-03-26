@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,95 +9,112 @@
     <!-- Font Awesome图标库 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
+        // 配置Tailwind主题
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        primary: '#0071e3',
-                        secondary: '#5856d6',
-                        success: '#34c759',
-                        danger: '#ff3b30',
-                        warning: '#ff9500',
-                        info: '#5ac8fa',
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
                     },
                     transitionProperty: {
+                        'height': 'height',
+                        'spacing': 'margin, padding',
                         'transform': 'transform',
                     }
                 }
             }
         }
     </script>
-    <style>
+    <style type="text/tailwindcss">
         @layer utilities {
             .card-hover {
-                transition: all 0.3s ease;
+                @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
             }
-            .card-hover:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            
+            .btn-primary {
+                @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 
+                       rounded-full transition duration-300 ease-in-out 
+                       hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50
+                       dark:bg-primary-700 dark:hover:bg-primary-600;
             }
-            .btn-hover {
-                transition: transform 0.2s ease;
+            
+            .btn-secondary {
+                @apply bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 
+                       rounded-full transition duration-300 ease-in-out 
+                       hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-50
+                       dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300;
             }
-            .btn-hover:hover {
-                transform: scale(1.05);
-            }
+            
             .input-focus:focus {
-                box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.3);
-                border-color: rgba(0, 113, 227, 0.6);
+                @apply ring-4 ring-primary-200 border-primary-500 
+                       outline-none transition-all duration-200
+                       dark:ring-primary-800 dark:border-primary-600;
             }
+            
             .toggle-handle {
                 transform: translateX(0);
                 transition: transform 0.2s ease;
             }
+            
             .toggle-active .toggle-handle {
                 transform: translateX(18px);
             }
         }
     </style>
+    <!-- 引入主题切换脚本 -->
+    <script src="js/theme-toggle.js"></script>
+    <!-- 引入导航栏脚本 -->
+    <script src="js/navbar.js"></script>
 </head>
-<body class="bg-gray-50 text-gray-900">
-    <!-- 导航栏 -->
-    <div class="fixed top-0 left-0 right-0 h-12 bg-white bg-opacity-80 backdrop-blur-md flex justify-between items-center px-5 shadow-sm z-50">
-        <div class="text-xl font-semibold cursor-pointer" onclick="window.location.href='main.html'">临床知识库</div>
-        <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.href='user_profile.html'">
-            <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="w-8 h-8 rounded-full object-cover" alt="用户头像">
-            <div class="font-medium">主任</div>
-        </div>
-    </div>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <!-- 导航栏由JS自动插入 -->
 
     <!-- 主内容区域 -->
-    <div class="container max-w-6xl mx-auto pt-16 pb-10 px-4 sm:px-6">
+    <main class="container mx-auto px-4 pt-24 pb-12">
         <!-- 返回按钮 -->
-        <button onclick="window.location.href='main.html'" class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm font-medium transition-colors duration-200 mb-6">
-            <i class="fas fa-arrow-left mr-2"></i> 返回首页
-        </button>
+        <div class="mb-6">
+            <a href="main.html" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i> 返回首页
+            </a>
+        </div>
 
         <!-- 个人信息卡片 -->
-        <div class="bg-white rounded-2xl shadow-md p-6 sm:p-8 mb-8 flex flex-col sm:flex-row items-center sm:items-start gap-6">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 sm:p-8 mb-8 flex flex-col sm:flex-row items-center sm:items-start gap-6">
             <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="w-28 h-28 rounded-full object-cover" alt="用户头像">
             <div class="flex-1 text-center sm:text-left">
-                <h1 class="text-3xl font-bold mb-2">主任</h1>
-                <p class="text-gray-600 mb-3">主任医师 | 妇产科 | 北京巨成医学</p>
+                <h1 class="text-3xl font-bold mb-2 dark:text-white">主任</h1>
+                <p class="text-gray-600 dark:text-gray-400 mb-3">主任医师 | 妇产科 | 北京巨成医学</p>
                 <div class="flex flex-wrap justify-center sm:justify-start gap-4 mb-4">
                     <div class="flex items-center">
-                        <i class="fas fa-envelope text-gray-500 mr-2"></i>
-                        <span class="text-gray-600 text-sm">wangzhikun@pku.edu.cn</span>
+                        <i class="fas fa-envelope text-gray-500 dark:text-gray-400 mr-2"></i>
+                        <span class="text-gray-600 dark:text-gray-400 text-sm">wangzhikun@pku.edu.cn</span>
                     </div>
                     <div class="flex items-center">
-                        <i class="fas fa-phone text-gray-500 mr-2"></i>
-                        <span class="text-gray-600 text-sm">+86 188****8888</span>
+                        <i class="fas fa-phone text-gray-500 dark:text-gray-400 mr-2"></i>
+                        <span class="text-gray-600 dark:text-gray-400 text-sm">+86 188****8888</span>
                     </div>
                     <div class="flex items-center">
-                        <i class="fas fa-hospital text-gray-500 mr-2"></i>
-                        <span class="text-gray-600 text-sm">北京巨成医学 妇产科</span>
+                        <i class="fas fa-hospital text-gray-500 dark:text-gray-400 mr-2"></i>
+                        <span class="text-gray-600 dark:text-gray-400 text-sm">北京巨成医学 妇产科</span>
                     </div>
                 </div>
                 <div class="flex justify-center sm:justify-start gap-3">
-                    <button class="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium btn-hover">
+                    <button class="btn-primary">
                         <i class="fas fa-user-edit mr-1"></i> 编辑个人资料
                     </button>
-                    <button onclick="window.location.href='admin_dashboard.html'" class="px-4 py-2 bg-secondary text-white rounded-full text-sm font-medium btn-hover">
+                    <button onclick="window.location.href='admin_dashboard.html'" class="btn-secondary">
                         <i class="fas fa-shield-alt mr-1"></i> 管理员看板
                     </button>
                 </div>
@@ -106,102 +123,102 @@
 
         <!-- 统计信息 -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div class="bg-white rounded-xl shadow-sm p-6 text-center card-hover">
-                <div class="text-4xl font-bold text-primary mb-2">78</div>
-                <div class="text-gray-600 font-medium">使用天数</div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 text-center card-hover">
+                <div class="text-4xl font-bold text-primary-600 dark:text-primary-400 mb-2">78</div>
+                <div class="text-gray-600 dark:text-gray-400 font-medium">使用天数</div>
             </div>
-            <div class="bg-white rounded-xl shadow-sm p-6 text-center card-hover">
-                <div class="text-4xl font-bold text-primary mb-2">156</div>
-                <div class="text-gray-600 font-medium">查询次数</div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 text-center card-hover">
+                <div class="text-4xl font-bold text-primary-600 dark:text-primary-400 mb-2">156</div>
+                <div class="text-gray-600 dark:text-gray-400 font-medium">查询次数</div>
             </div>
-            <div class="bg-white rounded-xl shadow-sm p-6 text-center card-hover">
-                <div class="text-4xl font-bold text-primary mb-2">23</div>
-                <div class="text-gray-600 font-medium">收藏资料</div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 text-center card-hover">
+                <div class="text-4xl font-bold text-primary-600 dark:text-primary-400 mb-2">23</div>
+                <div class="text-gray-600 dark:text-gray-400 font-medium">收藏资料</div>
             </div>
-            <div class="bg-white rounded-xl shadow-sm p-6 text-center card-hover">
-                <div class="text-4xl font-bold text-primary mb-2">12</div>
-                <div class="text-gray-600 font-medium">病例分析</div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 text-center card-hover">
+                <div class="text-4xl font-bold text-primary-600 dark:text-primary-400 mb-2">12</div>
+                <div class="text-gray-600 dark:text-gray-400 font-medium">病例分析</div>
             </div>
         </div>
 
         <!-- 标签页 -->
         <div class="mb-6">
             <div class="flex flex-wrap gap-2 mb-6">
-                <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-primary text-white" data-tab="history">
+                <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-primary-600 text-white dark:bg-primary-700" data-tab="history">
                     <i class="fas fa-history mr-1"></i> 历史记录
                 </button>
-                <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-gray-200 text-gray-700 hover:bg-gray-300" data-tab="favorites">
+                <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600" data-tab="favorites">
                     <i class="fas fa-bookmark mr-1"></i> 我的收藏
                 </button>
-                <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-gray-200 text-gray-700 hover:bg-gray-300" data-tab="settings">
+                <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600" data-tab="settings">
                     <i class="fas fa-cog mr-1"></i> 账号设置
                 </button>
             </div>
             
             <!-- 历史记录内容 -->
-            <div class="tab-content bg-white rounded-2xl shadow-md p-6" id="history-content">
+            <div class="tab-content bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6" id="history-content">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-semibold">最近访问记录</h3>
-                    <button class="text-primary hover:text-blue-700 text-sm font-medium">
+                    <h3 class="text-xl font-semibold dark:text-white">最近访问记录</h3>
+                    <button class="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 text-sm font-medium">
                         <i class="fas fa-trash-alt mr-1"></i> 清除历史记录
                     </button>
                 </div>
                 <div class="space-y-4">
-                    <div class="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer flex items-center">
+                    <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors cursor-pointer flex items-center">
                         <div class="w-10 h-10 rounded-lg bg-red-500 text-white flex items-center justify-center mr-4">
                             <i class="fas fa-stethoscope"></i>
                         </div>
                         <div class="flex-1">
-                            <div class="font-medium mb-1">高血压 - AI病例分析</div>
-                            <div class="flex justify-between text-sm text-gray-500">
+                            <div class="font-medium mb-1 dark:text-white">高血压 - AI病例分析</div>
+                            <div class="flex justify-between text-sm text-gray-500 dark:text-gray-400">
                                 <span>病例分析</span>
                                 <span>今天 14:23</span>
                             </div>
                         </div>
                     </div>
-                    <div class="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer flex items-center">
+                    <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors cursor-pointer flex items-center">
                         <div class="w-10 h-10 rounded-lg bg-blue-500 text-white flex items-center justify-center mr-4">
                             <i class="fas fa-heartbeat"></i>
                         </div>
                         <div class="flex-1">
-                            <div class="font-medium mb-1">2型糖尿病防治指南（2024版）</div>
-                            <div class="flex justify-between text-sm text-gray-500">
+                            <div class="font-medium mb-1 dark:text-white">2型糖尿病防治指南（2024版）</div>
+                            <div class="flex justify-between text-sm text-gray-500 dark:text-gray-400">
                                 <span>内科知识库</span>
                                 <span>昨天 09:45</span>
                             </div>
                         </div>
                     </div>
-                    <div class="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer flex items-center">
+                    <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors cursor-pointer flex items-center">
                         <div class="w-10 h-10 rounded-lg bg-green-500 text-white flex items-center justify-center mr-4">
                             <i class="fas fa-procedures"></i>
                         </div>
                         <div class="flex-1">
-                            <div class="font-medium mb-1">急性阑尾炎诊疗方案</div>
-                            <div class="flex justify-between text-sm text-gray-500">
+                            <div class="font-medium mb-1 dark:text-white">急性阑尾炎诊疗方案</div>
+                            <div class="flex justify-between text-sm text-gray-500 dark:text-gray-400">
                                 <span>外科知识库</span>
                                 <span>2天前</span>
                             </div>
                         </div>
                     </div>
-                    <div class="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer flex items-center">
+                    <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors cursor-pointer flex items-center">
                         <div class="w-10 h-10 rounded-lg bg-purple-500 text-white flex items-center justify-center mr-4">
                             <i class="fas fa-pills"></i>
                         </div>
                         <div class="flex-1">
-                            <div class="font-medium mb-1">阿司匹林药物说明书</div>
-                            <div class="flex justify-between text-sm text-gray-500">
+                            <div class="font-medium mb-1 dark:text-white">阿司匹林药物说明书</div>
+                            <div class="flex justify-between text-sm text-gray-500 dark:text-gray-400">
                                 <span>用药助手</span>
                                 <span>3天前</span>
                             </div>
                         </div>
                     </div>
-                    <div class="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer flex items-center">
+                    <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors cursor-pointer flex items-center">
                         <div class="w-10 h-10 rounded-lg bg-orange-500 text-white flex items-center justify-center mr-4">
                             <i class="fas fa-vial"></i>
                         </div>
                         <div class="flex-1">
-                            <div class="font-medium mb-1">血常规检查结果解读</div>
-                            <div class="flex justify-between text-sm text-gray-500">
+                            <div class="font-medium mb-1 dark:text-white">血常规检查结果解读</div>
+                            <div class="flex justify-between text-sm text-gray-500 dark:text-gray-400">
                                 <span>辅助检查</span>
                                 <span>上周</span>
                             </div>
@@ -211,51 +228,51 @@
             </div>
             
             <!-- 收藏内容 -->
-            <div class="tab-content bg-white rounded-2xl shadow-md p-6 hidden" id="favorites-content">
+            <div class="tab-content bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 hidden" id="favorites-content">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-semibold">我的收藏</h3>
+                    <h3 class="text-xl font-semibold dark:text-white">我的收藏</h3>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div class="p-5 bg-gray-50 rounded-xl card-hover cursor-pointer">
+                    <div class="p-5 bg-gray-50 dark:bg-gray-700 rounded-xl card-hover cursor-pointer">
                         <div class="w-10 h-10 rounded-lg bg-blue-500 text-white flex items-center justify-center mb-3">
                             <i class="fas fa-heartbeat"></i>
                         </div>
-                        <h4 class="font-semibold mb-2">高血压诊疗指南</h4>
-                        <p class="text-gray-600 text-sm mb-3">中国高血压防治指南（2024年版）</p>
-                        <div class="flex justify-between text-xs text-gray-500">
+                        <h4 class="font-semibold mb-2 dark:text-white">高血压诊疗指南</h4>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">中国高血压防治指南（2024年版）</p>
+                        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
                             <span>内科知识库</span>
                             <span>2024-01-15</span>
                         </div>
                     </div>
-                    <div class="p-5 bg-gray-50 rounded-xl card-hover cursor-pointer">
+                    <div class="p-5 bg-gray-50 dark:bg-gray-700 rounded-xl card-hover cursor-pointer">
                         <div class="w-10 h-10 rounded-lg bg-green-500 text-white flex items-center justify-center mb-3">
                             <i class="fas fa-procedures"></i>
                         </div>
-                        <h4 class="font-semibold mb-2">腹腔镜胆囊切除术</h4>
-                        <p class="text-gray-600 text-sm mb-3">微创手术详细操作指南</p>
-                        <div class="flex justify-between text-xs text-gray-500">
+                        <h4 class="font-semibold mb-2 dark:text-white">腹腔镜胆囊切除术</h4>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">微创手术详细操作指南</p>
+                        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
                             <span>外科知识库</span>
                             <span>2023-12-05</span>
                         </div>
                     </div>
-                    <div class="p-5 bg-gray-50 rounded-xl card-hover cursor-pointer">
+                    <div class="p-5 bg-gray-50 dark:bg-gray-700 rounded-xl card-hover cursor-pointer">
                         <div class="w-10 h-10 rounded-lg bg-red-500 text-white flex items-center justify-center mb-3">
                             <i class="fas fa-pills"></i>
                         </div>
-                        <h4 class="font-semibold mb-2">口服降糖药物对比</h4>
-                        <p class="text-gray-600 text-sm mb-3">各类口服降糖药物效果与不良反应对比</p>
-                        <div class="flex justify-between text-xs text-gray-500">
+                        <h4 class="font-semibold mb-2 dark:text-white">口服降糖药物对比</h4>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">各类口服降糖药物效果与不良反应对比</p>
+                        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
                             <span>用药助手</span>
                             <span>2023-11-18</span>
                         </div>
                     </div>
-                    <div class="p-5 bg-gray-50 rounded-xl card-hover cursor-pointer">
+                    <div class="p-5 bg-gray-50 dark:bg-gray-700 rounded-xl card-hover cursor-pointer">
                         <div class="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-400 to-blue-600 text-white flex items-center justify-center mb-3">
                             <i class="fas fa-clipboard-list"></i>
                         </div>
-                        <h4 class="font-semibold mb-2">心力衰竭诊断与治疗指南</h4>
-                        <p class="text-gray-600 text-sm mb-3">2024版心力衰竭诊断与治疗最新指南</p>
-                        <div class="flex justify-between text-xs text-gray-500">
+                        <h4 class="font-semibold mb-2 dark:text-white">心力衰竭诊断与治疗指南</h4>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">2024版心力衰竭诊断与治疗最新指南</p>
+                        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
                             <span>临床指南</span>
                             <span>2024-02-03</span>
                         </div>
@@ -264,30 +281,30 @@
             </div>
             
             <!-- 设置内容 -->
-            <div class="tab-content bg-white rounded-2xl shadow-md p-6 hidden" id="settings-content">
+            <div class="tab-content bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 hidden" id="settings-content">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-semibold">账号设置</h3>
+                    <h3 class="text-xl font-semibold dark:text-white">账号设置</h3>
                 </div>
                 
                 <!-- 通知设置 -->
                 <div class="mb-6">
-                    <h4 class="text-gray-500 font-medium mb-2">通知设置</h4>
-                    <div class="divide-y">
+                    <h4 class="text-gray-500 dark:text-gray-400 font-medium mb-2">通知设置</h4>
+                    <div class="divide-y divide-gray-200 dark:divide-gray-700">
                         <div class="py-3 flex justify-between items-center">
-                            <div class="font-medium">新指南更新提醒</div>
-                            <div class="w-11 h-6 bg-success rounded-full relative cursor-pointer toggle toggle-active">
+                            <div class="font-medium dark:text-white">新指南更新提醒</div>
+                            <div class="w-11 h-6 bg-green-500 dark:bg-green-600 rounded-full relative cursor-pointer toggle toggle-active">
                                 <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 toggle-handle"></div>
                             </div>
                         </div>
                         <div class="py-3 flex justify-between items-center">
-                            <div class="font-medium">知识库更新提醒</div>
-                            <div class="w-11 h-6 bg-success rounded-full relative cursor-pointer toggle toggle-active">
+                            <div class="font-medium dark:text-white">知识库更新提醒</div>
+                            <div class="w-11 h-6 bg-green-500 dark:bg-green-600 rounded-full relative cursor-pointer toggle toggle-active">
                                 <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 toggle-handle"></div>
                             </div>
                         </div>
                         <div class="py-3 flex justify-between items-center">
-                            <div class="font-medium">病例分析完成提醒</div>
-                            <div class="w-11 h-6 bg-success rounded-full relative cursor-pointer toggle toggle-active">
+                            <div class="font-medium dark:text-white">病例分析完成提醒</div>
+                            <div class="w-11 h-6 bg-green-500 dark:bg-green-600 rounded-full relative cursor-pointer toggle toggle-active">
                                 <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 toggle-handle"></div>
                             </div>
                         </div>
@@ -296,17 +313,17 @@
                 
                 <!-- 隐私设置 -->
                 <div class="mb-6">
-                    <h4 class="text-gray-500 font-medium mb-2">隐私设置</h4>
-                    <div class="divide-y">
+                    <h4 class="text-gray-500 dark:text-gray-400 font-medium mb-2">隐私设置</h4>
+                    <div class="divide-y divide-gray-200 dark:divide-gray-700">
                         <div class="py-3 flex justify-between items-center">
-                            <div class="font-medium">自动保存查询历史</div>
-                            <div class="w-11 h-6 bg-success rounded-full relative cursor-pointer toggle toggle-active">
+                            <div class="font-medium dark:text-white">自动保存查询历史</div>
+                            <div class="w-11 h-6 bg-green-500 dark:bg-green-600 rounded-full relative cursor-pointer toggle toggle-active">
                                 <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 toggle-handle"></div>
                             </div>
                         </div>
                         <div class="py-3 flex justify-between items-center">
-                            <div class="font-medium">分享使用数据以改进服务</div>
-                            <div class="w-11 h-6 bg-gray-300 rounded-full relative cursor-pointer toggle">
+                            <div class="font-medium dark:text-white">分享使用数据以改进服务</div>
+                            <div class="w-11 h-6 bg-gray-300 dark:bg-gray-600 rounded-full relative cursor-pointer toggle">
                                 <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 toggle-handle"></div>
                             </div>
                         </div>
@@ -315,11 +332,11 @@
                 
                 <!-- 应用设置 -->
                 <div class="mb-6">
-                    <h4 class="text-gray-500 font-medium mb-2">应用设置</h4>
-                    <div class="divide-y">
+                    <h4 class="text-gray-500 dark:text-gray-400 font-medium mb-2">应用设置</h4>
+                    <div class="divide-y divide-gray-200 dark:divide-gray-700">
                         <div class="py-3 flex justify-between items-center">
-                            <div class="font-medium">默认主页</div>
-                            <select class="border rounded-md px-3 py-1.5 text-sm focus:outline-none input-focus">
+                            <div class="font-medium dark:text-white">默认主页</div>
+                            <select class="border border-gray-200 dark:border-gray-700 rounded-md px-3 py-1.5 text-sm focus:outline-none input-focus bg-white dark:bg-gray-800 dark:text-white">
                                 <option>首页</option>
                                 <option>内科知识库</option>
                                 <option>病例分析</option>
@@ -327,8 +344,8 @@
                             </select>
                         </div>
                         <div class="py-3 flex justify-between items-center">
-                            <div class="font-medium">专业领域</div>
-                            <select class="border rounded-md px-3 py-1.5 text-sm focus:outline-none input-focus">
+                            <div class="font-medium dark:text-white">专业领域</div>
+                            <select class="border border-gray-200 dark:border-gray-700 rounded-md px-3 py-1.5 text-sm focus:outline-none input-focus bg-white dark:bg-gray-800 dark:text-white">
                                 <option>内科</option>
                                 <option>外科</option>
                                 <option selected>妇产科</option>
@@ -342,29 +359,29 @@
                 
                 <!-- 账号操作 -->
                 <div>
-                    <h4 class="text-gray-500 font-medium mb-2">账号操作</h4>
-                    <div class="divide-y">
+                    <h4 class="text-gray-500 dark:text-gray-400 font-medium mb-2">账号操作</h4>
+                    <div class="divide-y divide-gray-200 dark:divide-gray-700">
                         <div class="py-3 flex justify-between items-center">
-                            <div class="font-medium">修改密码</div>
+                            <div class="font-medium dark:text-white">修改密码</div>
                             <div class="flex items-center">
-                                <span class="text-gray-500 mr-3">********</span>
-                                <span class="text-primary cursor-pointer hover:text-blue-700">更改</span>
+                                <span class="text-gray-500 dark:text-gray-400 mr-3">********</span>
+                                <span class="text-primary-600 dark:text-primary-400 cursor-pointer hover:text-primary-700 dark:hover:text-primary-300">更改</span>
                             </div>
                         </div>
                         <div class="py-3 flex justify-between items-center">
-                            <div class="font-medium">退出登录</div>
-                            <span class="text-red-500 cursor-pointer hover:text-red-700">退出</span>
+                            <div class="font-medium dark:text-white">退出登录</div>
+                            <span class="text-red-500 dark:text-red-400 cursor-pointer hover:text-red-700 dark:hover:text-red-300">退出</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <!-- 底部信息 -->
-    <div class="text-center py-5 text-gray-500 text-sm">
-        © 2025 临床知识库 | 科技赋能 | powered by wangzk 
-    </div>
+    <footer class="py-6 text-center text-gray-500 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-800">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk
+    </footer>
 
     <script>
         // 标签页切换功能
@@ -372,11 +389,11 @@
             tab.addEventListener('click', function() {
                 // 更新按钮状态
                 document.querySelectorAll('.tab-btn').forEach(t => {
-                    t.classList.remove('bg-primary', 'text-white');
-                    t.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                    t.classList.remove('bg-primary-600', 'bg-primary-700', 'text-white');
+                    t.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300', 'dark:bg-gray-700', 'dark:text-gray-300', 'dark:hover:bg-gray-600');
                 });
-                this.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
-                this.classList.add('bg-primary', 'text-white');
+                this.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300', 'dark:bg-gray-700', 'dark:text-gray-300', 'dark:hover:bg-gray-600');
+                this.classList.add('bg-primary-600', 'text-white', 'dark:bg-primary-700');
                 
                 // 获取目标内容区域id
                 const targetId = this.getAttribute('data-tab') + '-content';
@@ -395,23 +412,11 @@
         document.querySelectorAll('.toggle').forEach(toggle => {
             toggle.addEventListener('click', function() {
                 this.classList.toggle('toggle-active');
-                this.classList.toggle('bg-success');
+                this.classList.toggle('bg-green-500');
+                this.classList.toggle('dark:bg-green-600');
                 this.classList.toggle('bg-gray-300');
+                this.classList.toggle('dark:bg-gray-600');
             });
-        });
-
-        // 页面加载时添加一个示例逻辑，用于测试显示"我的收藏"和"账号设置"
-        document.addEventListener('DOMContentLoaded', function() {
-            // 添加点击测试按钮的事件监听
-            const showFavoritesBtn = document.querySelector('[data-tab="favorites"]');
-            const showSettingsBtn = document.querySelector('[data-tab="settings"]');
-            
-            // 演示按钮功能
-            if(showFavoritesBtn && showSettingsBtn) {
-                // 如需直接展示某个标签页，取消下面注释即可
-                // setTimeout(() => showFavoritesBtn.click(), 1000); // 1秒后显示"我的收藏"
-                // setTimeout(() => showSettingsBtn.click(), 3000);  // 3秒后显示"账号设置"
-            }
         });
     </script>
 </body>
