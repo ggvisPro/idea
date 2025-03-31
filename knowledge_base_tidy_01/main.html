@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>临床知识库 - AI医疗助手</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // 配置Tailwind主题
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                    },
+                    transitionProperty: {
+                        'height': 'height',
+                        'spacing': 'margin, padding',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 自定义Tailwind样式 */
+        @layer utilities {
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .search-focus:focus {
+                box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+            }
+            .btn-hover {
+                transition: transform 0.2s ease;
+            }
+            .btn-hover:hover {
+                transform: scale(1.05);
+            }
+            /* 彩色卡片效果 - 适配深色模式 */
+            .card-red {
+                background: linear-gradient(145deg, #ffffff, #fff5f5);
+                border-left: 4px solid #f56565;
+            }
+            .dark .card-red {
+                background: linear-gradient(145deg, #1a202c, #2d3748);
+                border-left: 4px solid #f56565;
+            }
+            .card-red:hover {
+                box-shadow: 0 10px 25px -5px rgba(245, 101, 101, 0.2), 0 10px 10px -5px rgba(245, 101, 101, 0.1);
+            }
+            .card-blue {
+                background: linear-gradient(145deg, #ffffff, #ebf8ff);
+                border-left: 4px solid #4299e1;
+            }
+            .dark .card-blue {
+                background: linear-gradient(145deg, #1a202c, #2d3748);
+                border-left: 4px solid #4299e1;
+            }
+            .card-blue:hover {
+                box-shadow: 0 10px 25px -5px rgba(66, 153, 225, 0.2), 0 10px 10px -5px rgba(66, 153, 225, 0.1);
+            }
+            .card-green {
+                background: linear-gradient(145deg, #ffffff, #f0fff4);
+                border-left: 4px solid #48bb78;
+            }
+            .dark .card-green {
+                background: linear-gradient(145deg, #1a202c, #2d3748);
+                border-left: 4px solid #48bb78;
+            }
+            .card-green:hover {
+                box-shadow: 0 10px 25px -5px rgba(72, 187, 120, 0.2), 0 10px 10px -5px rgba(72, 187, 120, 0.1);
+            }
+            .card-teal {
+                background: linear-gradient(145deg, #ffffff, #e6fffa);
+                border-left: 4px solid #38b2ac;
+            }
+            .dark .card-teal {
+                background: linear-gradient(145deg, #1a202c, #2d3748);
+                border-left: 4px solid #38b2ac;
+            }
+            .card-teal:hover {
+                box-shadow: 0 10px 25px -5px rgba(56, 178, 172, 0.2), 0 10px 10px -5px rgba(56, 178, 172, 0.1);
+            }
+            .card-purple {
+                background: linear-gradient(145deg, #ffffff, #faf5ff);
+                border-left: 4px solid #9f7aea;
+            }
+            .dark .card-purple {
+                background: linear-gradient(145deg, #1a202c, #2d3748);
+                border-left: 4px solid #9f7aea;
+            }
+            .card-purple:hover {
+                box-shadow: 0 10px 25px -5px rgba(159, 122, 234, 0.2), 0 10px 10px -5px rgba(159, 122, 234, 0.1);
+            }
+            .card-orange {
+                background: linear-gradient(145deg, #ffffff, #fffaf0);
+                border-left: 4px solid #ed8936;
+            }
+            .dark .card-orange {
+                background: linear-gradient(145deg, #1a202c, #2d3748);
+                border-left: 4px solid #ed8936;
+            }
+            .card-orange:hover {
+                box-shadow: 0 10px 25px -5px rgba(237, 137, 54, 0.2), 0 10px 10px -5px rgba(237, 137, 54, 0.1);
+            }
+        }
+        
+        /* 适配侧边栏收起/展开状态的主内容区域 */
+        #main-content {
+            transition: margin-left 0.3s ease, width 0.3s ease;
+        }
+    </style>
+    <!-- 引入主题切换脚本 -->
+    <script src="js/theme-toggle.js"></script>
+    <!-- 引入导航栏脚本 -->
+    <script src="js/navbar.js"></script>
+    <!-- 引入侧边栏JS -->
+    <script src="js/sidebar.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <!-- 导航栏和侧边栏由JS自动插入 -->
+
+    <!-- 主内容区域 - 默认侧边栏展开状态 -->
+    <div id="main-content" class="pt-24 pb-10 px-6 mx-auto max-w-7xl transition-all duration-300 ml-52">
+        <!-- 欢迎信息 -->
+        <div class="mb-12">
+            <h1 class="text-5xl font-bold mb-3 text-gray-900 dark:text-white">您好，欢迎使用临床知识库</h1>
+            <p class="text-xl text-gray-600 dark:text-gray-400">基于DeepSeek和巨成独家算法，通过临床知识库，快速获取您所需的专业医疗信息</p>
+        </div>
+
+        <!-- 搜索区域 -->
+        <div class="mb-14">
+            <form action="search_results.html" method="get">
+                <div class="relative max-w-3xl mx-auto">
+                    <input type="text" name="query" class="w-full px-6 py-4 text-lg rounded-xl border-0 bg-white dark:bg-gray-800 dark:text-white shadow-md outline-none search-focus transition-all duration-300" placeholder="搜索临床问题、疾病、药物或检查方法...">
+                    <button type="submit" class="absolute right-5 top-1/2 transform -translate-y-1/2 bg-transparent border-0">
+                        <i class="fas fa-search text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- 知识库分类 -->
+        <h2 class="text-3xl font-bold mb-6 text-gray-900 dark:text-white">专业知识库</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-14">
+            <!-- Removed the AI病例分析 card since it's now in the sidebar -->
+            <div class="rounded-2xl p-6 shadow-md card-hover card-blue cursor-pointer dark:shadow-gray-800" onclick="window.location.href='internal_medicine_library.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl font-semibold bg-blue-500">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text-white">内科知识库</h3>
+                <p class="text-gray-600 dark:text-gray-300">涵盖心血管、呼吸、消化、内分泌等内科疾病的诊断与治疗指南。</p>
+            </div>
+            <div class="rounded-2xl p-6 shadow-md card-hover card-green cursor-pointer dark:shadow-gray-800" onclick="window.location.href='surgery_library.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl font-semibold bg-green-500">
+                    <i class="fas fa-procedures"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text-white">外科知识库</h3>
+                <p class="text-gray-600 dark:text-gray-300">包含普外、骨科、神经外科等手术指南和围手术期管理知识。</p>
+            </div>
+            <div class="rounded-2xl p-6 shadow-md card-hover card-teal cursor-pointer dark:shadow-gray-800" onclick="window.location.href='chinese_medicine_library.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl font-semibold bg-gradient-to-r from-green-500 to-teal-400">
+                    <i class="fas fa-yin-yang"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text-white">中医知识库</h3>
+                <p class="text-gray-600 dark:text-gray-300">中医基础理论、诊断方法、中药方剂、针灸推拿等传统医学知识。</p>
+            </div>
+            <div class="rounded-2xl p-6 shadow-md card-hover card-purple cursor-pointer dark:shadow-gray-800" onclick="window.location.href='obgyn_library.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl font-semibold bg-purple-500">
+                    <i class="fas fa-venus"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text-white">妇产科知识库</h3>
+                <p class="text-gray-600 dark:text-gray-300">关于女性健康、妊娠、分娩及产后护理的专业知识。</p>
+            </div>
+            <div class="rounded-2xl p-6 shadow-md card-hover card-orange cursor-pointer dark:shadow-gray-800" onclick="window.location.href='pediatrics_library.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl font-semibold bg-orange-500">
+                    <i class="fas fa-baby"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text-white">儿科知识库</h3>
+                <p class="text-gray-600 dark:text-gray-300">儿童生长发育、常见疾病及预防接种等儿科专业指南。</p>
+            </div>
+            <div class="rounded-2xl p-6 shadow-md card-hover card-red cursor-pointer dark:shadow-gray-800" onclick="window.location.href='medication_assistant.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl font-semibold bg-red-500">
+                    <i class="fas fa-pills"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text-white">用药助手</h3>
+                <p class="text-gray-600 dark:text-gray-300">药物说明书、用药指导、药物相互作用及不良反应速查。</p>
+            </div>
+            <div class="rounded-2xl p-6 shadow-md card-hover card-teal cursor-pointer dark:shadow-gray-800" onclick="window.location.href='diagnostic_tests.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl font-semibold bg-teal-500">
+                    <i class="fas fa-vial"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text-white">辅助检查</h3>
+                <p class="text-gray-600 dark:text-gray-300">常见检验检查结果解读、影像学检查指南及参考值。</p>
+            </div>
+            <div class="rounded-2xl p-6 shadow-md card-hover card-blue cursor-pointer dark:shadow-gray-800" onclick="window.location.href='clinical_guidelines.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl font-semibold bg-gradient-to-r from-teal-400 to-blue-500">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text-white">临床指南</h3>
+                <p class="text-gray-600 dark:text-gray-300">最新、最全的临床指南，助力临床决策。</p>
+            </div>
+        </div>
+        <!-- 自定义知识库上传 -->
+        <div class="bg-gradient-to-r from-blue-400 to-blue-600 dark:from-blue-600 dark:to-blue-800 rounded-2xl p-6 text-center text-white mb-8">
+            <h2 class="text-2xl font-bold mb-2">自定义知识库</h2>
+            <p class="max-w-xl mx-auto mb-4 opacity-90 text-lg">上传您的专业资料，构建个性化知识库。<br>支持 PDF、Word、Excel、jpg、png。</p>
+            <a href="custom_library.html">
+            <button class="bg-white text-blue-500 px-6 py-3 rounded-full font-semibold shadow-lg btn-hover">
+            <i class="fas fa-upload mr-2"></i>上传文档
+            </button>
+            </a>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <footer class="py-6 text-center text-gray-500 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-800">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk 
+    </footer>
+
+    <!-- 添加处理侧边栏状态变化的脚本 -->
+    <script>
+        // 监听侧边栏状态变化
+        document.addEventListener('sidebar-toggle', function(e) {
+            const mainContent = document.getElementById('main-content');
+            
+            if (e.detail.expanded) {
+                // 侧边栏展开
+                mainContent.classList.remove('ml-16');
+                mainContent.classList.add('ml-52');
+            } else {
+                // 侧边栏收起
+                mainContent.classList.remove('ml-52');
+                mainContent.classList.add('ml-16');
+            }
+        });
+        
+        // 页面加载时根据侧边栏状态设置 - 默认展开
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查是否有sidebar-loaded事件，如果没有，我们需要确保侧边栏是展开的
+            const mainContent = document.getElementById('main-content');
+            
+            // 确保已有ml-52类（默认展开状态）
+            if (!mainContent.classList.contains('ml-52')) {
+                mainContent.classList.add('ml-52');
+            }
+            
+            // 确保没有ml-16类（收起状态）
+            if (mainContent.classList.contains('ml-16')) {
+                mainContent.classList.remove('ml-16');
+            }
+        });
+    </script>
+</body>
+</html>

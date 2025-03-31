@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>儿科知识库 - 临床知识库</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // 配置Tailwind主题 - 使用橙色作为儿科的主色调
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#fed7aa',
+                            300: '#fdba74',
+                            400: '#fb923c',
+                            500: '#f97316',
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            800: '#9a3412',
+                            900: '#7c2d12',
+                        },
+                    },
+                    transitionProperty: {
+                        'height': 'height',
+                        'spacing': 'margin, padding',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer components {
+            .card-hover {
+                @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+            }
+            
+            .card-specialty {
+                @apply relative overflow-hidden rounded-xl transition-all duration-300 
+                       hover:shadow-xl border border-transparent;
+            }
+            
+            .card-specialty:hover {
+                @apply border-gray-200 dark:border-gray-700;
+            }
+            
+            .card-red {
+                @apply bg-red-50 dark:bg-red-900/20;
+            }
+            
+            .card-blue {
+                @apply bg-blue-50 dark:bg-blue-900/20;
+            }
+            
+            .card-yellow {
+                @apply bg-yellow-50 dark:bg-yellow-900/20;
+            }
+            
+            .card-green {
+                @apply bg-green-50 dark:bg-green-900/20;
+            }
+            
+            .card-purple {
+                @apply bg-purple-50 dark:bg-purple-900/20;
+            }
+            
+            .card-teal {
+                @apply bg-teal-50 dark:bg-teal-900/20;
+            }
+            
+            .card-orange {
+                @apply bg-orange-50 dark:bg-orange-900/20;
+            }
+            
+            .search-input {
+                @apply w-full py-3 px-5 rounded-xl border border-gray-200 
+                       focus:ring-4 focus:ring-primary-200 focus:border-primary-500 
+                       outline-none transition-all duration-200
+                       dark:bg-gray-800 dark:border-gray-700 dark:focus:ring-primary-800 dark:focus:border-primary-600;
+            }
+            
+            .btn-primary {
+                @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 
+                       rounded-full transition duration-300 ease-in-out 
+                       hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50
+                       dark:bg-primary-700 dark:hover:bg-primary-600;
+            }
+            
+            .icon-circle {
+                @apply flex items-center justify-center rounded-full w-12 h-12 text-white;
+            }
+        }
+    </style>
+    <!-- 引入主题切换脚本 -->
+    <script src="js/theme-toggle.js"></script>
+    <!-- 引入导航栏脚本 -->
+    <script src="js/navbar.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <!-- 导航栏由JS自动插入 -->
+
+    <!-- 主内容区域 -->
+    <main class="container mx-auto px-4 pt-24 pb-12">
+        <!-- 返回按钮 -->
+        <div class="mb-6">
+            <a href="main.html" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i> 返回首页
+            </a>
+        </div>
+
+        <!-- 欢迎信息 -->
+        <div class="mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-primary-600 dark:text-primary-400 mb-3">儿科知识库</h1>
+            <p class="text-xl text-gray-600 dark:text-gray-400">全面的儿童保健、常见疾病诊疗及生长发育评估指南</p>
+        </div>
+
+        <!-- 搜索区域 -->
+        <div class="mb-12">
+            <div class="max-w-3xl mx-auto relative">
+                <input type="text" class="search-input" placeholder="搜索儿科疾病、用药、生长发育...">
+                <button type="submit" class="absolute right-4 top-1/2 transform -translate-y-1/2">
+                    <i class="fas fa-search text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 儿科常见疾病 -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+                <i class="fas fa-stethoscope text-primary-500 dark:text-primary-400 mr-3"></i>
+                常见疾病
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- 呼吸系统 -->
+                <div class="card-specialty card-hover card-red p-6">
+                    <div class="icon-circle bg-gradient-to-r from-red-500 to-red-600 mb-5">
+                        <i class="fas fa-lungs"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">呼吸系统</h3>
+                    <p class="text-gray-600 dark:text-gray-300">上呼吸道感染、肺炎、哮喘、支气管炎等儿童呼吸系统疾病。</p>
+                </div>
+                
+                <!-- 消化系统 -->
+                <div class="card-specialty card-hover card-yellow p-6">
+                    <div class="icon-circle bg-gradient-to-r from-yellow-500 to-yellow-600 mb-5">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">消化系统</h3>
+                    <p class="text-gray-600 dark:text-gray-300">腹泻、便秘、腹痛、消化不良等儿童消化系统常见问题。</p>
+                </div>
+                
+                <!-- 神经系统 -->
+                <div class="card-specialty card-hover card-purple p-6">
+                    <div class="icon-circle bg-gradient-to-r from-purple-500 to-purple-600 mb-5">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">神经系统</h3>
+                    <p class="text-gray-600 dark:text-gray-300">惊厥、脑炎、癫痫、发育迟缓等儿童神经系统疾病。</p>
+                </div>
+                
+                <!-- 传染病 -->
+                <div class="card-specialty card-hover card-green p-6">
+                    <div class="icon-circle bg-gradient-to-r from-green-500 to-green-600 mb-5">
+                        <i class="fas fa-virus"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">传染病</h3>
+                    <p class="text-gray-600 dark:text-gray-300">麻疹、水痘、手足口病、流行性腮腺炎等儿童传染病。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 儿童保健 -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+                <i class="fas fa-shield-alt text-primary-500 dark:text-primary-400 mr-3"></i>
+                儿童保健
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- 疫苗接种 -->
+                <div class="card-specialty card-hover card-orange p-6">
+                    <div class="icon-circle bg-gradient-to-r from-orange-500 to-yellow-500 mb-5">
+                        <i class="fas fa-syringe"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">疫苗接种</h3>
+                    <p class="text-gray-600 dark:text-gray-300">儿童计划免疫程序、疫苗接种时间表与注意事项。</p>
+                </div>
+                
+                <!-- 营养指导 -->
+                <div class="card-specialty card-hover card-green p-6">
+                    <div class="icon-circle bg-gradient-to-r from-green-500 to-green-600 mb-5">
+                        <i class="fas fa-apple-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">营养指导</h3>
+                    <p class="text-gray-600 dark:text-gray-300">各年龄段儿童营养需求、喂养指导及营养不良防治。</p>
+                </div>
+                
+                <!-- 心理健康 -->
+                <div class="card-specialty card-hover card-teal p-6">
+                    <div class="icon-circle bg-gradient-to-r from-teal-500 to-teal-600 mb-5">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">心理健康</h3>
+                    <p class="text-gray-600 dark:text-gray-300">儿童心理发育特点、行为问题及心理健康指导。</p>
+                </div>
+                
+                <!-- 日常护理 -->
+                <div class="card-specialty card-hover card-blue p-6">
+                    <div class="icon-circle bg-gradient-to-r from-blue-500 to-blue-600 mb-5">
+                        <i class="fas fa-hands-wash"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">日常护理</h3>
+                    <p class="text-gray-600 dark:text-gray-300">儿童皮肤护理、口腔保健、睡眠指导及意外伤害防护。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 生长发育里程碑 -->
+        <section class="mb-16 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <i class="fas fa-chart-line text-primary-500 dark:text-primary-400 mr-3"></i>
+                生长发育里程碑
+            </h2>
+            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4">
+                <div class="flex flex-col items-center p-4 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-baby text-primary-500 text-2xl mb-2"></i>
+                    <span class="font-medium">新生儿期</span>
+                </div>
+                <div class="flex flex-col items-center p-4 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-baby-carriage text-primary-500 text-2xl mb-2"></i>
+                    <span class="font-medium">3个月</span>
+                </div>
+                <div class="flex flex-col items-center p-4 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-baby text-primary-500 text-2xl mb-2"></i>
+                    <span class="font-medium">6个月</span>
+                </div>
+                <div class="flex flex-col items-center p-4 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-child text-primary-500 text-2xl mb-2"></i>
+                    <span class="font-medium">1岁</span>
+                </div>
+                <div class="flex flex-col items-center p-4 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-child text-primary-500 text-2xl mb-2"></i>
+                    <span class="font-medium">2岁</span>
+                </div>
+                <div class="flex flex-col items-center p-4 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-child text-primary-500 text-2xl mb-2"></i>
+                    <span class="font-medium">3-4岁</span>
+                </div>
+                <div class="flex flex-col items-center p-4 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-child text-primary-500 text-2xl mb-2"></i>
+                    <span class="font-medium">5-6岁</span>
+                </div>
+                <div class="flex flex-col items-center p-4 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-graduation-cap text-primary-500 text-2xl mb-2"></i>
+                    <span class="font-medium">学龄期</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 专科管理 -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+                <i class="fas fa-user-md text-primary-500 dark:text-primary-400 mr-3"></i>
+                专科管理
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="card-specialty card-hover card-red p-6">
+                    <div class="icon-circle bg-gradient-to-r from-red-500 to-orange-500 mb-5">
+                        <i class="fas fa-baby"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">新生儿医学</h3>
+                    <p class="text-gray-600 dark:text-gray-300">新生儿疾病诊治、早产儿管理及新生儿急救措施。</p>
+                </div>
+                
+                <div class="card-specialty card-hover card-blue p-6">
+                    <div class="icon-circle bg-gradient-to-r from-blue-500 to-teal-500 mb-5">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">儿童血液疾病</h3>
+                    <p class="text-gray-600 dark:text-gray-300">贫血、血小板减少症、白血病等儿童血液系统疾病。</p>
+                </div>
+                
+                <div class="card-specialty card-hover card-purple p-6">
+                    <div class="icon-circle bg-gradient-to-r from-purple-500 to-purple-600 mb-5">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">内分泌疾病</h3>
+                    <p class="text-gray-600 dark:text-gray-300">矮小症、性早熟、甲状腺疾病及儿童糖尿病管理。</p>
+                </div>
+                
+                <div class="card-specialty card-hover card-orange p-6">
+                    <div class="icon-circle bg-gradient-to-r from-orange-500 to-orange-600 mb-5">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">慢病管理</h3>
+                    <p class="text-gray-600 dark:text-gray-300">儿童哮喘、糖尿病、肾病综合征等慢性疾病长期管理。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 常见症状 -->
+        <section class="mb-16 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <i class="fas fa-clipboard-list text-primary-500 dark:text-primary-400 mr-3"></i>
+                常见症状诊断
+            </h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-thermometer-half text-red-500 mr-3"></i>
+                    <span class="font-medium">发热</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-head-side-cough text-green-500 mr-3"></i>
+                    <span class="font-medium">咳嗽</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-head-side-virus text-yellow-500 mr-3"></i>
+                    <span class="font-medium">流涕</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-toilet text-orange-500 mr-3"></i>
+                    <span class="font-medium">腹泻</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-bolt text-red-500 mr-3"></i>
+                    <span class="font-medium">腹痛</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-allergies text-purple-500 mr-3"></i>
+                    <span class="font-medium">皮疹</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-dizzy text-blue-500 mr-3"></i>
+                    <span class="font-medium">惊厥</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-head-side-cough text-teal-500 mr-3"></i>
+                    <span class="font-medium">呕吐</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-tired text-gray-500 mr-3"></i>
+                    <span class="font-medium">嗜睡</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-lungs text-red-500 mr-3"></i>
+                    <span class="font-medium">呼吸急促</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-weight text-green-500 mr-3"></i>
+                    <span class="font-medium">体重不增</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-ban text-red-500 mr-3"></i>
+                    <span class="font-medium">不进食</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 最新指南区域 -->
+        <section class="mb-16 bg-gradient-to-r from-primary-600 to-primary-800 dark:from-primary-800 dark:to-primary-900 rounded-xl text-white p-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <i class="fas fa-bookmark mr-3"></i>
+                儿科热门指南
+            </h2>
+            <div class="space-y-4 mb-6">
+                <div class="bg-white bg-opacity-10 hover:bg-opacity-20 rounded-lg p-4 transition-colors cursor-pointer">
+                    <div class="flex items-start">
+                        <i class="fas fa-file-medical text-2xl mt-1 mr-4"></i>
+                        <div>
+                            <h3 class="font-semibold text-lg">中国儿童免疫规划疫苗程序及说明（2025版）</h3>
+                            <p class="text-sm text-gray-200">发布于 2025-02-10</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white bg-opacity-10 hover:bg-opacity-20 rounded-lg p-4 transition-colors cursor-pointer">
+                    <div class="flex items-start">
+                        <i class="fas fa-file-medical text-2xl mt-1 mr-4"></i>
+                        <div>
+                            <h3 class="font-semibold text-lg">儿童社区获得性肺炎诊断与治疗指南（2024版）</h3>
+                            <p class="text-sm text-gray-200">发布于 2024-12-18</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white bg-opacity-10 hover:bg-opacity-20 rounded-lg p-4 transition-colors cursor-pointer">
+                    <div class="flex items-start">
+                        <i class="fas fa-file-medical text-2xl mt-1 mr-4"></i>
+                        <div>
+                            <h3 class="font-semibold text-lg">中国儿童生长发育评估标准更新</h3>
+                            <p class="text-sm text-gray-200">发布于 2024-09-20</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-primary">
+                <i class="fas fa-list-ul mr-2"></i> 查看全部指南
+            </button>
+        </section>
+    </main>
+
+    <!-- 底部信息 -->
+    <footer class="py-6 text-center text-gray-500 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-800">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk
+    </footer>
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>病例教学 - AI医疗助手</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // 配置Tailwind主题
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                    },
+                    transitionProperty: {
+                        'height': 'height',
+                        'spacing': 'margin, padding',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 自定义样式补充 */
+        @layer utilities {
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .search-focus:focus {
+                box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+            }
+            .btn-hover {
+                transition: transform 0.2s ease;
+            }
+            .btn-hover:hover {
+                transform: scale(1.05);
+            }
+        }
+        
+        /* 适配侧边栏收起/展开状态的主内容区域 */
+        #main-content {
+            transition: margin-left 0.3s ease, width 0.3s ease;
+        }
+    </style>
+    <!-- 引入主题切换脚本 -->
+    <script src="js/theme-toggle.js"></script>
+    <!-- 引入导航栏脚本 -->
+    <script src="js/navbar.js"></script>
+    <!-- 引入侧边栏JS -->
+    <script src="js/sidebar.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <!-- 导航栏由JS自动插入 -->
+
+    <!-- 主内容区域 -->
+    <div id="main-content" class="pt-24 pb-10 px-6 mx-auto max-w-7xl transition-all duration-300 ml-0">
+        <!-- 欢迎信息 -->
+        <div class="mb-12">
+            <h1 class="text-5xl font-bold mb-3">临床病例教学</h1>
+            <p class="text-xl text-gray-600 dark:text-gray-400">探索真实病例，提升临床思维，掌握诊疗技能</p>
+        </div>
+
+        <!-- 搜索区域 -->
+        <div class="mb-14">
+            <div class="max-w-3xl mx-auto">
+                <div class="relative">
+                    <input type="text" class="w-full px-6 py-4 text-lg rounded-xl border-0 bg-white dark:bg-gray-800 dark:text-white shadow-md outline-none search-focus transition-all duration-300" placeholder="搜索疾病、症状、病例关键词...">
+                    <div class="absolute right-5 top-1/2 transform -translate-y-1/2">
+                        <i class="fas fa-search text-gray-500 dark:text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 特色病例 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-md mb-14">
+            <div class="h-[350px] bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80');"></div>
+            <div class="p-10 flex flex-col justify-center">
+                <span class="inline-block bg-red-100 text-red-500 dark:bg-red-900 dark:text-red-300 px-3 py-1.5 rounded-full text-sm font-medium mb-4">本周精选病例</span>
+                <h2 class="text-2xl md:text-3xl font-bold mb-4 leading-tight dark:text-white">急性胰腺炎合并多器官功能衰竭的救治</h2>
+                <p class="text-gray-600 dark:text-gray-400 mb-6">本案例展示了一名54岁男性患者因急性胰腺炎入院，并发多器官功能衰竭的完整诊疗过程。通过本案例学习急危重症的综合管理和多学科协作救治策略。</p>
+                <button class="self-start bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-full shadow-md btn-hover">开始学习</button>
+            </div>
+        </div>
+
+        <!-- 互动病例 -->
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-10 text-center text-white mb-14">
+            <h2 class="text-2xl md:text-3xl font-bold mb-3">临床思维互动挑战</h2>
+            <p class="max-w-2xl mx-auto mb-6 opacity-90">通过模拟真实临床场景，跟随病情发展，在每个关键节点做出诊疗决策，锻炼临床思维能力。</p>
+            <button class="bg-white text-indigo-600 font-semibold py-3 px-6 rounded-full shadow-lg btn-hover">
+                <i class="fas fa-play-circle mr-2"></i>进入互动病例
+            </button>
+        </div>
+
+        <!-- 最近查看的病例 -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-md mb-14">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold dark:text-white">最近查看的病例</h2>
+                <a href="all_cases.html" class="text-blue-600 dark:text-blue-400 font-medium hover:underline">查看全部</a>
+            </div>
+            <ul class="divide-y divide-gray-100 dark:divide-gray-700">
+                <li class="py-4 flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-lg bg-red-500 text-white flex items-center justify-center mr-4">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-medium dark:text-white">急性心肌梗死合并心源性休克</h4>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">心血管内科 · 急诊病例</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300 px-2 py-1 rounded-lg text-xs font-medium mr-3">困难</span>
+                        <a href="case_detail.html?id=1024" class="text-blue-600 dark:text-blue-400 font-medium">继续学习</a>
+                    </div>
+                </li>
+                <li class="py-4 flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-lg bg-yellow-500 text-white flex items-center justify-center mr-4">
+                            <i class="fas fa-lungs"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-medium dark:text-white">重症社区获得性肺炎</h4>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">呼吸内科 · 住院病例</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="bg-yellow-100 text-yellow-600 dark:bg-yellow-900 dark:text-yellow-300 px-2 py-1 rounded-lg text-xs font-medium mr-3">中等</span>
+                        <a href="case_detail.html?id=985" class="text-blue-600 dark:text-blue-400 font-medium">继续学习</a>
+                    </div>
+                </li>
+                <li class="py-4 flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-lg bg-purple-500 text-white flex items-center justify-center mr-4">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-medium dark:text-white">急性脑梗死溶栓治疗</h4>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">神经内科 · 急诊病例</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="bg-yellow-100 text-yellow-600 dark:bg-yellow-900 dark:text-yellow-300 px-2 py-1 rounded-lg text-xs font-medium mr-3">中等</span>
+                        <a href="case_detail.html?id=876" class="text-blue-600 dark:text-blue-400 font-medium">继续学习</a>
+                    </div>
+                </li>
+                <li class="py-4 flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-lg bg-green-500 text-white flex items-center justify-center mr-4">
+                            <i class="fas fa-stomach"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-medium dark:text-white">上消化道出血的诊断与处理</h4>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">消化内科 · 门诊病例</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300 px-2 py-1 rounded-lg text-xs font-medium mr-3">简单</span>
+                        <a href="case_detail.html?id=754" class="text-blue-600 dark:text-blue-400 font-medium">继续学习</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 病例分类 -->
+        <h2 class="text-3xl font-bold mb-6 dark:text-white">专科病例</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-14">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='internal_medicine_cases.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl bg-blue-500">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text-white">内科病例</h3>
+                <p class="text-gray-600 dark:text-gray-400">心血管、呼吸、消化、内分泌、肾脏等内科系统常见疾病的典型病例。</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='surgical_cases.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl bg-red-500">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text-white">外科病例</h3>
+                <p class="text-gray-600 dark:text-gray-400">普外、骨科、神经外科、胸外科等手术前、中、后期的完整病例。</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='obgyn_cases.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl bg-purple-500">
+                    <i class="fas fa-venus"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text-white">妇产科病例</h3>
+                <p class="text-gray-600 dark:text-gray-400">围产期保健、妊娠并发症、妇科常见疾病及手术病例。</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='pediatric_cases.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl bg-orange-500">
+                    <i class="fas fa-baby"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text-white">儿科病例</h3>
+                <p class="text-gray-600 dark:text-gray-400">新生儿、婴幼儿及儿童期常见疾病的诊疗病例。</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='emergency_cases.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl bg-gradient-to-r from-red-500 to-orange-500">
+                    <i class="fas fa-ambulance"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text-white">急诊危重病例</h3>
+                <p class="text-gray-600 dark:text-gray-400">需要紧急处理的急危重症病例，重点关注抢救流程与决策。</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='chinese_medicine_cases.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl bg-gradient-to-r from-green-500 to-teal-500">
+                    <i class="fas fa-yin-yang"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text-white">中医病例</h3>
+                <p class="text-gray-600 dark:text-gray-400">结合中医理论的辨证论治病例，展示中西医结合治疗方案。</p>
+            </div>
+        </div>
+
+        <!-- 教学资源 -->
+        <h2 class="text-3xl font-bold mb-6 dark:text-white">病例教学工具</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-14">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='case_builder.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl bg-indigo-500">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text-white">病例制作工具</h3>
+                <p class="text-gray-600 dark:text-gray-400">基于真实病例，创建教学病例，可添加临床影像、检验报告等资料。</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='case_discussion.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl bg-teal-500">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text-white">病例讨论室</h3>
+                <p class="text-gray-600 dark:text-gray-400">与同行一起分析讨论复杂病例，分享经验与见解。</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='testing_center.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl bg-pink-500">
+                    <i class="fas fa-clipboard-check"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text-white">临床思维测试</h3>
+                <p class="text-gray-600 dark:text-gray-400">通过病例考核，评估临床思维水平，发现知识盲点。</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='ai_case_analysis.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl bg-gradient-to-r from-indigo-500 to-blue-400">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text-white">AI病例分析</h3>
+                <p class="text-gray-600 dark:text-gray-400">上传临床资料，AI辅助分析病情并提供诊疗建议和学习要点。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <footer class="py-6 text-center text-gray-500 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-800">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk 
+    </footer>
+
+    <!-- 处理侧边栏状态变化的脚本 -->
+    <script>
+        // 监听侧边栏状态变化
+        document.addEventListener('sidebar-toggle', function(e) {
+            const mainContent = document.getElementById('main-content');
+            
+            if (e.detail.expanded) {
+                // 侧边栏展开
+                mainContent.classList.remove('ml-16');
+                mainContent.classList.add('ml-52');
+            } else {
+                // 侧边栏收起
+                mainContent.classList.remove('ml-52');
+                mainContent.classList.add('ml-16');
+            }
+        });
+        
+        // 页面加载时根据侧边栏状态设置
+        document.addEventListener('sidebar-loaded', function(e) {
+            const mainContent = document.getElementById('main-content');
+            
+            if (e.detail.expanded) {
+                mainContent.classList.add('ml-52');
+            } else {
+                mainContent.classList.add('ml-16');
+            }
+        });
+    </script>
+</body>
+</html>

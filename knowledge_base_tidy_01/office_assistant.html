@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>办公助手 - AI医疗助手</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // 配置Tailwind主题
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                    },
+                    transitionProperty: {
+                        'height': 'height',
+                        'spacing': 'margin, padding',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 自定义样式补充 */
+        @layer utilities {
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .search-focus:focus {
+                box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+            }
+            .btn-hover {
+                transition: transform 0.2s ease;
+            }
+            .btn-hover:hover {
+                transform: scale(1.05);
+            }
+            /* 添加渐变卡片效果 */
+            .gradient-blue-indigo {
+                background: linear-gradient(145deg, #3b82f6, #6366f1);
+            }
+            .gradient-purple-pink {
+                background: linear-gradient(145deg, #8b5cf6, #ec4899);
+            }
+            .gradient-green-teal {
+                background: linear-gradient(145deg, #10b981, #0ea5e9);
+            }
+            .gradient-orange-red {
+                background: linear-gradient(145deg, #f59e0b, #ef4444);
+            }
+        }
+        
+        /* 适配侧边栏收起/展开状态的主内容区域 */
+        #main-content {
+            transition: margin-left 0.3s ease, width 0.3s ease;
+        }
+    </style>
+    <!-- 引入主题切换脚本 -->
+    <script src="js/theme-toggle.js"></script>
+    <!-- 引入导航栏脚本 -->
+    <script src="js/navbar.js"></script>
+    <!-- 引入侧边栏JS -->
+    <script src="js/sidebar.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <!-- 导航栏由JS自动插入 -->
+
+    <!-- 主内容区域 -->
+    <div id="main-content" class="pt-24 pb-10 px-6 mx-auto max-w-7xl transition-all duration-300 ml-0">
+        <!-- 欢迎信息 -->
+        <div class="mb-12">
+            <h1 class="text-5xl font-bold mb-3">医学教学办公助手</h1>
+            <p class="text-xl text-gray-600 dark:text-gray-400">提高教学效率的智能办公工具箱，为医学教育工作者提供全方位支持</p>
+        </div>
+
+        <!-- 搜索区域 -->
+        <div class="mb-14">
+            <div class="max-w-3xl mx-auto">
+                <div class="relative">
+                    <input type="text" class="w-full px-6 py-4 text-lg rounded-xl border-0 bg-white dark:bg-gray-800 dark:text-white shadow-md outline-none search-focus transition-all duration-300" placeholder="搜索教学文档、模板或功能...">
+                    <div class="absolute right-5 top-1/2 transform -translate-y-1/2">
+                        <i class="fas fa-search text-gray-500 dark:text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 最近使用 -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-md mb-14">
+            <h3 class="text-2xl font-bold mb-6 dark:text-white">最近使用</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-gray-50 dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900 transition-colors duration-300 rounded-xl p-4 flex items-center cursor-pointer">
+                    <div class="w-10 h-10 rounded-lg bg-blue-500 text-white flex items-center justify-center mr-4">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="font-medium dark:text-white">外科示教课程表</div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900 transition-colors duration-300 rounded-xl p-4 flex items-center cursor-pointer">
+                    <div class="w-10 h-10 rounded-lg bg-green-500 text-white flex items中心 justify-center mr-4">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="font-medium dark:text-white">期末考试成绩分析</div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900 transition-colors duration-300 rounded-xl p-4 flex items-center cursor-pointer">
+                    <div class="w-10 h-10 rounded-lg bg-purple-500 text白 flex items-center justify-center mr-4">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="font-medium dark:text-white">临床实习评分表</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 办公功能 -->
+        <h2 class="text-3xl font-bold mb-6 dark:text-white">教学办公工具</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-14">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='document_management.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl bg-blue-500">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text-white">教学文档管理</h3>
+                <p class="text-gray-600 dark:text-gray-400">创建和管理教案、课件、习题、医学案例等教学材料，支持智能生成和编辑。</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='course_scheduler.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text白 text-xl bg-purple-500">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text白">课程排班表</h3>
+                <p class="text-gray-600 dark:text-gray-400">智能安排教学日程、临床实习排班和考试时间，提供冲突检测和优化建议。</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='student_evaluation.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text白 text-xl bg-orange-500">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text白">学生评估系统</h3>
+                <p class="text-gray-600 dark:text-gray-400">轻松管理考试成绩、临床技能评分，生成个性化学习报告和反馈建议。</p>
+            </div>
+            <div class="bg白 dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='teaching_reports.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text白 text-xl bg-green-500">
+                    <i class="fas fa-file-chart-pie"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text白">教学汇报生成器</h3>
+                <p class="text-gray-600 dark:text-gray-400">自动生成教学总结报告、教学质量分析和学生反馈统计，支持多种图表可视化。</p>
+            </div>
+            <div class="bg白 dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='smart_forms.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text白 text-xl bg-teal-500">
+                    <i class="fas fa-file-contract"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text白">智能表格助手</h3>
+                <p class="text-gray-600 dark:text-gray-400">提供医学教学相关表格模板，支持智能填充和数据处理，简化教学管理工作。</p>
+            </div>
+            <div class="bg白 dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='meeting_assistant.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text白 text-xl bg-red-500">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text白">教研会议助手</h3>
+                <p class="text-gray-600 dark:text-gray-400">教研会议记录、会议安排、议程管理和会议纪要生成，提高教研工作效率。</p>
+            </div>
+            <div class="bg白 dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='teaching_notification.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text白 text-xl bg-yellow-500">
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text白">教学通知制作</h3>
+                <p class="text-gray-600 dark:text-gray-400">快速创建和发送教学相关通知、课程变更提醒和重要事项公告。</p>
+            </div>
+            <div class="bg白 dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='resource_sharing.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items中心 justify-center text白 text-xl bg-indigo-500">
+                    <i class="fas fa-share-alt"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text白">教学资源共享</h3>
+                <p class="text-gray-600 dark:text-gray-400">与同事共享和协作教学资源，支持权限管理和版本控制。</p>
+            </div>
+        </div>
+
+        <!-- AI助手功能 -->
+        <h2 class="text-3xl font-bold mb-6 dark:text白">AI教学助手</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-14">
+            <div class="bg白 dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='slide_maker.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items中心 justify-center text白 text-xl gradient-orange-red">
+                    <i class="fas fa-presentation"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text白">智能课件制作</h3>
+                <p class="text-gray-600 dark:text-gray-400">输入主题或课程大纲，AI助手自动生成精美医学教学PPT。</p>
+            </div>
+            <div class="bg白 dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='quiz_generator.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items中心 justify-center text白 text-xl gradient-blue-indigo">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text白">试题生成器</h3>
+                <p class="text-gray-600 dark:text-gray-400">根据教学内容自动生成选择题、填空题、案例分析题等多种题型。</p>
+            </div>
+            <div class="bg白 dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='teaching_plan.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items中心 justify-center text白 text-xl gradient-green-teal">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text白">教案智能生成</h3>
+                <p class="text-gray-600 dark:text-gray-400">输入课程主题，获取完整的教学计划、重点难点分析和教学建议。</p>
+            </div>
+            <div class="bg白 dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover cursor-pointer" onclick="window.location.href='feedback_assistant.html'">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items中心 justify-center text白 text-xl gradient-purple-pink">
+                    <i class="fas fa-comment-dots"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text白">学生反馈助手</h3>
+                <p class="text-gray-600 dark:text-gray-400">帮助教师分析学生反馈，提供针对性的教学改进建议。</p>
+            </div>
+        </div>
+
+        <!-- 教学资源展示区 -->
+        <div class="bg-gradient-to-r from-blue-500 to-blue-700 dark:from-blue-600 dark:to-blue-900 rounded-2xl p-8 text-center text白 mb-14">
+            <h2 class="text-2xl font-bold mb-3">上传教学资源</h2>
+            <p class="max-w-2xl mx-auto mb-6 opacity-90">将您的教学资料上传到云端，随时随地访问和共享。支持PPT、Word、PDF、视频等多种格式。</p>
+            <button class="bg白 text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-full font-semibold shadow-lg btn-hover">
+                <i class="fas fa-cloud-upload-alt mr-2"></i>上传资源
+            </button>
+        </div>
+
+        <!-- 最新动态 -->
+        <div class="bg白 dark:bg-gray-800 rounded-2xl p-8 shadow-md mb-14">
+            <div class="flex justify-between items中心 mb-6">
+                <h2 class="text-2xl font-bold dark:text白">最新动态</h2>
+                <a href="#" class="text-blue-600 dark:text-blue-400 font-medium hover:underline">查看全部</a>
+            </div>
+            <div class="space-y-4">
+                <div class="flex items开始 p-4 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-colors">
+                    <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-500 dark:text-blue-300 flex items中心 justify-center mr-4 flex-shrink-0">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-medium dark:text白">临床技能考核时间调整</h4>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">原定于5月15日的临床技能考核改为5月20日，请相关教师做好准备。</p>
+                        <p class="text-gray-400 dark:text-gray-500 text-xs mt-1">2小时前</p>
+                    </div>
+                </div>
+                <div class="flex items开始 p-4 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-colors">
+                    <div class="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900 text-green-500 dark:text-green-300 flex items中心 justify-center mr-4 flex-shrink-0">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-medium dark:text白">新增病例库资源</h4>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">心血管内科新增25例典型病例，可用于临床教学和PBL讨论。</p>
+                        <p class="text-gray-400 dark:text-gray-500 text-xs mt-1">昨天</p>
+                    </div>
+                </div>
+                <div class="flex items开始 p-4 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-colors">
+                    <div class="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900 text-purple-500 dark:text-purple-300 flex items中心 justify-center mr-4 flex-shrink-0">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-medium dark:text白">教研室会议提醒</h4>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">本周五下午2点将召开教学改革研讨会，请各位老师准时参加。</p>
+                        <p class="text-gray-400 dark:text-gray-500 text-xs mt-1">2天前</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <footer class="py-6 text-center text-gray-500 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-800">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk 
+    </footer>
+
+    <!-- 处理侧边栏状态变化的脚本 -->
+    <script>
+        // 监听侧边栏状态变化
+        document.addEventListener('sidebar-toggle', function(e) {
+            const mainContent = document.getElementById('main-content');
+            
+            if (e.detail.expanded) {
+                // 侧边栏展开
+                mainContent.classList.remove('ml-16');
+                mainContent.classList.add('ml-52');
+            } else {
+                // 侧边栏收起
+                mainContent.classList.remove('ml-52');
+                mainContent.classList.add('ml-16');
+            }
+        });
+        
+        // 页面加载时根据侧边栏状态设置
+        document.addEventListener('sidebar-loaded', function(e) {
+            const mainContent = document.getElementById('main-content');
+            
+            if (e.detail.expanded) {
+                mainContent.classList.add('ml-52');
+            } else {
+                mainContent.classList.add('ml-16');
+            }
+        });
+
+        // 确保导航栏默认打开 - 触发自定义事件
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                // 如果侧边栏状态尚未设置，手动触发展开事件
+                if (!document.getElementById('main-content').classList.contains('ml-52') && 
+                    !document.getElementById('main-content').classList.contains('ml-16')) {
+                    const event = new CustomEvent('sidebar-toggle', { detail: { expanded: true } });
+                    document.dispatchEvent(event);
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>

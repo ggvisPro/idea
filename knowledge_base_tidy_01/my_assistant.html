@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的智能助手 - AI医疗助手</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // 配置Tailwind主题
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                    },
+                    transitionProperty: {
+                        'height': 'height',
+                        'spacing': 'margin, padding',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 自定义样式补充 */
+        @layer utilities {
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .search-focus:focus {
+                box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+            }
+            .btn-hover {
+                transition: transform 0.2s ease;
+            }
+            .btn-hover:hover {
+                transform: scale(1.05);
+            }
+            
+            /* 适配侧边栏收起/展开状态的主内容区域 */
+            #main-content {
+                transition: margin-left 0.3s ease, width 0.3s ease;
+            }
+        }
+    </style>
+    <!-- 引入主题切换脚本 -->
+    <script src="js/theme-toggle.js"></script>
+    <!-- 引入导航栏脚本 -->
+    <script src="js/navbar.js"></script>
+    <!-- 引入侧边栏JS -->
+    <script src="js/sidebar.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <!-- 导航栏由JS自动插入 -->
+
+    <!-- 主内容区域 -->
+    <div id="main-content" class="pt-24 pb-10 px-6 mx-auto max-w-7xl transition-all duration-300 ml-0">
+        <!-- 欢迎信息 -->
+        <div class="mb-12">
+            <h1 class="text-5xl font-bold mb-3 text-gray-900 dark:text-white">我的智能助手</h1>
+            <p class="text-xl text-gray-600 dark:text-gray-400">定制您专属的AI助手，提高教学和临床工作效率</p>
+        </div>
+
+        <!-- 创建助手区域 -->
+        <div class="bg-gradient-to-r from-blue-500 to-blue-700 rounded-2xl p-10 text-center text-white mb-14 transform transition-transform hover:scale-[1.01] shadow-lg">
+            <h2 class="text-3xl font-bold mb-3">创建专属智能助手</h2>
+            <p class="max-w-3xl mx-auto mb-6 text-lg opacity-90">根据您的需求定制智能助手，可以添加专业知识库，设计工作流程，定义角色技能，让AI助手成为您的得力帮手。</p>
+            <button onclick="window.location.href='create_assistant.html'" class="bg-white text-blue-600 hover:bg-blue-50 font-semibold py-3 px-8 rounded-full shadow-md btn-hover">
+                <i class="fas fa-plus-circle mr-2"></i>创建新助手
+            </button>
+        </div>
+
+        <!-- 助手模板 -->
+        <div class="mb-14">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">助手模板</h2>
+                <a href="all_templates.html" class="text-blue-600 dark:text-blue-400 font-medium hover:underline">查看全部</a>
+            </div>
+            
+            <!-- 模板滚动区域 -->
+            <div class="flex overflow-x-auto pb-6 -mx-2 scroll-smooth scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                <!-- 模板卡片1 -->
+                <div class="min-w-[300px] bg-white dark:bg-gray-800 rounded-2xl p-6 mx-2 shadow-md card-hover cursor-pointer">
+                    <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl bg-blue-600">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 dark:text-white">临床教学助手</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4 text-sm">专为医学教育设计，包含病例讲解、问题解答、模拟考试和学生评估功能。</p>
+                    <div class="text-blue-600 dark:text-blue-400 font-medium flex items-center">
+                        使用此模板 <i class="fas fa-arrow-right ml-2"></i>
+                    </div>
+                </div>
+                
+                <!-- 模板卡片2 -->
+                <div class="min-w-[300px] bg-white dark:bg-gray-800 rounded-2xl p-6 mx-2 shadow-md card-hover cursor-pointer">
+                    <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl bg-purple-600">
+                        <i class="fas fa-microscope"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 dark:text-white">科研文献助手</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4 text-sm">帮助检索、分析和总结最新医学文献，协助撰写研究报告和学术论文。</p>
+                    <div class="text-blue-600 dark:text-blue-400 font-medium flex items-center">
+                        使用此模板 <i class="fas fa-arrow-right ml-2"></i>
+                    </div>
+                </div>
+                
+                <!-- 模板卡片3 -->
+                <div class="min-w-[300px] bg-white dark:bg-gray-800 rounded-2xl p-6 mx-2 shadow-md card-hover cursor-pointer">
+                    <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl bg-green-600">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 dark:text-white">临床决策支持</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4 text-sm">基于最新临床指南提供诊断建议和治疗方案，辅助医疗决策制定。</p>
+                    <div class="text-blue-600 dark:text-blue-400 font-medium flex items-center">
+                        使用此模板 <i class="fas fa-arrow-right ml-2"></i>
+                    </div>
+                </div>
+                
+                <!-- 模板卡片4 -->
+                <div class="min-w-[300px] bg-white dark:bg-gray-800 rounded-2xl p-6 mx-2 shadow-md card-hover cursor-pointer">
+                    <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl bg-orange-500">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 dark:text-white">药物顾问</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4 text-sm">提供药物信息、剂量计算、不良反应和药物相互作用的专业建议。</p>
+                    <div class="text-blue-600 dark:text-blue-400 font-medium flex items-center">
+                        使用此模板 <i class="fas fa-arrow-right ml-2"></i>
+                    </div>
+                </div>
+                
+                <!-- 模板卡片5 -->
+                <div class="min-w-[300px] bg-white dark:bg-gray-800 rounded-2xl p-6 mx-2 shadow-md card-hover cursor-pointer">
+                    <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl bg-red-600">
+                        <i class="fas fa-file-medical-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 dark:text-white">医疗记录助手</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4 text-sm">协助记录、整理和分析病历，生成报告和总结，提高工作效率。</p>
+                    <div class="text-blue-600 dark:text-blue-400 font-medium flex items-center">
+                        使用此模板 <i class="fas fa-arrow-right ml-2"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 我的助手区域 -->
+        <div class="mb-14">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">我的助手</h2>
+                <a href="manage_assistants.html" class="text-blue-600 dark:text-blue-400 font-medium hover:underline">管理</a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 助手卡片1 -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-md card-hover">
+                    <div class="p-6 flex items-center">
+                        <div class="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fas fa-user-md text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-lg dark:text-white">临床教学专家</div>
+                            <div class="text-gray-500 dark:text-gray-400 text-sm">教育型助手</div>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6">
+                        <div class="flex border-b border-gray-100 dark:border-gray-700 mb-4">
+                            <div class="flex-1 text-center py-2 border-r border-gray-100 dark:border-gray-700">
+                                <div class="font-semibold dark:text-white">10</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">知识库</div>
+                            </div>
+                            <div class="flex-1 text-center py-2 border-r border-gray-100 dark:border-gray-700">
+                                <div class="font-semibold dark:text-white">5</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">工作流</div>
+                            </div>
+                            <div class="flex-1 text-center py-2">
+                                <div class="font-semibold dark:text-white">87%</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">满意度</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="flex-1 py-2 px-4 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-white rounded-lg text-sm font-medium btn-hover">
+                                编辑
+                            </button>
+                            <button class="flex-1 py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium btn-hover">
+                                使用
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 助手卡片2 -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-md card-hover">
+                    <div class="p-6 flex items-center">
+                        <div class="w-12 h-12 rounded-xl bg-green-600 text-white flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fas fa-chart-line text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-lg dark:text-white">科研数据分析师</div>
+                            <div class="text-gray-500 dark:text-gray-400 text-sm">研究型助手</div>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6">
+                        <div class="flex border-b border-gray-100 dark:border-gray-700 mb-4">
+                            <div class="flex-1 text-center py-2 border-r border-gray-100 dark:border-gray-700">
+                                <div class="font-semibold dark:text-white">8</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">知识库</div>
+                            </div>
+                            <div class="flex-1 text-center py-2 border-r border-gray-100 dark:border-gray-700">
+                                <div class="font-semibold dark:text-white">3</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">工作流</div>
+                            </div>
+                            <div class="flex-1 text-center py-2">
+                                <div class="font-semibold dark:text-white">92%</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">满意度</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="flex-1 py-2 px-4 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-white rounded-lg text-sm font-medium btn-hover">
+                                编辑
+                            </button>
+                            <button class="flex-1 py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium btn-hover">
+                                使用
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 助手卡片3 -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-md card-hover">
+                    <div class="p-6 flex items-center">
+                        <div class="w-12 h-12 rounded-xl bg-purple-600 text-white flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fas fa-hospital text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-lg dark:text-white">临床指南顾问</div>
+                            <div class="text-gray-500 dark:text-gray-400 text-sm">参考型助手</div>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6">
+                        <div class="flex border-b border-gray-100 dark:border-gray-700 mb-4">
+                            <div class="flex-1 text-center py-2 border-r border-gray-100 dark:border-gray-700">
+                                <div class="font-semibold dark:text-white">15</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">知识库</div>
+                            </div>
+                            <div class="flex-1 text-center py-2 border-r border-gray-100 dark:border-gray-700">
+                                <div class="font-semibold dark:text-white">2</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">工作流</div>
+                            </div>
+                            <div class="flex-1 text-center py-2">
+                                <div class="font-semibold dark:text-white">95%</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">满意度</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="flex-1 py-2 px-4 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-white rounded-lg text-sm font-medium btn-hover">
+                                编辑
+                            </button>
+                            <button class="flex-1 py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium btn-hover">
+                                使用
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 助手功能区域 -->
+        <div class="mb-14">
+            <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">智能助手功能</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 功能卡片1 -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover">
+                    <div class="w-14 h-14 rounded-xl bg-blue-600 text-white flex items-center justify-center mb-4">
+                        <i class="fas fa-book-medical text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 dark:text-white">专业知识库集成</h3>
+                    <p class="text-gray-600 dark:text-gray-300">将您的专业资料、文献、指南和经验整合到助手中，让AI更了解您的专业领域，提供更精准的支持。</p>
+                </div>
+                
+                <!-- 功能卡片2 -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover">
+                    <div class="w-14 h-14 rounded-xl bg-purple-600 text-white flex items-center justify-center mb-4">
+                        <i class="fas fa-sync-alt text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 dark:text-white">自定义工作流</h3>
+                    <p class="text-gray-600 dark:text-gray-300">设计适合您工作方式的流程，让助手按照您的习惯和需求提供帮助，提高工作效率。</p>
+                </div>
+                
+                <!-- 功能卡片3 -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover">
+                    <div class="w-14 h-14 rounded-xl bg-green-600 text-white flex items-center justify-center mb-4">
+                        <i class="fas fa-bullseye text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 dark:text-white">角色技能定制</h3>
+                    <p class="text-gray-600 dark:text-gray-300">为助手定义特定的专业角色和技能，例如教学指导、医学顾问、研究助理等，满足您的专业需求。</p>
+                </div>
+                
+                <!-- 功能卡片4 -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover">
+                    <div class="w-14 h-14 rounded-xl bg-yellow-500 text-white flex items-center justify-center mb-4">
+                        <i class="fas fa-users text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 dark:text-white">多Agent协作</h3>
+                    <p class="text-gray-600 dark:text-gray-300">设置多个专业AI角色协同工作，模拟团队合作，从不同角度分析问题并提供全面解决方案。</p>
+                </div>
+                
+                <!-- 功能卡片5 -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover">
+                    <div class="w-14 h-14 rounded-xl bg-indigo-600 text-white flex items-center justify-center mb-4">
+                        <i class="fas fa-search text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 dark:text-white">智能学习适应</h3>
+                    <p class="text-gray-600 dark:text-gray-300">助手会根据您的使用习惯和反馈不断优化，提供越来越贴合您需求的服务。</p>
+                </div>
+                
+                <!-- 功能卡片6 -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-md card-hover">
+                    <div class="w-14 h-14 rounded-xl bg-teal-500 text-white flex items-center justify-center mb-4">
+                        <i class="fas fa-shield-alt text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 dark:text-white">隐私安全保护</h3>
+                    <p class="text-gray-600 dark:text-gray-300">严格的数据保护措施确保您的专业信息和患者数据安全，符合医疗隐私法规要求。</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 智能助手统计 -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-md mb-14">
+            <h2 class="text-2xl font-bold mb-6 dark:text-white">助手使用统计</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-blue-50 dark:bg-blue-900/30 rounded-xl p-6 text-center">
+                    <div class="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">3</div>
+                    <div class="text-gray-600 dark:text-gray-300">活跃助手</div>
+                </div>
+                <div class="bg-green-50 dark:bg-green-900/30 rounded-xl p-6 text-center">
+                    <div class="text-4xl font-bold text-green-600 dark:text-green-400 mb-2">47</div>
+                    <div class="text-gray-600 dark:text-gray-300">本周对话</div>
+                </div>
+                <div class="bg-purple-50 dark:bg-purple-900/30 rounded-xl p-6 text-center">
+                    <div class="text-4xl font-bold text-purple-600 dark:text-purple-400 mb-2">12</div>
+                    <div class="text-gray-600 dark:text-gray-300">导出文档</div>
+                </div>
+                <div class="bg-orange-50 dark:bg-orange-900/30 rounded-xl p-6 text-center">
+                    <div class="text-4xl font-bold text-orange-500 dark:text-orange-400 mb-2">91%</div>
+                    <div class="text-gray-600 dark:text-gray-300">满意度</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <footer class="py-6 text-center text-gray-500 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-800">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk 
+    </footer>
+
+    <!-- 添加处理侧边栏状态变化的脚本 -->
+    <script>
+        // 监听侧边栏状态变化
+        document.addEventListener('sidebar-toggle', function(e) {
+            const mainContent = document.getElementById('main-content');
+            
+            if (e.detail.expanded) {
+                // 侧边栏展开
+                mainContent.classList.remove('ml-16');
+                mainContent.classList.add('ml-52');
+            } else {
+                // 侧边栏收起
+                mainContent.classList.remove('ml-52');
+                mainContent.classList.add('ml-16');
+            }
+        });
+        
+        // 页面加载时根据侧边栏状态设置
+        document.addEventListener('sidebar-loaded', function(e) {
+            const mainContent = document.getElementById('main-content');
+            
+            if (e.detail.expanded) {
+                mainContent.classList.add('ml-52');
+            } else {
+                mainContent.classList.add('ml-16');
+            }
+        });
+        
+        // 为模板卡片添加点击事件
+        document.addEventListener('DOMContentLoaded', function() {
+            const templateCards = document.querySelectorAll('.min-w-\\[300px\\]');
+            templateCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const templateName = this.querySelector('h3').textContent;
+                    window.location.href = `edit_template.html?template=${encodeURIComponent(templateName)}`;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
