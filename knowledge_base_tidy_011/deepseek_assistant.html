@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek助手 - 临床知识库</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 配置Tailwind主题 -->
+    <script>
+        // 配置Tailwind主题
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入主题切换脚本 -->
+    <script src="js/theme-toggle.js"></script>
+    <!-- 引入导航栏脚本 -->
+    <script src="js/navbar.js"></script>
+    <style>
+        /* 自定义Tailwind配置 */
+        @layer utilities {
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .btn-hover {
+                transition: transform 0.2s ease;
+            }
+            .btn-hover:hover {
+                transform: scale(1.05);
+            }
+            .focus-gradient:focus {
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+                border-color: #3b82f6;
+            }
+            /* 思考步骤自定义样式 */
+            .thinking-step {
+                position: relative;
+                padding-left: 28px;
+            }
+            .thinking-step:before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 5px;
+                width: 18px;
+                height: 18px;
+                background-color: #3b82f6;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 10px;
+                font-weight: bold;
+                box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+            }
+            
+            .thinking-step:nth-child(1):before { content: "1"; }
+            .thinking-step:nth-child(2):before { content: "2"; }
+            .thinking-step:nth-child(3):before { content: "3"; }
+            .thinking-step:nth-child(4):before { content: "4"; }
+            .thinking-step:nth-child(5):before { content: "5"; }
+            .thinking-step:nth-child(6):before { content: "6"; }
+        }
+        
+        /* 主内容区适配侧边栏 */
+        #main-content {
+            transition: margin-left 0.3s ease, width 0.3s ease;
+        }
+        
+        /* 按钮切换样式 */
+        .toggle-btn {
+            transition: all 0.3s ease;
+        }
+    </style>
+    <!-- 引入侧边栏JS -->
+    <script src="js/sidebar.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <!-- 导航栏由navbar.js自动插入 -->
+
+    <!-- 主内容区域 - 添加ID以便JavaScript控制 -->
+    <div id="main-content" class="transition-all duration-300 pt-24 pb-10 px-6 mx-auto max-w-7xl ml-52">
+        <!-- 欢迎信息和模式切换 -->
+        <div class="flex flex-wrap items-center mb-3">
+            <h1 class="text-5xl font-bold text-gray-900 dark:text-white mr-4">DeepSeek助手</h1>
+            <button id="mode-toggle" class="toggle-btn flex items-center px-3 py-1.5 rounded-full text-blue-600 bg-blue-50 border border-blue-200 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800 dark:hover:bg-blue-800/50 transition-all duration-300">
+                <i class="fas fa-toggle-on mr-2"></i>
+                知识库模式
+            </button>
+        </div>
+        <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">基于DeepSeek大模型，为您提供专业医疗信息查询与医学问题解答</p>
+
+        <!-- 知识库选择 -->
+        <div id="knowledge-select" class="mb-6 flex flex-wrap items-center">
+            <div class="font-semibold mr-3 text-gray-800">选择知识库：</div>
+            <div class="relative mr-4 mb-3">
+                <select class="appearance-none bg-white border border-gray-300 rounded-xl px-4 py-2.5 pr-10 focus-gradient transition-all duration-200 cursor-pointer outline-none">
+                    <option value="">选择知识库类型</option>
+                    <option value="internal">内科知识库</option>
+                    <option value="surgery">外科知识库</option>
+                    <option value="chinese">中医知识库</option>
+                    <option value="obgyn">妇产科知识库</option>
+                    <option value="pediatrics">儿科知识库</option>
+                    <option value="medication">药理知识库</option>
+                    <option value="diagnostics">检验检查知识库</option>
+                    <option value="guidelines">临床指南</option>
+                </select>
+                <div class="pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs">
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+            <div class="relative mr-4 mb-3">
+                <select class="appearance-none bg-white border border-gray-300 rounded-xl px-4 py-2.5 pr-10 focus-gradient transition-all duration-200 cursor-pointer outline-none">
+                    <option value="">选择个人知识库</option>
+                    <option value="personal1">我的临床笔记</option>
+                    <option value="personal2">病例分析集</option>
+                    <option value="personal3">会议讲义</option>
+                    <option value="personal4">研究资料</option>
+                </select>
+                <div class="pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs">
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+            
+            <div class="flex flex-wrap mt-3">
+                <div class="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-full text-sm flex items-center mr-2 mb-2">
+                    内科知识库 <span class="ml-1.5 cursor-pointer hover:text-blue-800"><i class="fas fa-times-circle"></i></span>
+                </div>
+                <div class="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-full text-sm flex items-center mr-2 mb-2">
+                    临床指南 <span class="ml-1.5 cursor-pointer hover:text-blue-800"><i class="fas fa-times-circle"></i></span>
+                </div>
+                <div class="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-full text-sm flex items-center mr-2 mb-2">
+                    我的临床笔记 <span class="ml-1.5 cursor-pointer hover:text-blue-800"><i class="fas fa-times-circle"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 聊天区域 -->
+        <div id="chat-container" class="bg-white rounded-3xl shadow-lg overflow-hidden flex flex-col h-[600px] transition-all duration-300">
+            <div class="px-5 py-4 bg-white border-b border-gray-200 flex justify-between items-center">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center text-white mr-3">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="font-semibold text-lg">DeepSeek助手</div>
+                </div>
+                <div class="flex">
+                    <button class="text-gray-500 hover:text-blue-500 transition-colors p-2" title="清空对话">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                    <button class="text-gray-500 hover:text-blue-500 transition-colors p-2" title="设置">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="chat-messages" class="flex-1 overflow-y-auto p-5">
+                <!-- 用户消息和回答内容最初不显示，将通过JS动态添加 -->
+            </div>
+            <div class="p-4 bg-white border-t border-gray-200 flex items-center">
+                <textarea id="message-input" class="flex-1 border border-gray-300 rounded-2xl px-4 py-3 outline-none resize-none focus-gradient transition-all text-gray-800" placeholder="2型糖尿病患者血糖长期控制不好，出现了糖尿病肾病，目前肌酐168μmol/L，尿蛋白(+++)，目前生命体征平稳，我应该如何用药？" rows="1"></textarea>
+                <button id="send-button" class="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center ml-3 btn-hover">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div id="footer" class="text-center py-3 text-gray-500 dark:text-gray-400 text-sm transition-all duration-300 ml-52">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk
+    </div>
+
+    <script>
+        // 文本框自动调整高度
+        document.addEventListener('DOMContentLoaded', function() {
+            const messageInput = document.getElementById('message-input');
+            const chatContainer = document.getElementById('chat-container');
+            
+            // 初始时添加空容器类
+            chatContainer.classList.add('h-[450px]');
+            
+            messageInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            });
+            
+            // 纯净版DeepSeek切换功能 - 按钮在标题后
+            const modeToggle = document.getElementById('mode-toggle');
+            const knowledgeSelect = document.getElementById('knowledge-select');
+            
+            // 默认为知识库模式，非纯净模式
+            let isPureMode = false;
+            
+            modeToggle.addEventListener('click', function() {
+                isPureMode = !isPureMode;
+                
+                if (isPureMode) {
+                    // 切换到纯净版
+                    knowledgeSelect.classList.add('hidden');
+                    const referencesSection = document.querySelector('.references-section');
+                    if (referencesSection) referencesSection.classList.add('hidden');
+                    
+                    // 更新按钮样式和图标
+                    modeToggle.classList.remove('text-blue-600', 'bg-blue-50', 'border-blue-200');
+                    modeToggle.classList.add('text-green-600', 'bg-green-50', 'border-green-200');
+                    modeToggle.querySelector('i').classList.remove('fa-toggle-on');
+                    modeToggle.querySelector('i').classList.add('fa-toggle-off');
+                } else {
+                    // 返回知识库增强版
+                    knowledgeSelect.classList.remove('hidden');
+                    const referencesSection = document.querySelector('.references-section');
+                    if (referencesSection) referencesSection.classList.remove('hidden');
+                    
+                    // 更新按钮样式和图标
+                    modeToggle.classList.remove('text-green-600', 'bg-green-50', 'border-green-200');
+                    modeToggle.classList.add('text-blue-600', 'bg-blue-50', 'border-blue-200');
+                    modeToggle.querySelector('i').classList.remove('fa-toggle-off');
+                    modeToggle.querySelector('i').classList.add('fa-toggle-on');
+                }
+            });
+            
+            // 监听侧边栏状态变化
+            document.addEventListener('sidebar-toggle', function(e) {
+                const mainContent = document.getElementById('main-content');
+                const footer = document.getElementById('footer');
+                
+                if (e.detail.expanded) {
+                    // 侧边栏展开
+                    mainContent.classList.remove('ml-16');
+                    mainContent.classList.add('ml-52');
+                    footer.classList.remove('ml-16');
+                    footer.classList.add('ml-52');
+                } else {
+                    // 侧边栏收起
+                    mainContent.classList.remove('ml-52');
+                    mainContent.classList.add('ml-16');
+                    footer.classList.remove('ml-52');
+                    footer.classList.add('ml-16');
+                }
+            });
+            
+            // 页面加载时根据侧边栏状态设置
+            document.addEventListener('sidebar-loaded', function(e) {
+                const mainContent = document.getElementById('main-content');
+                const footer = document.getElementById('footer');
+                
+                if (e.detail.expanded) {
+                    mainContent.classList.add('ml-52');
+                    footer.classList.add('ml-52');
+                } else {
+                    mainContent.classList.add('ml-16');
+                    footer.classList.add('ml-16');
+                }
+            });
+            
+            // 对话预设内容
+            const dialogContent = `
+                <!-- 用户消息 -->
+                <div class="mb-7 ml-auto max-w-[90%]">
+                    <div class="text-gray-500 text-sm mb-2 text-right">您 · 今天 14:32</div>
+                    <div class="bg-blue-500 text-white p-4 rounded-2xl rounded-tr-sm shadow-md">
+                        2型糖尿病患者血糖长期控制不好，出现了糖尿病肾病，目前肌酐168μmol/L，尿蛋白(+++)，目前生命体征平稳，我应该如何用药？
+                    </div>
+                </div>
+
+                <!-- 思考过程、思考结果和参考文献展示区域 -->
+                <div class="space-y-5 mb-7">
+                    <!-- 思考过程卡片 -->
+                    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="bg-gradient-to-r from-blue-50 to-blue-100 px-4 py-3 border-b border-gray-200 flex items-center">
+                            <div class="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white mr-2 shadow-sm">
+                                <i class="fas fa-brain text-xs"></i>
+                            </div>
+                            <div class="font-medium text-gray-700">思考过程（用时9秒）</div>
+                        </div>
+                        <div class="p-4 bg-blue-50 bg-opacity-30 text-gray-700">
+                            <div class="thinking-step mb-4">分析问题：患者是2型糖尿病并发糖尿病肾病，肌酐168μmol/L（表明中度肾功能不全），尿蛋白(+++)（表明有明显蛋白尿），需要制定药物治疗方案。</div>
+                            <div class="thinking-step mb-4">考虑药物选择原则：既要控制血糖，又要保护肾脏，还要考虑药物在肾功能不全时的安全性和剂量调整。</div>
+                            <div class="thinking-step mb-4">查询最新指南：根据《2022年ADA糖尿病诊疗标准》、《KDIGO 2020糖尿病肾病管理指南》和《中国糖尿病肾病防治指南(2021年版)》。</div>
+                            <div class="thinking-step mb-4">降糖药物评估：SGLT-2抑制剂多项大型临床试验证实其肾保护作用；GLP-1RA研究证实对肾脏有保护作用；DPP-4i肾功能不全时相对安全，需调整剂量；二甲双胍根据肾功能调整剂量或停用；磺脲类肾功能不全时易发生低血糖，应避免使用。</div>
+                            <div class="thinking-step mb-4">肾脏保护药物评估：ACEI/ARB是糖尿病肾病的基础用药，多项研究证实其减少蛋白尿和延缓肾功能下降的作用。</div>
+                            <div class="thinking-step">综合分析后形成用药建议，强调个体化治疗和多学科管理的重要性。</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 思考结果卡片 -->
+                    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="bg-gradient-to-r from-green-50 to-green-100 px-4 py-3 border-b border-gray-200 flex items-center">
+                            <div class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center text-white mr-2 shadow-sm">
+                                <i class="fas fa-check text-xs"></i>
+                            </div>
+                            <div class="font-medium text-gray-700">思考结果</div>
+                        </div>
+                        <div class="p-4 bg-green-50 bg-opacity-30 text-gray-700">
+                            <div class="mb-4">对于2型糖尿病并发糖尿病肾病（肌酐168μmol/L，尿蛋白+++）的患者，治疗方案需要综合考虑血糖控制、肾脏保护、心血管风险管理等多方面因素。</div>
+                            
+                            <div class="bg-white p-4 rounded-lg border-l-4 border-blue-500 mb-4">
+                                <div class="font-semibold text-blue-700 mb-2">1. 降糖药物选择</div>
+                                <ul class="list-disc pl-5 space-y-1.5">
+                                    <li><span class="font-medium">首选药物</span>：SGLT-2抑制剂（如恩格列净、达格列净、卡格列净）- 这类药物已被证实不仅能有效控制血糖，还能延缓糖尿病肾病进展，保护肾功能</li>
+                                    <li><span class="font-medium">GLP-1受体激动剂</span>（如利拉鲁肽、司美格鲁肽）- 这类药物对肾功能有保护作用，可减少蛋白尿</li>
+                                    <li><span class="font-medium">二线用药</span>：DPP-4抑制剂（如西格列汀、沙格列汀，根据肾功能调整剂量）</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-white p-4 rounded-lg border-l-4 border-red-400 mb-4">
+                                <div class="font-semibold text-red-600 mb-2">2. 避免使用</div>
+                                <ul class="list-disc pl-5 space-y-1.5">
+                                    <li>磺脲类药物（易发生低血糖）</li>
+                                    <li>噻唑烷二酮类（有水钠潴留风险）</li>
+                                    <li>阿卡波糖（肾功能不全患者慎用）</li>
+                                    <li>二甲双胍需根据肾功能调整（eGFR<30ml/min时禁用）</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-white p-4 rounded-lg border-l-4 border-green-500 mb-4">
+                                <div class="font-semibold text-green-700 mb-2">3. 肾脏保护策略</div>
+                                <ul class="list-disc pl-5 space-y-1.5">
+                                    <li><span class="font-medium">ACEI/ARB类药物</span>（如贝那普利、厄贝沙坦等）- 这类药物是糖尿病肾病治疗的基石，能有效减少蛋白尿，延缓肾功能下降</li>
+                                    <li>非二氢吡啶类钙通道阻滞剂可作为联合用药</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-white p-4 rounded-lg border-l-4 border-purple-400 mb-4">
+                                <div class="font-semibold text-purple-700 mb-2">4. 其他管理措施</div>
+                                <ul class="list-disc pl-5 space-y-1.5">
+                                    <li>严格控制血压（目标<130/80mmHg）</li>
+                                    <li>低蛋白饮食（0.6-0.8g/kg/d）</li>
+                                    <li>避免肾毒性药物</li>
+                                    <li>定期监测肾功能和尿蛋白</li>
+                                </ul>
+                            </div>
+                            
+                            <div>建议在肾内科和内分泌科医生的指导下制定个体化治疗方案，并进行定期随访评估治疗效果。</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 参考文献卡片 -->
+                    <div class="references-section bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="bg-gradient-to-r from-amber-50 to-amber-100 px-4 py-3 border-b border-gray-200 flex items-center">
+                            <div class="w-6 h-6 rounded-full bg-amber-500 flex items-center justify-center text-white mr-2 shadow-sm">
+                                <i class="fas fa-book text-xs"></i>
+                            </div>
+                            <div class="font-medium text-gray-700">参考文献</div>
+                        </div>
+                        <div class="p-4 bg-amber-50 bg-opacity-30 divide-y divide-gray-200">
+                            <div class="flex pb-4">
+                                <div class="w-6 h-6 rounded-full bg-amber-500 flex-shrink-0 flex items-center justify-center text-white mr-3 text-xs font-bold shadow-sm">1</div>
+                                <div>
+                                    <div class="font-medium text-gray-800 mb-1.5">American Diabetes Association. Standards of Medical Care in Diabetes—2022</div>
+                                    <div class="text-gray-700 text-sm bg-amber-50 p-3 rounded-lg border-l-2 border-amber-300">"在糖尿病肾病患者中，SGLT-2抑制剂已被证实可降低主要肾脏事件发生率和延缓肾功能下降，应考虑作为首选降糖药物..."</div>
+                                </div>
+                            </div>
+                            <div class="flex py-4">
+                                <div class="w-6 h-6 rounded-full bg-amber-500 flex-shrink-0 flex items-center justify-center text-white mr-3 text-xs font-bold shadow-sm">2</div>
+                                <div>
+                                    <div class="font-medium text-gray-800 mb-1.5">KDIGO 2020 Clinical Practice Guideline for Diabetes Management in Chronic Kidney Disease</div>
+                                    <div class="text-gray-700 text-sm bg-amber-50 p-3 rounded-lg border-l-2 border-amber-300">"建议所有糖尿病合并CKD患者使用SGLT-2抑制剂，除非有禁忌症。对于2型糖尿病合并CKD患者，也建议使用GLP-1RA。"</div>
+                                </div>
+                            </div>
+                            <div class="flex py-4">
+                                <div class="w-6 h-6 rounded-full bg-amber-500 flex-shrink-0 flex items-center justify-center text-white mr-3 text-xs font-bold shadow-sm">3</div>
+                                <div>
+                                    <div class="font-medium text-gray-800 mb-1.5">中华医学会糖尿病学分会. 中国糖尿病肾病防治指南(2021年版)</div>
+                                    <div class="text-gray-700 text-sm bg-amber-50 p-3 rounded-lg border-l-2 border-amber-300">"ACEI/ARB类药物是糖尿病肾病的基础治疗药物。多项研究证实SGLT-2抑制剂可减少蛋白尿、延缓eGFR下降速率，并降低肾脏和心血管疾病事件。"</div>
+                                </div>
+                            </div>
+                            <div class="flex pt-4">
+                                <div class="w-6 h-6 rounded-full bg-amber-500 flex-shrink-0 flex items-center justify-center text-white mr-3 text-xs font-bold shadow-sm">4</div>
+                                <div>
+                                    <div class="font-medium text-gray-800 mb-1.5">Perkovic V, et al. Canagliflozin and Renal Outcomes in Type 2 Diabetes and Nephropathy. N Engl J Med. 2019</div>
+                                    <div class="text-gray-700 text-sm bg-amber-50 p-3 rounded-lg border-l-2 border-amber-300">"CREDENCE研究显示，卡格列净可显著降低肾脏复合终点事件（包括肾功能下降、肾衰竭或肾脏死亡）的风险，风险降低30%（HR 0.70; 95% CI 0.59-0.82）。"</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // 发送按钮点击事件
+            const sendButton = document.getElementById('send-button');
+            const chatMessages = document.getElementById('chat-messages');
+            
+            sendButton.addEventListener('click', function() {
+                const messageInput = document.getElementById('message-input');
+                const messageText = messageInput.value.trim();
+                
+                if (messageText || chatMessages.children.length === 0) {
+                    // 如果是首次点击或有输入内容
+                    if (chatMessages.children.length === 0) {
+                        // 首次点击，显示预设对话
+                        chatMessages.innerHTML = dialogContent;
+                        
+                        // 恢复聊天容器正常高度
+                        chatContainer.classList.remove('h-[450px]');
+                        chatContainer.classList.add('h-[600px]');
+                        
+                        // 如果处于纯净模式，隐藏参考文献
+                        if (isPureMode) {
+                            const referencesSection = document.querySelector('.references-section');
+                            if (referencesSection) referencesSection.classList.add('hidden');
+                        }
+                    } else if (messageText) {
+                        // 有新的输入内容，可以在这里添加处理新消息的代码
+                        // 这里只是清空输入框
+                        messageInput.value = '';
+                        messageInput.style.height = 'auto';
+                    }
+                }
+            });
+            
+            // 清空对话按钮事件
+            const clearButton = document.querySelector('button[title="清空对话"]');
+            clearButton.addEventListener('click', function() {
+                chatMessages.innerHTML = '';
+                // 对话清空后，恢复小尺寸聊天容器
+                chatContainer.classList.remove('h-[600px]');
+                chatContainer.classList.add('h-[450px]');
+            });
+        });
+    </script>
+</body>
+</html>

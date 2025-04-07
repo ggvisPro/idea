@@ -2,6 +2,7 @@
 
 | 项目名称 | 项目描述 |
 |---------|---------|
+| [知识库简化版0.1](https://ggvispro.github.io/idea/knowledge_base_tidy_011/)  | 删除了不打算做的知识库 |
 | [知识库简化版0.1](https://ggvispro.github.io/idea/knowledge_base_tidy_01/)  | 删除了大部分页面和功能点 |
 | [知识库0.6](https://ggvispro.github.io/idea/knowledge_base_06/)  | 新增了暗黑模式；重构了所有页面；似曾相识，但又**处处不同** |
 | [知识库0.5.2](https://ggvispro.github.io/idea/knowledge_base_052/)  | 加入了纯净版DeepSeek |

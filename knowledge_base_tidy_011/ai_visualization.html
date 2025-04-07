@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI可视化 - 临床知识库</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 配置Tailwind主题 -->
+    <script>
+        // 配置Tailwind主题
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                    },
+                    transitionProperty: {
+                        'height': 'height',
+                        'spacing': 'margin, padding',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入主题切换脚本 -->
+    <script src="js/theme-toggle.js"></script>
+    <!-- 引入导航栏脚本 -->
+    <script src="js/navbar.js"></script>
+    <style>
+        /* 自定义Tailwind配置 */
+        @layer utilities {
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .search-focus:focus {
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+                border-color: #3b82f6;
+            }
+            .btn-hover {
+                transition: transform 0.2s ease;
+            }
+            .btn-hover:hover {
+                transform: scale(1.05);
+            }
+            
+            /* 适配侧边栏收起/展开状态的主内容区域 */
+            #main-content {
+                transition: margin-left 0.3s ease, width 0.3s ease;
+            }
+            
+            /* 加载动画 */
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            .animate-spin {
+                animation: spin 1s linear infinite;
+            }
+            
+            /* 卡片样式 */
+            .card-blue {
+                background: linear-gradient(145deg, #ffffff, #ebf8ff);
+                border-left: 4px solid #4299e1;
+            }
+            .dark .card-blue {
+                background: linear-gradient(145deg, #1a202c, #2d3748);
+                border-left: 4px solid #4299e1;
+            }
+            .card-blue:hover {
+                box-shadow: 0 10px 25px -5px rgba(66, 153, 225, 0.2), 0 10px 10px -5px rgba(66, 153, 225, 0.1);
+            }
+            
+            .card-purple {
+                background: linear-gradient(145deg, #ffffff, #faf5ff);
+                border-left: 4px solid #9f7aea;
+            }
+            .dark .card-purple {
+                background: linear-gradient(145deg, #1a202c, #2d3748);
+                border-left: 4px solid #9f7aea;
+            }
+            .card-purple:hover {
+                box-shadow: 0 10px 25px -5px rgba(159, 122, 234, 0.2), 0 10px 10px -5px rgba(159, 122, 234, 0.1);
+            }
+            
+            .card-green {
+                background: linear-gradient(145deg, #ffffff, #f0fff4);
+                border-left: 4px solid #48bb78;
+            }
+            .dark .card-green {
+                background: linear-gradient(145deg, #1a202c, #2d3748);
+                border-left: 4px solid #48bb78;
+            }
+            .card-green:hover {
+                box-shadow: 0 10px 25px -5px rgba(72, 187, 120, 0.2), 0 10px 10px -5px rgba(72, 187, 120, 0.1);
+            }
+            
+            .card-orange {
+                background: linear-gradient(145deg, #ffffff, #fffaf0);
+                border-left: 4px solid #ed8936;
+            }
+            .dark .card-orange {
+                background: linear-gradient(145deg, #1a202c, #2d3748);
+                border-left: 4px solid #ed8936;
+            }
+            .card-orange:hover {
+                box-shadow: 0 10px 25px -5px rgba(237, 137, 54, 0.2), 0 10px 10px -5px rgba(237, 137, 54, 0.1);
+            }
+        }
+    </style>
+    <!-- 引入侧边栏JS -->
+    <script src="js/sidebar.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <!-- 导航栏由navbar.js自动插入 -->
+
+    <!-- 主内容区域 - 添加ID以便JavaScript控制 -->
+    <div id="main-content" class="pt-24 pb-10 px-6 mx-auto max-w-7xl transition-all duration-300 ml-52">
+        <!-- 欢迎信息 -->
+        <h1 class="text-5xl font-bold mb-3 text-gray-900 dark:text-white">AI 可视化</h1>
+        <p class="text-2xl text-gray-600 dark:text-gray-400 mb-10">通过AI可视化，让复杂医学知识一目了然</p>
+
+        <!-- 四个模块卡片 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+            <!-- 临床路径可视化 - 修改后加入了案例 -->
+            <div class="rounded-2xl shadow-md card-hover card-blue cursor-pointer dark:shadow-gray-800" onclick="window.location.href='SOP.html'">
+            <div class="p-6">
+                <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl font-semibold bg-blue-500">
+                <i class="fas fa-project-diagram"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 dark:text-white">临床路径可视化</h3>
+                <p class="text-gray-600 dark:text-gray-300 mb-4">将复杂的临床决策路径转化为直观流程图，包括疾病诊断、治疗和随访的全流程可视化展示。</p>
+                
+                <div class="flex justify-between items-center">
+                <span class="text-sm text-blue-600 dark:text-blue-400">
+                    <i class="fas fa-check-circle mr-1"></i>已支持20+常见疾病
+                </span>
+                <button class="text-white bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg transition-colors btn-hover">
+                    <i class="fas fa-arrow-right mr-1"></i>查看详情
+                </button>
+                </div>
+            </div>
+            </div>
+
+            <!-- 文献思维导图 -->
+            <div class="rounded-2xl shadow-md card-hover card-purple cursor-pointer dark:shadow-gray-800" onclick="window.location.href='literature_mindmap.html'">
+                <div class="p-6">
+                    <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl font-semibold bg-purple-500">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 dark:text-white">文献思维导图</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">自动分析医学文献，生成结构化思维导图，帮助您快速把握研究要点、方法和结论。</p>
+                    <div class="mt-4 flex justify-between items-center">
+                        <span class="text-sm text-purple-600 dark:text-purple-400">
+                            <i class="fas fa-flask mr-1"></i>即将推出
+                        </span>
+                        <button class="text-white bg-purple-500 hover:bg-purple-600 px-4 py-2 rounded-lg transition-colors btn-hover">
+                            <i class="fas fa-arrow-right mr-1"></i>敬请期待
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 疾病诊疗时间轴 -->
+            <div class="rounded-2xl shadow-md card-hover card-green cursor-pointer dark:shadow-gray-800" onclick="window.location.href='disease_timeline.html'">
+                <div class="p-6">
+                    <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl font-semibold bg-green-500">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 dark:text-white">疾病诊疗时间轴</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">疾病全程管理时间轴，清晰展示从首诊、确诊到治疗、随访的各个时间节点和关键干预措施。</p>
+                    <div class="mt-4 flex justify-between items-center">
+                        <span class="text-sm text-green-600 dark:text-green-400">
+                            <i class="fas fa-flask mr-1"></i>即将推出
+                        </span>
+                        <button class="text-white bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg transition-colors btn-hover">
+                            <i class="fas fa-arrow-right mr-1"></i>敬请期待
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 疾病危险分层可视化 -->
+            <div class="rounded-2xl shadow-md card-hover card-orange cursor-pointer dark:shadow-gray-800" onclick="window.location.href='risk_stratification.html'">
+                <div class="p-6">
+                    <div class="w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white text-xl font-semibold bg-orange-500">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 dark:text-white">疾病危险分层可视化</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">直观展示疾病风险评估模型，通过交互式图表呈现患者风险等级及干预措施建议。</p>
+                    <div class="mt-4 flex justify-between items-center">
+                        <span class="text-sm text-orange-600 dark:text-orange-400">
+                            <i class="fas fa-flask mr-1"></i>即将推出
+                        </span>
+                        <button class="text-white bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-lg transition-colors btn-hover">
+                            <i class="fas fa-arrow-right mr-1"></i>敬请期待
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div id="footer" class="text-center py-3 text-gray-500 dark:text-gray-400 text-sm transition-all duration-300 ml-52">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk 
+    </div>
+
+    <script>
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 监听侧边栏状态变化
+            document.addEventListener('sidebar-toggle', function(e) {
+                const mainContent = document.getElementById('main-content');
+                const footer = document.getElementById('footer');
+                
+                if (e.detail.expanded) {
+                    // 侧边栏展开
+                    mainContent.classList.remove('ml-16');
+                    mainContent.classList.add('ml-52');
+                    footer.classList.remove('ml-16');
+                    footer.classList.add('ml-52');
+                } else {
+                    // 侧边栏收起
+                    mainContent.classList.remove('ml-52');
+                    mainContent.classList.add('ml-16');
+                    footer.classList.remove('ml-52');
+                    footer.classList.add('ml-16');
+                }
+            });
+            
+            // 页面加载时根据侧边栏状态设置
+            document.addEventListener('sidebar-loaded', function(e) {
+                const mainContent = document.getElementById('main-content');
+                const footer = document.getElementById('footer');
+                
+                if (e.detail.expanded) {
+                    mainContent.classList.add('ml-52');
+                    footer.classList.add('ml-52');
+                } else {
+                    mainContent.classList.add('ml-16');
+                    footer.classList.add('ml-16');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

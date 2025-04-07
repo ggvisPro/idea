@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>内科知识库 - AI医疗助手</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // 配置Tailwind主题 - 更新为蓝色主题，与主页内科卡片一致
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                    },
+                    transitionProperty: {
+                        'height': 'height',
+                        'spacing': 'margin, padding',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer components {
+            .card-hover {
+                @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+            }
+            
+            .card-specialty {
+                @apply relative overflow-hidden rounded-xl transition-all duration-300 
+                       hover:shadow-xl border border-transparent;
+            }
+            
+            .card-specialty:hover {
+                @apply border-gray-200 dark:border-gray-700;
+            }
+            
+            .card-red {
+                @apply bg-red-50 dark:bg-red-900/20;
+            }
+            
+            .card-blue {
+                @apply bg-blue-50 dark:bg-blue-900/20;
+            }
+            
+            .card-yellow {
+                @apply bg-yellow-50 dark:bg-yellow-900/20;
+            }
+            
+            .card-green {
+                @apply bg-green-50 dark:bg-green-900/20;
+            }
+            
+            .card-purple {
+                @apply bg-purple-50 dark:bg-purple-900/20;
+            }
+            
+            .card-teal {
+                @apply bg-teal-50 dark:bg-teal-900/20;
+            }
+            
+            .card-orange {
+                @apply bg-orange-50 dark:bg-orange-900/20;
+            }
+            
+            .search-input {
+                @apply w-full py-3 px-5 rounded-xl border border-gray-200 
+                       focus:ring-4 focus:ring-primary-200 focus:border-primary-500 
+                       outline-none transition-all duration-200
+                       dark:bg-gray-800 dark:border-gray-700 dark:focus:ring-primary-800 dark:focus:border-primary-600;
+            }
+            
+            .btn-primary {
+                @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 
+                       rounded-full transition duration-300 ease-in-out 
+                       hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50
+                       dark:bg-primary-700 dark:hover:bg-primary-600;
+            }
+            
+            .icon-circle {
+                @apply flex items-center justify-center rounded-full w-12 h-12 text-white;
+            }
+        }
+    </style>
+    <!-- 引入主题切换脚本 -->
+    <script src="js/theme-toggle.js"></script>
+    <!-- 引入导航栏脚本 -->
+    <script src="js/navbar.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <!-- 导航栏由JS自动插入 -->
+
+    <!-- 主内容区域 -->
+    <main class="container mx-auto px-4 pt-24 pb-12">
+        <!-- 返回按钮 -->
+        <div class="mb-6">
+            <a href="main.html" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i> 返回首页
+            </a>
+        </div>
+
+        <!-- 欢迎信息 -->
+        <div class="mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-primary-600 dark:text-primary-400 mb-3">内科知识库</h1>
+            <p class="text-xl text-gray-600 dark:text-gray-400">权威全面的内科疾病诊疗指南、治疗方案及用药参考</p>
+        </div>
+
+        <!-- 搜索区域 -->
+        <div class="mb-12">
+            <div class="max-w-3xl mx-auto relative">
+                <input type="text" class="search-input" placeholder="搜索内科疾病、症状、药物或治疗方案...">
+                <button type="submit" class="absolute right-4 top-1/2 transform -translate-y-1/2">
+                    <i class="fas fa-search text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 内科系统分类 -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+                <i class="fas fa-sitemap text-primary-500 dark:text-primary-400 mr-3"></i>
+                系统疾病
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- 心血管系统 -->
+                <div class="card-specialty card-hover card-red p-6">
+                    <div class="icon-circle bg-gradient-to-r from-red-500 to-red-600 mb-5">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">心血管系统</h3>
+                    <p class="text-gray-600 dark:text-gray-300">高血压、冠心病、心衰、心律失常等心血管疾病诊疗方案。</p>
+                </div>
+                
+                <!-- 呼吸系统 -->
+                <div class="card-specialty card-hover card-blue p-6">
+                    <div class="icon-circle bg-gradient-to-r from-blue-500 to-blue-600 mb-5">
+                        <i class="fas fa-lungs"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">呼吸系统</h3>
+                    <p class="text-gray-600 dark:text-gray-300">慢阻肺、哮喘、肺炎、肺间质纤维化等呼吸系统疾病诊疗。</p>
+                </div>
+                
+                <!-- 消化系统 -->
+                <div class="card-specialty card-hover card-yellow p-6">
+                    <div class="icon-circle bg-gradient-to-r from-yellow-500 to-yellow-600 mb-5">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">消化系统</h3>
+                    <p class="text-gray-600 dark:text-gray-300">胃食管反流、消化性溃疡、肝炎、胰腺炎等消化系统疾病。</p>
+                </div>
+                
+                <!-- 内分泌系统 -->
+                <div class="card-specialty card-hover card-green p-6">
+                    <div class="icon-circle bg-gradient-to-r from-green-500 to-green-600 mb-5">
+                        <i class="fas fa-vial"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">内分泌系统</h3>
+                    <p class="text-gray-600 dark:text-gray-300">糖尿病、甲状腺疾病、肾上腺疾病等内分泌代谢疾病。</p>
+                </div>
+                
+                <!-- 血液系统 -->
+                <div class="card-specialty card-hover card-purple p-6">
+                    <div class="icon-circle bg-gradient-to-r from-purple-500 to-purple-600 mb-5">
+                        <i class="fas fa-droplet"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">血液系统</h3>
+                    <p class="text-gray-600 dark:text-gray-300">各类贫血、白血病、淋巴瘤、出凝血疾病等血液疾病。</p>
+                </div>
+                
+                <!-- 肾脏疾病 -->
+                <div class="card-specialty card-hover card-teal p-6">
+                    <div class="icon-circle bg-gradient-to-r from-teal-500 to-teal-600 mb-5">
+                        <i class="fas fa-filter"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">肾脏疾病</h3>
+                    <p class="text-gray-600 dark:text-gray-300">肾小球肾炎、肾病综合征、尿路感染、肾功能不全等疾病。</p>
+                </div>
+                
+                <!-- 风湿免疫 -->
+                <div class="card-specialty card-hover card-orange p-6">
+                    <div class="icon-circle bg-gradient-to-r from-orange-500 to-orange-600 mb-5">
+                        <i class="fas fa-bone"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">风湿免疫</h3>
+                    <p class="text-gray-600 dark:text-gray-300">类风湿关节炎、红斑狼疮、血管炎等风湿免疫性疾病。</p>
+                </div>
+                
+                <!-- 感染疾病 -->
+                <div class="card-specialty card-hover card-red p-6">
+                    <div class="icon-circle bg-gradient-to-r from-red-500 to-red-600 mb-5">
+                        <i class="fas fa-virus"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">感染疾病</h3>
+                    <p class="text-gray-600 dark:text-gray-300">各类细菌、病毒、真菌感染及抗生素合理应用指南。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 常见症状区域 -->
+        <section class="mb-16 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <i class="fas fa-stethoscope text-primary-500 dark:text-primary-400 mr-3"></i>
+                常见症状鉴别诊断
+            </h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-thermometer-half text-red-500 mr-3"></i>
+                    <span class="font-medium">发热</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-heartbeat text-red-500 mr-3"></i>
+                    <span class="font-medium">胸痛</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-lungs text-blue-500 mr-3"></i>
+                    <span class="font-medium">呼吸困难</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-head-side-cough text-green-500 mr-3"></i>
+                    <span class="font-medium">恶心呕吐</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-bolt text-yellow-500 mr-3"></i>
+                    <span class="font-medium">头痛</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-sync-alt text-purple-500 mr-3"></i>
+                    <span class="font-medium">眩晕</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-battery-quarter text-gray-500 mr-3"></i>
+                    <span class="font-medium">乏力</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-bone text-orange-500 mr-3"></i>
+                    <span class="font-medium">关节痛</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-stomach text-yellow-500 mr-3"></i>
+                    <span class="font-medium">腹痛</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-toilet text-brown-500 mr-3"></i>
+                    <span class="font-medium">腹泻</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-brain text-pink-500 mr-3"></i>
+                    <span class="font-medium">意识障碍</span>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                    <i class="fas fa-tint text-red-500 mr-3"></i>
+                    <span class="font-medium">出血</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 专科管理 -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+                <i class="fas fa-user-md text-primary-500 dark:text-primary-400 mr-3"></i>
+                专科管理
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="card-specialty card-hover card-blue p-6">
+                    <div class="icon-circle bg-gradient-to-r from-blue-500 to-blue-600 mb-5">
+                        <i class="fas fa-ambulance"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">急危重症</h3>
+                    <p class="text-gray-600 dark:text-gray-300">休克、急性心肌梗死、急性肺栓塞等内科急危重症的处理原则。</p>
+                </div>
+                
+                <div class="card-specialty card-hover card-green p-6">
+                    <div class="icon-circle bg-gradient-to-r from-green-500 to-green-600 mb-5">
+                        <i class="fas fa-notes-medical"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">慢病管理</h3>
+                    <p class="text-gray-600 dark:text-gray-300">高血压、糖尿病、慢阻肺等慢性疾病的长期管理方案。</p>
+                </div>
+                
+                <div class="card-specialty card-hover card-teal p-6">
+                    <div class="icon-circle bg-gradient-to-r from-teal-500 to-teal-600 mb-5">
+                        <i class="fas fa-hand-holding-medical"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">老年医学</h3>
+                    <p class="text-gray-600 dark:text-gray-300">老年患者用药原则、多系统疾病管理及老年常见综合征。</p>
+                </div>
+                
+                <div class="card-specialty card-hover card-red p-6">
+                    <div class="icon-circle bg-gradient-to-r from-red-500 to-red-600 mb-5">
+                        <i class="fas fa-procedures"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">重症监护</h3>
+                    <p class="text-gray-600 dark:text-gray-300">呼吸支持、血流动力学监测、营养支持等重症监护技术。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 最新指南区域 -->
+        <section class="mb-16 bg-gradient-to-r from-primary-600 to-primary-800 dark:from-primary-800 dark:to-primary-900 rounded-xl text-white p-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <i class="fas fa-bookmark mr-3"></i>
+                最新内科指南
+            </h2>
+            <div class="space-y-4 mb-6">
+                <div class="bg-white bg-opacity-10 hover:bg-opacity-20 rounded-lg p-4 transition-colors cursor-pointer">
+                    <div class="flex items-start">
+                        <i class="fas fa-file-medical text-2xl mt-1 mr-4"></i>
+                        <div>
+                            <h3 class="font-semibold text-lg">中国2型糖尿病防治指南（2024版）</h3>
+                            <p class="text-sm text-gray-200">发布于 2024-12-15</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white bg-opacity-10 hover:bg-opacity-20 rounded-lg p-4 transition-colors cursor-pointer">
+                    <div class="flex items-start">
+                        <i class="fas fa-file-medical text-2xl mt-1 mr-4"></i>
+                        <div>
+                            <h3 class="font-semibold text-lg">中国高血压防治指南最新更新</h3>
+                            <p class="text-sm text-gray-200">发布于 2024-09-22</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white bg-opacity-10 hover:bg-opacity-20 rounded-lg p-4 transition-colors cursor-pointer">
+                    <div class="flex items-start">
+                        <i class="fas fa-file-medical text-2xl mt-1 mr-4"></i>
+                        <div>
+                            <h3 class="font-semibold text-lg">心力衰竭诊断与治疗指南（2025版）</h3>
+                            <p class="text-sm text-gray-200">发布于 2025-01-10</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-primary">
+                <i class="fas fa-list-ul mr-2"></i> 查看全部指南
+            </button>
+        </section>
+    </main>
+
+    <!-- 底部信息 -->
+    <footer class="py-6 text-center text-gray-500 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-800">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk
+    </footer>
+</body>
+</html>

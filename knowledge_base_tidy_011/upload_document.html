@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上传文档 - 临床知识库</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    transitionProperty: {
+                        'height': 'height',
+                        'spacing': 'margin, padding',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @layer utilities {
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .btn-hover {
+                transition: transform 0.2s ease;
+            }
+            .btn-hover:hover {
+                transform: scale(1.05);
+            }
+            .input-focus:focus {
+                box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2);
+            }
+            .backdrop-blur {
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+            }
+        }
+    </style>
+    <!-- 引入主题切换脚本 -->
+    <script src="js/theme-toggle.js"></script>
+    <!-- 引入导航栏脚本 -->
+    <script src="js/navbar.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <!-- 导航栏由JS自动插入 -->
+
+    <!-- 主内容区域 -->
+    <div class="max-w-7xl mx-auto pt-24 pb-8 px-4 sm:px-6 lg:px-8">
+        <!-- 标题 -->
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold">上传文档</h1>
+            <button class="flex items-center text-primary-600 hover:bg-primary-600 hover:bg-opacity-10 px-3 py-2 rounded-lg transition-colors duration-300 dark:text-primary-400 dark:hover:bg-primary-700 dark:hover:bg-opacity-20" onclick="window.location.href='custom_library.html'">
+                <i class="fas fa-arrow-left mr-2"></i> 返回知识库
+            </button>
+        </div>
+
+        <!-- 选择知识库部分 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4 dark:text-white">选择知识库</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div class="border-2 border-primary-600 bg-primary-600 bg-opacity-5 dark:bg-opacity-10 rounded-lg p-4 cursor-pointer relative dark:border-primary-400">
+                    <div class="absolute top-2 right-2 text-primary-600 dark:text-primary-400"><i class="fas fa-check-circle"></i></div>
+                    <div class="font-medium dark:text-white">脑卒中知识库</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">12 个文档</div>
+                </div>
+                <div class="border-2 border-gray-200 dark:border-gray-700 rounded-lg p-4 cursor-pointer hover:border-primary-600 dark:hover:border-primary-400 hover:bg-primary-600 hover:bg-opacity-5 dark:hover:bg-opacity-10 transition-all duration-300">
+                    <div class="font-medium dark:text-white">心血管疾病</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">8 个文档</div>
+                </div>
+                <div class="border-2 border-gray-200 dark:border-gray-700 rounded-lg p-4 cursor-pointer hover:border-primary-600 dark:hover:border-primary-400 hover:bg-primary-600 hover:bg-opacity-5 dark:hover:bg-opacity-10 transition-all duration-300">
+                    <div class="font-medium dark:text-white">糖尿病管理</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">15 个文档</div>
+                </div>
+                <div class="border-2 border-gray-200 dark:border-gray-700 border-dashed rounded-lg p-4 cursor-pointer hover:border-primary-600 dark:hover:border-primary-400 hover:text-primary-600 dark:hover:text-primary-400 flex flex-col items-center justify-center transition-colors duration-300">
+                    <div class="text-2xl mb-2"><i class="fas fa-plus-circle"></i></div>
+                    <div class="font-medium">新建知识库</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 上传内容部分 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8">
+            <div class="flex gap-6 mb-6 border-b border-gray-200 dark:border-gray-700">
+                <div class="upload-tab active cursor-pointer px-3 py-2 font-medium text-primary-600 dark:text-primary-400 border-b-2 border-primary-600 dark:border-primary-400" data-tab="file">
+                    <i class="fas fa-file-upload mr-2"></i>文件上传
+                </div>
+                <div class="upload-tab cursor-pointer px-3 py-2 font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 border-b-2 border-transparent" data-tab="link">
+                    <i class="fas fa-link mr-2"></i>网页链接
+                </div>
+                <div class="upload-tab cursor-pointer px-3 py-2 font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 border-b-2 border-transparent" data-tab="note">
+                    <i class="fas fa-clipboard-list mr-2"></i>医学笔记
+                </div>
+            </div>
+
+            <div class="upload-content active" id="file-content">
+                <div id="dropArea" class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-10 text-center cursor-pointer hover:border-primary-600 dark:hover:border-primary-400 hover:bg-primary-600 hover:bg-opacity-5 dark:hover:bg-opacity-10 transition-all duration-300">
+                    <div class="text-4xl text-primary-600 dark:text-primary-400 mb-4"><i class="fas fa-file-medical"></i></div>
+                    <div class="text-lg font-medium mb-2 dark:text-white">拖拽文件到此处或点击上传</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300 mb-6">支持PDF、Word、Excel和PowerPoint格式文件，单个文件最大50MB</div>
+                    <button class="bg-primary-600 dark:bg-primary-500 text-white px-5 py-2 rounded-full font-medium btn-hover shadow-md">
+                        <i class="fas fa-cloud-upload-alt mr-2"></i>选择文件
+                    </button>
+                    <input type="file" id="fileInput" class="hidden" multiple>
+                </div>
+            </div>
+
+            <div class="upload-content hidden" id="link-content">
+                <div class="mb-4">
+                    <label class="block font-medium mb-2 text-sm dark:text-white">网页链接</label>
+                    <input type="text" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg input-focus focus:border-primary-600 dark:focus:border-primary-400 outline-none transition-all duration-300 dark:bg-gray-700 dark:text-white" placeholder="请输入医学相关网页的URL链接...">
+                </div>
+                <div class="mb-4">
+                    <label class="block font-medium mb-2 text-sm dark:text-white">链接描述（可选）</label>
+                    <input type="text" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg input-focus focus:border-primary-600 dark:focus:border-primary-400 outline-none transition-all duration-300 dark:bg-gray-700 dark:text-white" placeholder="简短描述该链接内容...">
+                </div>
+                <div class="mb-6">
+                    <label class="block font-medium mb-2 text-sm dark:text-white">分类标签</label>
+                    <input type="text" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg input-focus focus:border-primary-600 dark:focus:border-primary-400 outline-none transition-all duration-300 dark:bg-gray-700 dark:text-white" placeholder="输入标签，用逗号分隔...">
+                </div>
+                <button class="bg-primary-600 dark:bg-primary-500 text-white px-6 py-3 rounded-lg font-medium btn-hover shadow-md">
+                    <i class="fas fa-plus-circle mr-2"></i>添加链接
+                </button>
+            </div>
+
+            <div class="upload-content hidden" id="note-content">
+                <div class="mb-4">
+                    <label class="block font-medium mb-2 text-sm dark:text-white">笔记标题</label>
+                    <input type="text" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg input-focus focus:border-primary-600 dark:focus:border-primary-400 outline-none transition-all duration-300 dark:bg-gray-700 dark:text-white" placeholder="输入笔记标题...">
+                </div>
+                <div class="mb-4">
+                    <label class="block font-medium mb-2 text-sm dark:text-white">笔记内容</label>
+                    <textarea class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg input-focus focus:border-primary-600 dark:focus:border-primary-400 outline-none transition-all duration-300 h-48 resize-none dark:bg-gray-700 dark:text-white" placeholder="输入医学笔记内容..."></textarea>
+                </div>
+                <div class="mb-6">
+                    <label class="block font-medium mb-2 text-sm dark:text-white">分类标签</label>
+                    <input type="text" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg input-focus focus:border-primary-600 dark:focus:border-primary-400 outline-none transition-all duration-300 dark:bg-gray-700 dark:text-white" placeholder="输入标签，用逗号分隔...">
+                </div>
+                <button class="bg-primary-600 dark:bg-primary-500 text-white px-6 py-3 rounded-lg font-medium btn-hover shadow-md">
+                    <i class="fas fa-save mr-2"></i>保存笔记
+                </button>
+            </div>
+        </div>
+
+        <!-- 搜索知识库部分 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4 dark:text-white">搜索脑卒中知识库</h2>
+            <div class="relative mb-6">
+                <input type="text" id="searchInput" class="w-full pl-4 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-lg input-focus focus:border-primary-600 dark:focus:border-primary-400 outline-none transition-all duration-300 dark:bg-gray-700 dark:text-white" placeholder="输入关键词搜索知识库内容...">
+                <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div id="searchSuggestions" class="hidden absolute top-full left-0 right-0 bg-white dark:bg-gray-800 rounded-b-lg shadow-lg z-10 max-h-60 overflow-y-auto">
+                    <div class="suggestion-item p-3 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer dark:text-white">
+                        急性脑卒中的处理流程
+                    </div>
+                    <div class="suggestion-item p-3 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer dark:text-white">
+                        脑卒中康复训练指南
+                    </div>
+                    <div class="suggestion-item p-3 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer dark:text-white">
+                        脑卒中一级预防措施
+                    </div>
+                    <div class="suggestion-item p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer dark:text-white">
+                        卒中后遗症管理
+                    </div>
+                </div>
+            </div>
+
+            <!-- 知识库内容 -->
+            <div class="rounded-lg border border-gray-200 dark:border-gray-700">
+                <div class="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
+                    <div class="font-semibold dark:text-white">脑卒中知识库内容</div>
+                    <div class="flex gap-2">
+                        <div class="px-3 py-1 bg-primary-600 text-white text-sm rounded-full">全部</div>
+                        <div class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-sm rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer">指南</div>
+                        <div class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-sm rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer">病例</div>
+                        <div class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-sm rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer">研究</div>
+                    </div>
+                </div>
+
+                <div class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <!-- 文档项 1 -->
+                    <div class="flex justify-between items-center p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-red-500 text-white text-sm font-medium mr-4">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium dark:text-white">中国急性缺血性脑卒中诊治指南2022</div>
+                                <div class="text-sm text-gray-600 dark:text-gray-300 flex gap-3 mt-1">
+                                    <span>4.2MB</span>
+                                    <span>2023-09-15 上传</span>
+                                    <span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 rounded-full text-xs">指南</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex">
+                            <button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-600">
+                                <i class="fas fa-book-open text-gray-600 dark:text-gray-300"></i>
+                            </button>
+                            <button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-600">
+                                <i class="fas fa-ellipsis-v text-gray-600 dark:text-gray-300"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 文档项 2 -->
+                    <div class="flex justify-between items-center p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-green-500 text-white text-sm font-medium mr-4">
+                                <i class="fas fa-file-excel"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium dark:text-white">卒中评分量表汇总表</div>
+                                <div class="text-sm text-gray-600 dark:text-gray-300 flex gap-3 mt-1">
+                                    <span>1.8MB</span>
+                                    <span>2023-08-22 上传</span>
+                                    <span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 rounded-full text-xs">临床工具</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex">
+                            <button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-600">
+                                <i class="fas fa-book-open text-gray-600 dark:text-gray-300"></i>
+                            </button>
+                            <button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-600">
+                                <i class="fas fa-ellipsis-v text-gray-600 dark:text-gray-300"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 文档项 3 -->
+                    <div class="flex justify-between items-center p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-500 text-white text-sm font-medium mr-4">
+                                <i class="fas fa-file-word"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium dark:text-white">脑卒中患者康复治疗方案</div>
+                                <div class="text-sm text-gray-600 dark:text-gray-300 flex gap-3 mt-1">
+                                    <span>2.5MB</span>
+                                    <span>2023-07-18 上传</span>
+                                    <span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 rounded-full text-xs">康复计划</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex">
+                            <button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-600">
+                                <i class="fas fa-book-open text-gray-600 dark:text-gray-300"></i>
+                            </button>
+                            <button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-600">
+                                <i class="fas fa-ellipsis-v text-gray-600 dark:text-gray-300"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 文档项 4 -->
+                    <div class="flex justify-between items-center p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-orange-500 text-white text-sm font-medium mr-4">
+                                <i class="fas fa-file-powerpoint"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium dark:text-white">脑卒中溶栓治疗最新进展</div>
+                                <div class="text-sm text-gray-600 dark:text-gray-300 flex gap-3 mt-1">
+                                    <span>8.6MB</span>
+                                    <span>2023-06-05 上传</span>
+                                    <span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 rounded-full text-xs">学术报告</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex">
+                            <button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-600">
+                                <i class="fas fa-book-open text-gray-600 dark:text-gray-300"></i>
+                            </button>
+                            <button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-600">
+                                <i class="fas fa-ellipsis-v text-gray-600 dark:text-gray-300"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 文档项 5 -->
+                    <div class="flex justify-between items-center p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-purple-500 text-white text-sm font-medium mr-4">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium dark:text-white">卒中病例系列分析报告</div>
+                                <div class="text-sm text-gray-600 dark:text-gray-300 flex gap-3 mt-1">
+                                    <span>3.7MB</span>
+                                    <span>2023-05-12 上传</span>
+                                    <span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 rounded-full text-xs">病例</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex">
+                            <button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-600">
+                                <i class="fas fa-book-open text-gray-600 dark:text-gray-300"></i>
+                            </button>
+                            <button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-600">
+                                <i class="fas fa-ellipsis-v text-gray-600 dark:text-gray-300"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <footer class="py-6 text-center text-gray-500 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-800">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk 
+    </footer>
+
+    <script>
+        // 切换上传选项卡
+        document.querySelectorAll('.upload-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // 移除所有选项卡的active类
+                document.querySelectorAll('.upload-tab').forEach(t => {
+                    t.classList.remove('text-primary-600', 'text-primary-400', 'border-primary-600', 'border-primary-400');
+                    t.classList.add('text-gray-600', 'dark:text-gray-300', 'border-transparent');
+                });
+                // 给当前选项卡添加active类
+                tab.classList.remove('text-gray-600', 'dark:text-gray-300', 'border-transparent');
+                tab.classList.add('text-primary-600', 'dark:text-primary-400', 'border-primary-600', 'dark:border-primary-400');
+                
+                // 隐藏所有内容
+                document.querySelectorAll('.upload-content').forEach(c => c.classList.add('hidden'));
+                // 显示对应内容
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(`${tabId}-content`).classList.remove('hidden');
+            });
+        });
+
+        // 文件上传功能
+        const dropArea = document.getElementById('dropArea');
+        const fileInput = document.getElementById('fileInput');
+
+        dropArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                alert(`已选择 ${fileInput.files.length} 个文件准备上传`);
+                // 这里可以处理文件上传逻辑
+            }
+        });
+
+        // 拖拽上传功能
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            dropArea.classList.add('border-primary-600', 'dark:border-primary-400', 'bg-primary-600', 'bg-opacity-5', 'dark:bg-opacity-10');
+        }
+
+        function unhighlight() {
+            dropArea.classList.remove('border-primary-600', 'dark:border-primary-400', 'bg-primary-600', 'bg-opacity-5', 'dark:bg-opacity-10');
+        }
+
+        dropArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length > 0) {
+                alert(`已拖放 ${files.length} 个文件准备上传`);
+                // 这里可以处理文件上传逻辑
+            }
+        }
+
+        // 搜索功能
+        const searchInput = document.getElementById('searchInput');
+        const searchSuggestions = document.getElementById('searchSuggestions');
+
+        searchInput.addEventListener('focus', () => {
+            searchSuggestions.classList.remove('hidden');
+        });
+
+        searchInput.addEventListener('input', () => {
+            // 这里可以实现实时搜索建议
+            const query = searchInput.value.toLowerCase();
+            if (query) {
+                // 简单模拟搜索过滤
+                const suggestions = Array.from(searchSuggestions.children);
+                suggestions.forEach(suggestion => {
+                    const text = suggestion.textContent.trim().toLowerCase();
+                    if (text.includes(query)) {
+                        suggestion.style.display = 'block';
+                    } else {
+                        suggestion.style.display = 'none';
+                    }
+                });
+                searchSuggestions.classList.remove('hidden');
+            } else {
+                // 如果查询为空，显示所有建议
+                Array.from(searchSuggestions.children).forEach(suggestion => {
+                    suggestion.style.display = 'block';
+                });
+                searchSuggestions.classList.remove('hidden');
+            }
+        });
+
+        // 点击建议项
+        document.querySelectorAll('.suggestion-item').forEach(item => {
+            item.addEventListener('click', () => {
+                searchInput.value = item.textContent.trim();
+                searchSuggestions.classList.add('hidden');
+                alert(`正在搜索: ${item.textContent.trim()}`);
+                // 这里可以实现搜索结果更新
+            });
+        });
+
+        // 点击其他区域关闭搜索建议
+        document.addEventListener('click', (e) => {
+            if (e.target !== searchInput && !searchSuggestions.contains(e.target)) {
+                searchSuggestions.classList.add('hidden');
+            }
+        });
+
+        // 切换知识库卡片选择状态
+        document.querySelectorAll('.kb-card').forEach(card => {
+            if (!card.classList.contains('new-kb')) {
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.kb-card').forEach(c => {
+                        c.classList.remove('selected');
+                    });
+                    card.classList.add('selected');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

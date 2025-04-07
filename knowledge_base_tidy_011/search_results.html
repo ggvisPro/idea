@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索结果 - 临床知识库</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // 配置Tailwind主题
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                    },
+                    transitionProperty: {
+                        'height': 'height',
+                        'spacing': 'margin, padding',
+                        'transform': 'transform',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @layer utilities {
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .dark .card-hover:hover {
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+            }
+            .btn-hover {
+                transition: transform 0.2s ease;
+            }
+            .btn-hover:hover {
+                transform: scale(1.05);
+            }
+            .search-focus:focus {
+                box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.3);
+                border-color: rgba(14, 165, 233, 0.6);
+            }
+            .dark .search-focus:focus {
+                box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.3);
+                border-color: rgba(56, 189, 248, 0.6);
+            }
+            .highlight {
+                background-color: rgba(255, 213, 0, 0.3);
+                padding: 0 2px;
+                border-radius: 2px;
+            }
+            .dark .highlight {
+                background-color: rgba(234, 179, 8, 0.3);
+            }
+            /* 淡入动画 */
+            .fade-in {
+                animation: fadeIn 0.6s ease-in-out forwards;
+                opacity: 0;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .delay-100 { animation-delay: 0.1s; }
+            .delay-200 { animation-delay: 0.2s; }
+            .delay-300 { animation-delay: 0.3s; }
+            .delay-400 { animation-delay: 0.4s; }
+            .delay-500 { animation-delay: 0.5s; }
+        }
+    </style>
+    <!-- 引入主题切换脚本 -->
+    <script src="js/theme-toggle.js"></script>
+    <!-- 引入导航栏脚本 -->
+    <script src="js/navbar.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <!-- 导航栏将由JS自动插入 -->
+
+    <!-- 主内容区域 -->
+    <div class="container max-w-6xl mx-auto pt-20 pb-10 px-4 sm:px-6">
+        <!-- 搜索区域 -->
+        <div class="sticky top-[60px] z-40 bg-gray-50 dark:bg-gray-900 pt-4 pb-3 fade-in">
+            <div class="relative max-w-3xl">
+                <input type="text" value="糖尿病肾病的早期诊断与治疗" class="w-full px-5 py-3 text-base rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white shadow-sm outline-none search-focus transition-all duration-300">
+                <button type="submit" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-primary-500 dark:hover:text-primary-400 transition-colors">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 筛选区域 -->
+        <div class="flex justify-between items-center flex-wrap gap-3 py-4 border-b border-gray-200 dark:border-gray-700 mb-6 fade-in delay-100">
+            <div class="text-sm text-gray-500 dark:text-gray-400">共找到 127 条结果</div>
+            <div class="flex flex-wrap gap-2">
+                <button class="px-3 py-1.5 text-sm font-medium rounded-full bg-primary-500 text-white hover:bg-primary-600 dark:hover:bg-primary-400 transition-colors btn-hover">全部</button>
+                <button class="px-3 py-1.5 text-sm font-medium rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors btn-hover">内科</button>
+                <button class="px-3 py-1.5 text-sm font-medium rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors btn-hover">外科</button>
+                <button class="px-3 py-1.5 text-sm font-medium rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors btn-hover">诊断</button>
+                <button class="px-3 py-1.5 text-sm font-medium rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors btn-hover">治疗</button>
+                <button class="px-3 py-1.5 text-sm font-medium rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors btn-hover">最新发布</button>
+            </div>
+        </div>
+
+        <!-- 搜索结果 -->
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- 结果列表 -->
+            <div class="w-full lg:w-3/5 fade-in delay-200">
+                <!-- 结果项 1 -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-md dark:shadow-gray-900 p-5 mb-4 cursor-pointer card-hover transition-all duration-300">
+                    <span class="inline-block px-2 py-1 text-xs font-medium rounded-full bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 mb-2">内科知识库</span>
+                    <h3 class="text-lg font-semibold mb-2 dark:text-white"><span class="highlight">糖尿病肾病</span>的<span class="highlight">早期诊断</span>标准及筛查方法</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-3"><span class="highlight">糖尿病肾病</span>是糖尿病最常见的微血管并发症之一，约30-40%的糖尿病患者会发展为<span class="highlight">糖尿病肾病</span>。<span class="highlight">早期诊断</span>可通过检测微量白蛋白尿、GFR估算及肾小球滤过率评估...</p>
+                    <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
+                        <span class="flex items-center">
+                            <i class="fas fa-calendar-alt mr-1"></i>最后更新: 2024年8月
+                        </span>
+                        <span class="flex items-center">
+                            <i class="fas fa-book mr-1"></i>引用: 中国<span class="highlight">糖尿病</span>协会指南
+                        </span>
+                        <span class="flex items-center">
+                            <i class="fas fa-chart-line mr-1"></i>相关度: 96%
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 结果项 2 -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-md dark:shadow-gray-900 p-5 mb-4 cursor-pointer card-hover transition-all duration-300">
+                    <span class="inline-block px-2 py-1 text-xs font-medium rounded-full bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 mb-2">用药助手</span>
+                    <h3 class="text-lg font-semibold mb-2 dark:text-white"><span class="highlight">糖尿病肾病</span>药物<span class="highlight">治疗</span>进展与用药指导</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">SGLT-2抑制剂和GLP-1受体激动剂在<span class="highlight">糖尿病肾病治疗</span>中的应用逐渐增加。临床研究表明，SGLT-2抑制剂可降低肾脏不良结局风险约30%，同时减少心血管事件...</p>
+                    <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
+                        <span class="flex items-center">
+                            <i class="fas fa-calendar-alt mr-1"></i>最后更新: 2024年10月
+                        </span>
+                        <span class="flex items-center">
+                            <i class="fas fa-book mr-1"></i>引用: KDIGO指南2023版
+                        </span>
+                        <span class="flex items-center">
+                            <i class="fas fa-chart-line mr-1"></i>相关度: 92%
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 结果项 3 -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-md dark:shadow-gray-900 p-5 mb-4 cursor-pointer card-hover transition-all duration-300">
+                    <span class="inline-block px-2 py-1 text-xs font-medium rounded-full bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 mb-2">外部资源</span>
+                    <h3 class="text-lg font-semibold mb-2 dark:text-white"><span class="highlight">糖尿病肾病</span>患者的生活方式干预与管理</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">饮食控制是<span class="highlight">糖尿病肾病</span>非药物<span class="highlight">治疗</span>的关键。低蛋白饮食(0.6-0.8g/kg/d)可减轻肾脏负担，但需注意避免营养不良。推荐限制钠盐摄入，控制在5g/d以下...</p>
+                    <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
+                        <span class="flex items-center">
+                            <i class="fas fa-calendar-alt mr-1"></i>最后更新: 2024年4月
+                        </span>
+                        <span class="flex items-center">
+                            <i class="fas fa-book mr-1"></i>引用: 美国肾脏基金会
+                        </span>
+                        <span class="flex items-center">
+                            <i class="fas fa-chart-line mr-1"></i>相关度: 89%
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 结果项 4 -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-md dark:shadow-gray-900 p-5 mb-4 cursor-pointer card-hover transition-all duration-300">
+                    <span class="inline-block px-2 py-1 text-xs font-medium rounded-full bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 mb-2">内科知识库</span>
+                    <h3 class="text-lg font-semibold mb-2 dark:text-white">2型<span class="highlight">糖尿病</span>微血管并发症筛查流程</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">对于2型<span class="highlight">糖尿病</span>患者，建议自确诊起每年进行肾脏并发症筛查，包括尿微量白蛋白/肌酐比值(UACR)和估算肾小球滤过率(eGFR)检测。对于1型<span class="highlight">糖尿病</span>患者，建议病程满5年后开始筛查...</p>
+                    <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
+                        <span class="flex items-center">
+                            <i class="fas fa-calendar-alt mr-1"></i>最后更新: 2022年12月
+                        </span>
+                        <span class="flex items-center">
+                            <i class="fas fa-book mr-1"></i>引用: ADA Standards of Care
+                        </span>
+                        <span class="flex items-center">
+                            <i class="fas fa-chart-line mr-1"></i>相关度: 85%
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 结果项 5 -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-md dark:shadow-gray-900 p-5 mb-4 cursor-pointer card-hover transition-all duration-300">
+                    <span class="inline-block px-2 py-1 text-xs font-medium rounded-full bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 mb-2">辅助检查</span>
+                    <h3 class="text-lg font-semibold mb-2 dark:text-white"><span class="highlight">糖尿病肾病</span>实验室检查解读</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">尿微量白蛋白是<span class="highlight">早期诊断糖尿病肾病</span>的敏感指标。30-300mg/g的尿白蛋白/肌酐比值提示微量白蛋白尿，是<span class="highlight">糖尿病肾病</span>的<span class="highlight">早期</span>表现。连续三次检测中有两次异常可确诊...</p>
+                    <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
+                        <span class="flex items-center">
+                            <i class="fas fa-calendar-alt mr-1"></i>最后更新: 2024年2月
+                        </span>
+                        <span class="flex items-center">
+                            <i class="fas fa-book mr-1"></i>引用: 中华医学检验杂志
+                        </span>
+                        <span class="flex items-center">
+                            <i class="fas fa-chart-line mr-1"></i>相关度: 82%
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 分页按钮 -->
+                <div class="flex justify-center mt-6 gap-2">
+                    <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary-500 text-white">1</button>
+                    <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">2</button>
+                    <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">3</button>
+                    <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 知识详情 -->
+            <div class="w-full lg:w-2/5 lg:sticky lg:top-[100px] lg:self-start fade-in delay-300">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-md dark:shadow-gray-900 p-6 transition-all duration-300">
+                    <div class="mb-5">
+                        <div class="text-sm text-primary-500 dark:text-primary-400 font-medium mb-2">内科知识库 > 内分泌科 > 糖尿病并发症</div>
+                        <h2 class="text-xl font-bold mb-2 dark:text-white">糖尿病肾病的早期诊断标准及筛查方法</h2>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">
+                            <span class="inline-flex items-center">
+                                <i class="fas fa-calendar-alt mr-1"></i>最后更新: 2024年8月
+                            </span>
+                            <span class="mx-2">|</span>
+                            <span class="inline-flex items-center">
+                                <i class="fas fa-book mr-1"></i>参考: 中国糖尿病协会指南
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4 text-sm">
+                        <div>
+                            <h3 class="text-base font-semibold mb-2 dark:text-white">定义</h3>
+                            <p class="text-gray-700 dark:text-gray-300">糖尿病肾病(DKD)是指在糖尿病基础上出现的肾脏损害，是糖尿病最常见和最严重的微血管并发症之一，也是终末期肾病(ESRD)的主要原因。</p>
+                        </div>
+
+                        <div>
+                            <h3 class="text-base font-semibold mb-2 dark:text-white">早期诊断标准</h3>
+                            <ul class="list-disc pl-5 text-gray-700 dark:text-gray-300 space-y-1">
+                                <li><span class="font-medium dark:text-white">微量白蛋白尿:</span> 尿白蛋白排泄率(UAER)为30-300mg/24h，或尿白蛋白/肌酐比值(UACR)为30-300mg/g(3.4-34mg/mmol)</li>
+                                <li><span class="font-medium dark:text-white">肾小球滤过率(GFR)异常:</span> eGFR &lt; 60ml/min/1.73m²，尤其是在没有其他肾脏疾病证据的情况下</li>
+                                <li><span class="font-medium dark:text-white">连续性:</span> 至少3个月内有2次以上检测异常</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="text-base font-semibold mb-2 dark:text-white">筛查建议</h3>
+                            <ul class="list-disc pl-5 text-gray-700 dark:text-gray-300 space-y-1">
+                                <li>1型糖尿病：确诊后5年开始筛查</li>
+                                <li>2型糖尿病：确诊时即开始筛查</li>
+                                <li>筛查频率：每年至少1次</li>
+                                <li>如出现微量白蛋白尿，建议3-6个月复查一次</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="text-base font-semibold mb-2 dark:text-white">筛查方法</h3>
+                            <ol class="list-decimal pl-5 text-gray-700 dark:text-gray-300 space-y-2">
+                                <li>尿微量白蛋白检测:
+                                    <ul class="list-disc pl-5 mt-1 space-y-1">
+                                        <li>24小时尿白蛋白定量(UAER)</li>
+                                        <li>尿白蛋白/肌酐比值(UACR)</li>
+                                        <li>晨尿白蛋白浓度测定</li>
+                                    </ul>
+                                </li>
+                                <li>肾小球滤过率评估:
+                                    <ul class="list-disc pl-5 mt-1 space-y-1">
+                                        <li>CKD-EPI公式计算</li>
+                                        <li>MDRD公式计算</li>
+                                    </ul>
+                                </li>
+                                <li>血清肌酐、尿素氮、电解质检测</li>
+                            </ol>
+                        </div>
+
+                        <div>
+                            <h3 class="text-base font-semibold mb-2 dark:text-white">注意事项</h3>
+                            <p class="text-gray-700 dark:text-gray-300 mb-2">以下情况可能影响尿微量白蛋白检测结果:</p>
+                            <ul class="list-disc pl-5 text-gray-700 dark:text-gray-300 space-y-1">
+                                <li>剧烈运动</li>
+                                <li>急性感染</li>
+                                <li>发热</li>
+                                <li>心力衰竭</li>
+                                <li>严重高血糖</li>
+                                <li>未控制的高血压</li>
+                                <li>尿路感染</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-5 border-t border-gray-100 dark:border-gray-700">
+                        <h4 class="text-base font-medium mb-3 dark:text-white">相关主题</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full text-sm text-gray-700 dark:text-gray-300 transition-colors cursor-pointer">糖尿病肾病分期</span>
+                            <span class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full text-sm text-gray-700 dark:text-gray-300 transition-colors cursor-pointer">SGLT-2抑制剂</span>
+                            <span class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full text-sm text-gray-700 dark:text-gray-300 transition-colors cursor-pointer">微量白蛋白尿</span>
+                            <span class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full text-sm text-gray-700 dark:text-gray-300 transition-colors cursor-pointer">肾脏保护策略</span>
+                            <span class="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full text-sm text-gray-700 dark:text-gray-300 transition-colors cursor-pointer">CKD-EPI公式</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DeepSeek 深度思考模块 -->
+        <div class="mt-10 fade-in delay-400">
+            <div class="flex items-center mb-4">
+                <div class="w-8 h-8 bg-primary-500 dark:bg-primary-600 rounded-full flex items-center justify-center text-white mr-2">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h2 class="text-2xl font-bold dark:text-white">DeepSeek 深度思考</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-md dark:shadow-gray-900 p-6 card-hover transition-all duration-300">
+                    <div class="flex items-center mb-4">
+                        <div class="w-7 h-7 bg-primary-500 bg-opacity-10 dark:bg-opacity-20 rounded-full flex items-center justify-center text-primary-500 dark:text-primary-400 mr-2">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold dark:text-white">思考过程</h3>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 border border-gray-100 dark:border-gray-700">
+                        <div class="mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+                            <div class="font-medium text-gray-800 dark:text-gray-200 mb-1">步骤1：文献分析</div>
+                            <p class="text-sm text-gray-700 dark:text-gray-300">分析糖尿病肾病的最新诊断标准，包括2023年KDIGO指南更新和中国糖尿病协会指南，着重关注微量白蛋白尿和GFR异常两个早期诊断指标。</p>
+                        </div>
+                        <div class="mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+                            <div class="font-medium text-gray-800 dark:text-gray-200 mb-1">步骤2：早期诊断关键指标评估</div>
+                            <p class="text-sm text-gray-700 dark:text-gray-300">评估UACR、eGFR在早期诊断中的特异性和敏感性。分析研究表明，UACR 30-300mg/g是目前公认的早期诊断标准，但约40%患者可能出现正常白蛋白尿的肾功能下降。</p>
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-800 dark:text-gray-200 mb-1">步骤3：新型生物标志物探索</div>
+                            <p class="text-sm text-gray-700 dark:text-gray-300">分析新型肾脏损伤生物标志物如KIM-1、NGAL和MCP-1在早期诊断中的潜在价值，这些标志物可能在微量白蛋白尿出现前检测到肾损伤。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-md dark:shadow-gray-900 p-6 card-hover transition-all duration-300">
+                    <div class="flex items-center mb-4">
+                        <div class="w-7 h-7 bg-primary-500 bg-opacity-10 dark:bg-opacity-20 rounded-full flex items-center justify-center text-primary-500 dark:text-primary-400 mr-2">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold dark:text-white">思考结果</h3>
+                    </div>
+                    <div class="bg-primary-500 bg-opacity-5 dark:bg-opacity-10 border border-primary-500 border-opacity-20 dark:border-opacity-30 rounded-lg p-4 mb-4">
+                        <div class="font-medium text-primary-600 dark:text-primary-400 mb-1">综合分析：</div>
+                        <p class="text-sm text-gray-700 dark:text-gray-300">糖尿病肾病早期诊断应采用多指标评估策略，单一指标可能导致漏诊。建议结合UACR、eGFR和新型生物标志物进行综合评估。</p>
+                    </div>
+                    
+                    <p class="text-sm text-gray-700 dark:text-gray-300 mb-3">基于现有证据，糖尿病肾病早期诊断的最佳实践包括：</p>
+                    <ul class="list-disc pl-5 text-sm text-gray-700 dark:text-gray-300 space-y-1 mb-4">
+                        <li>每年定期筛查微量白蛋白尿和eGFR变化</li>
+                        <li>对高危患者（如长期糖尿病史、血糖控制不佳、高血压）增加筛查频率至每6个月一次</li>
+                        <li>考虑使用新型肾脏损伤标志物进行辅助诊断</li>
+                        <li>早期引入SGLT-2抑制剂可能具有肾脏保护作用</li>
+                    </ul>
+                    
+                    <div class="flex items-center">
+                        <span class="text-xs text-gray-500 dark:text-gray-400 mr-2">结论可信度：</span>
+                        <div class="h-2 flex-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-primary-500 rounded-full" style="width: 85%"></div>
+                        </div>
+                        <span class="text-xs font-medium text-primary-500 dark:text-primary-400 ml-2">85%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <div class="text-center py-5 text-gray-500 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-800 mt-8 fade-in delay-500">
+        © 2025 临床知识库 | 科技赋能 | powered by wangzk 
+    </div>
+
+    <script>
+        // 添加搜索结果项点击效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 等待导航栏加载完成
+            document.addEventListener('navbar-loaded', function() {
+                // 初始化结果卡片点击效果
+                const resultCards = document.querySelectorAll('.card-hover');
+                resultCards.forEach(card => {
+                    card.addEventListener('click', function() {
+                        // 移除其他卡片的选中效果
+                        resultCards.forEach(c => c.classList.remove('ring-2', 'ring-primary-500'));
+                        // 添加当前卡片选中效果
+                        this.classList.add('ring-2', 'ring-primary-500');
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
