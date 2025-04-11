@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML5 虚拟钢琴</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+            overflow-x: auto;
+            perspective: 1000px;
+        }
+        
+        .piano-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .piano-top {
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(to bottom, #222, #000);
+            border-radius: 5px 5px 0 0;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 3;
+        }
+        
+        .piano-body {
+            width: 101%;
+            background: linear-gradient(to right, #111, #333, #111);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            padding: 10px 15px;
+            border-radius: 5px;
+            position: relative;
+        }
+        
+        .piano-brand {
+            text-align: center;
+            color: #8a8a8a;
+            font-style: italic;
+            font-size: 20px;
+            padding: 10px 0;
+            font-family: 'Times New Roman', serif;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+        }
+        
+        .piano {
+            display: flex;
+            position: relative;
+            height: 300px;
+            background-color: #222;
+            padding: 10px 5px 0;
+            border-radius: 0 0 5px 5px;
+        }
+        
+        .key {
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+        }
+        
+        .white-key {
+            width: 40px;
+            height: 180px;
+            background: linear-gradient(to bottom, #f8f8f8, #fff);
+            border: 1px solid #ccc;
+            border-radius: 0 0 5px 5px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding-bottom: 10px;
+            box-sizing: border-box;
+            z-index: 1;
+            margin-right: -1px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+        
+        .white-key.active {
+            background: linear-gradient(to bottom, #ddd, #eee);
+            box-shadow: inset 0 -5px 10px rgba(0,0,0,0.1);
+        }
+        
+        .black-key {
+            width: 24px;
+            height: 110px;
+            background: linear-gradient(to bottom, #000, #333);
+            position: absolute;
+            top: 0;
+            z-index: 2;
+            border-radius: 0 0 5px 5px;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding-bottom: 10px;
+            box-sizing: border-box;
+            transform: translateX(-50%);
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+        
+        .black-key.active {
+            background: linear-gradient(to bottom, #333, #555);
+            box-shadow: inset 0 -3px 5px rgba(0,0,0,0.3);
+        }
+        
+        .c-label {
+            font-weight: bold;
+            color: red;
+            font-size: 12px;
+        }
+        
+        .note-label {
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="piano-container">
+        <div class="piano-top"></div>
+        <div class="piano-body">
+            <div class="piano-brand">GGVIS Piano</div>
+            <div class="piano" id="piano"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const piano = document.getElementById('piano');
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            let activeOscillators = {};
+            let isMouseDown = false;
+            
+            // 钢琴键频率和标签
+            const keys = [
+                // A0到C8的完整钢琴键
+                // 格式: { type: 'white/black', note: '音符', freq: 频率, group: 组别, label: 'C标签' }
+                
+                // A0-B0 (第0组)
+                { type: 'white', note: 'A', freq: 27.50, group: 0, noteOctave: 'A0' },
+                { type: 'black', note: 'A#', freq: 29.14, group: 0, noteOctave: 'A#0' },
+                { type: 'white', note: 'B', freq: 30.87, group: 0, noteOctave: 'B0' },
+                
+                // C1-B1 (第1组)
+                { type: 'white', note: 'C', freq: 32.70, group: 1, label: 'C1', noteOctave: 'C1' },
+                { type: 'black', note: 'C#', freq: 34.65, group: 1, noteOctave: 'C#1' },
+                { type: 'white', note: 'D', freq: 36.71, group: 1, noteOctave: 'D1' },
+                { type: 'black', note: 'D#', freq: 38.89, group: 1, noteOctave: 'D#1' },
+                { type: 'white', note: 'E', freq: 41.20, group: 1, noteOctave: 'E1' },
+                { type: 'white', note: 'F', freq: 43.65, group: 1, noteOctave: 'F1' },
+                { type: 'black', note: 'F#', freq: 46.25, group: 1, noteOctave: 'F#1' },
+                { type: 'white', note: 'G', freq: 49.00, group: 1, noteOctave: 'G1' },
+                { type: 'black', note: 'G#', freq: 51.91, group: 1, noteOctave: 'G#1' },
+                { type: 'white', note: 'A', freq: 55.00, group: 1, noteOctave: 'A1' },
+                { type: 'black', note: 'A#', freq: 58.27, group: 1, noteOctave: 'A#1' },
+                { type: 'white', note: 'B', freq: 61.74, group: 1, noteOctave: 'B1' },
+                
+                // C2-B2 (第2组)
+                { type: 'white', note: 'C', freq: 65.41, group: 2, label: 'C2', noteOctave: 'C2' },
+                { type: 'black', note: 'C#', freq: 69.30, group: 2, noteOctave: 'C#2' },
+                { type: 'white', note: 'D', freq: 73.42, group: 2, noteOctave: 'D2' },
+                { type: 'black', note: 'D#', freq: 77.78, group: 2, noteOctave: 'D#2' },
+                { type: 'white', note: 'E', freq: 82.41, group: 2, noteOctave: 'E2' },
+                { type: 'white', note: 'F', freq: 87.31, group: 2, noteOctave: 'F2' },
+                { type: 'black', note: 'F#', freq: 92.50, group: 2, noteOctave: 'F#2' },
+                { type: 'white', note: 'G', freq: 98.00, group: 2, noteOctave: 'G2' },
+                { type: 'black', note: 'G#', freq: 103.83, group: 2, noteOctave: 'G#2' },
+                { type: 'white', note: 'A', freq: 110.00, group: 2, noteOctave: 'A2' },
+                { type: 'black', note: 'A#', freq: 116.54, group: 2, noteOctave: 'A#2' },
+                { type: 'white', note: 'B', freq: 123.47, group: 2, noteOctave: 'B2' },
+                
+                // C3-B3 (第3组)
+                { type: 'white', note: 'C', freq: 130.81, group: 3, label: 'C3', noteOctave: 'C3' },
+                { type: 'black', note: 'C#', freq: 138.59, group: 3, noteOctave: 'C#3' },
+                { type: 'white', note: 'D', freq: 146.83, group: 3, noteOctave: 'D3' },
+                { type: 'black', note: 'D#', freq: 155.56, group: 3, noteOctave: 'D#3' },
+                { type: 'white', note: 'E', freq: 164.81, group: 3, noteOctave: 'E3' },
+                { type: 'white', note: 'F', freq: 174.61, group: 3, noteOctave: 'F3' },
+                { type: 'black', note: 'F#', freq: 185.00, group: 3, noteOctave: 'F#3' },
+                { type: 'white', note: 'G', freq: 196.00, group: 3, noteOctave: 'G3' },
+                { type: 'black', note: 'G#', freq: 207.65, group: 3, noteOctave: 'G#3' },
+                { type: 'white', note: 'A', freq: 220.00, group: 3, noteOctave: 'A3' },
+                { type: 'black', note: 'A#', freq: 233.08, group: 3, noteOctave: 'A#3' },
+                { type: 'white', note: 'B', freq: 246.94, group: 3, noteOctave: 'B3' },
+                
+                // C4-B4 (第4组 - 中央C)
+                { type: 'white', note: 'C', freq: 261.63, group: 4, label: 'C4', noteOctave: 'C4' },
+                { type: 'black', note: 'C#', freq: 277.18, group: 4, noteOctave: 'C#4' },
+                { type: 'white', note: 'D', freq: 293.66, group: 4, noteOctave: 'D4' },
+                { type: 'black', note: 'D#', freq: 311.13, group: 4, noteOctave: 'D#4' },
+                { type: 'white', note: 'E', freq: 329.63, group: 4, noteOctave: 'E4' },
+                { type: 'white', note: 'F', freq: 349.23, group: 4, noteOctave: 'F4' },
+                { type: 'black', note: 'F#', freq: 369.99, group: 4, noteOctave: 'F#4' },
+                { type: 'white', note: 'G', freq: 392.00, group: 4, noteOctave: 'G4' },
+                { type: 'black', note: 'G#', freq: 415.30, group: 4, noteOctave: 'G#4' },
+                { type: 'white', note: 'A', freq: 440.00, group: 4, noteOctave: 'A4' },
+                { type: 'black', note: 'A#', freq: 466.16, group: 4, noteOctave: 'A#4' },
+                { type: 'white', note: 'B', freq: 493.88, group: 4, noteOctave: 'B4' },
+                
+                // C5-B5 (第5组)
+                { type: 'white', note: 'C', freq: 523.25, group: 5, label: 'C5', noteOctave: 'C5' },
+                { type: 'black', note: 'C#', freq: 554.37, group: 5, noteOctave: 'C#5' },
+                { type: 'white', note: 'D', freq: 587.33, group: 5, noteOctave: 'D5' },
+                { type: 'black', note: 'D#', freq: 622.25, group: 5, noteOctave: 'D#5' },
+                { type: 'white', note: 'E', freq: 659.25, group: 5, noteOctave: 'E5' },
+                { type: 'white', note: 'F', freq: 698.46, group: 5, noteOctave: 'F5' },
+                { type: 'black', note: 'F#', freq: 739.99, group: 5, noteOctave: 'F#5' },
+                { type: 'white', note: 'G', freq: 783.99, group: 5, noteOctave: 'G5' },
+                { type: 'black', note: 'G#', freq: 830.61, group: 5, noteOctave: 'G#5' },
+                { type: 'white', note: 'A', freq: 880.00, group: 5, noteOctave: 'A5' },
+                { type: 'black', note: 'A#', freq: 932.33, group: 5, noteOctave: 'A#5' },
+                { type: 'white', note: 'B', freq: 987.77, group: 5, noteOctave: 'B5' },
+                
+                // C6-B6 (第6组)
+                { type: 'white', note: 'C', freq: 1046.50, group: 6, label: 'C6', noteOctave: 'C6' },
+                { type: 'black', note: 'C#', freq: 1108.73, group: 6, noteOctave: 'C#6' },
+                { type: 'white', note: 'D', freq: 1174.66, group: 6, noteOctave: 'D6' },
+                { type: 'black', note: 'D#', freq: 1244.51, group: 6, noteOctave: 'D#6' },
+                { type: 'white', note: 'E', freq: 1318.51, group: 6, noteOctave: 'E6' },
+                { type: 'white', note: 'F', freq: 1396.91, group: 6, noteOctave: 'F6' },
+                { type: 'black', note: 'F#', freq: 1479.98, group: 6, noteOctave: 'F#6' },
+                { type: 'white', note: 'G', freq: 1567.98, group: 6, noteOctave: 'G6' },
+                { type: 'black', note: 'G#', freq: 1661.22, group: 6, noteOctave: 'G#6' },
+                { type: 'white', note: 'A', freq: 1760.00, group: 6, noteOctave: 'A6' },
+                { type: 'black', note: 'A#', freq: 1864.66, group: 6, noteOctave: 'A#6' },
+                { type: 'white', note: 'B', freq: 1975.53, group: 6, noteOctave: 'B6' },
+                
+                // C7-B7 (第7组)
+                { type: 'white', note: 'C', freq: 2093.00, group: 7, label: 'C7', noteOctave: 'C7' },
+                { type: 'black', note: 'C#', freq: 2217.46, group: 7, noteOctave: 'C#7' },
+                { type: 'white', note: 'D', freq: 2349.32, group: 7, noteOctave: 'D7' },
+                { type: 'black', note: 'D#', freq: 2489.02, group: 7, noteOctave: 'D#7' },
+                { type: 'white', note: 'E', freq: 2637.02, group: 7, noteOctave: 'E7' },
+                { type: 'white', note: 'F', freq: 2793.83, group: 7, noteOctave: 'F7' },
+                { type: 'black', note: 'F#', freq: 2959.96, group: 7, noteOctave: 'F#7' },
+                { type: 'white', note: 'G', freq: 3135.96, group: 7, noteOctave: 'G7' },
+                { type: 'black', note: 'G#', freq: 3322.44, group: 7, noteOctave: 'G#7' },
+                { type: 'white', note: 'A', freq: 3520.00, group: 7, noteOctave: 'A7' },
+                { type: 'black', note: 'A#', freq: 3729.31, group: 7, noteOctave: 'A#7' },
+                { type: 'white', note: 'B', freq: 3951.07, group: 7, noteOctave: 'B7' },
+                
+                // C8 (第8组)
+                { type: 'white', note: 'C', freq: 4186.01, group: 8, label: 'C8', noteOctave: 'C8' }
+            ];
+            
+            // 创建标准钢琴键布局
+            let whiteKeyCount = 0;
+            const whiteKeys = [];
+            
+            // 先创建所有白键
+            for (let i = 0; i < keys.length; i++) {
+                const key = keys[i];
+                if (key.type === 'white') {
+                    const keyElement = document.createElement('div');
+                    keyElement.className = `key ${key.type}-key`;
+                    keyElement.dataset.freq = key.freq;
+                    keyElement.dataset.note = key.noteOctave;
+                    
+                    // 设置白键位置（紧密相连）
+                    keyElement.style.left = `${whiteKeyCount * 1}px`;
+                    key.position = whiteKeyCount;
+                    whiteKeyCount++;
+                    whiteKeys.push(keyElement);
+                    
+                    // 添加标签
+                    const label = document.createElement('div');
+                    if (key.label) {
+                        label.textContent = key.label;
+                        label.className = 'c-label';
+                    } else {
+                        label.textContent = key.note;
+                        label.className = 'note-label';
+                    }
+                    keyElement.appendChild(label);
+                    
+                    // 事件监听
+                    keyElement.addEventListener('mousedown', (e) => {
+                        e.preventDefault();
+                        isMouseDown = true;
+                        activateKey(keyElement, key.freq, key.noteOctave);
+                    });
+                    
+                    keyElement.addEventListener('mouseenter', (e) => {
+                        if (isMouseDown) {
+                            activateKey(keyElement, key.freq, key.noteOctave);
+                        }
+                    });
+                    
+                    keyElement.addEventListener('mouseup', () => {
+                        deactivateKey(keyElement, key.freq);
+                    });
+                    
+                    keyElement.addEventListener('mouseleave', () => {
+                        deactivateKey(keyElement, key.freq);
+                    });
+                    
+                    // 添加到钢琴
+                    piano.appendChild(keyElement);
+                }
+            }
+            
+            // 创建黑键的标准位置映射（相对于白键索引）
+            // 在真实钢琴中，黑键位于C-D, D-E, F-G, G-A, A-B之间
+            const createBlackKey = (key, leftPos) => {
+                const keyElement = document.createElement('div');
+                keyElement.className = `key ${key.type}-key`;
+                keyElement.dataset.freq = key.freq;
+                keyElement.dataset.note = key.noteOctave;
+                
+                // 设置黑键位置
+                keyElement.style.left = `${leftPos}px`;
+                
+                // 添加标签
+                const label = document.createElement('div');
+                label.textContent = key.note;
+                label.className = 'note-label';
+                keyElement.appendChild(label);
+                
+                // 事件监听
+                keyElement.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    isMouseDown = true;
+                    activateKey(keyElement, key.freq, key.noteOctave);
+                });
+                
+                keyElement.addEventListener('mouseenter', (e) => {
+                    if (isMouseDown) {
+                        activateKey(keyElement, key.freq, key.noteOctave);
+                    }
+                });
+                
+                keyElement.addEventListener('mouseup', () => {
+                    deactivateKey(keyElement, key.freq);
+                });
+                
+                keyElement.addEventListener('mouseleave', () => {
+                    deactivateKey(keyElement, key.freq);
+                });
+                
+                // 添加到钢琴
+                piano.appendChild(keyElement);
+            };
+            
+            // 创建所有黑键
+            for (let i = 0; i < keys.length; i++) {
+                const key = keys[i];
+                if (key.type === 'black') {
+                    // 找出前后相邻的白键
+                    const prevKey = keys[i-1];
+                    const nextKey = keys[i+1];
+                    
+                    if (prevKey && prevKey.type === 'white' && prevKey.position !== undefined) {
+                        // 按照音符类型确定黑键位置
+                        let leftPos;
+                        
+                        // 根据音符确定黑键位置 - 确保正确的位置
+                        const prevNote = prevKey.note;
+                        if (prevNote === 'C' || prevNote === 'F' || prevNote === 'G' || prevNote === 'A' || prevNote === 'D') {
+                            // 这些白键后面有黑键
+                            leftPos = (prevKey.position * 40) + 40;
+                        }
+                        
+                        if (leftPos) {
+                            createBlackKey(key, leftPos);
+                        }
+                    }
+                }
+            }
+            
+            // 全局鼠标释放事件
+            document.addEventListener('mouseup', () => {
+                isMouseDown = false;
+                // 停止所有声音
+                Object.keys(activeOscillators).forEach(freq => {
+                    stopSound(freq);
+                });
+            });
+            
+            // 激活琴键
+            function activateKey(keyElement, freq, noteOctave) {
+                if (!activeOscillators[freq]) {
+                    keyElement.classList.add('active');
+                    playSound(freq, noteOctave);
+                }
+            }
+            
+            // 停用琴键
+            function deactivateKey(keyElement, freq) {
+                keyElement.classList.remove('active');
+                stopSound(freq);
+            }
+            
+            // 播放声音函数 - 使用更简单的音色
+            function playSound(frequency, noteOctave) {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                // 使用正弦波作为基础音色
+                oscillator.type = 'sine';
+                oscillator.frequency.value = frequency;
+                
+                // 初始音量
+                gainNode.gain.value = 0.3;
+                
+                // 连接音频图
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.start();
+                
+                // 保存振荡器引用
+                activeOscillators[frequency] = {
+                    oscillator: oscillator,
+                    gainNode: gainNode
+                };
+            }
+            
+            // 停止声音函数
+            function stopSound(frequency) {
+                if (activeOscillators[frequency]) {
+                    const { oscillator, gainNode } = activeOscillators[frequency];
+                    
+                    // 淡出停止 - 0.5秒淡出
+                    gainNode.gain.setValueAtTime(gainNode.gain.value, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5);
+                    oscillator.stop(audioContext.currentTime + 0.5);
+                    
+                    // 删除引用
+                    delete activeOscillators[frequency];
+                }
+            }
+            
+            // 键盘事件监听
+            document.addEventListener('keydown', (e) => {
+                // 简单的键盘映射
+                const keyMap = {
+                    'z': keys.find(k => k.noteOctave === 'C4'),
+                    'x': keys.find(k => k.noteOctave === 'D4'),
+                    'c': keys.find(k => k.noteOctave === 'E4'),
+                    'v': keys.find(k => k.noteOctave === 'F4'),
+                    'b': keys.find(k => k.noteOctave === 'G4'),
+                    'n': keys.find(k => k.noteOctave === 'A4'),
+                    'm': keys.find(k => k.noteOctave === 'B4'),
+                    's': keys.find(k => k.noteOctave === 'C#4'),
+                    'd': keys.find(k => k.noteOctave === 'D#4'),
+                    'g': keys.find(k => k.noteOctave === 'F#4'),
+                    'h': keys.find(k => k.noteOctave === 'G#4'),
+                    'j': keys.find(k => k.noteOctave === 'A#4')
+                };
+                
+                if (keyMap[e.key] && !e.repeat) {
+                    const keyElement = document.querySelector(`.key[data-note="${keyMap[e.key].noteOctave}"]`);
+                    if (keyElement) {
+                        activateKey(keyElement, keyMap[e.key].freq, keyMap[e.key].noteOctave);
+                    }
+                }
+            });
+            
+            document.addEventListener('keyup', (e) => {
+                const keyMap = {
+                    'z': keys.find(k => k.noteOctave === 'C4'),
+                    'x': keys.find(k => k.noteOctave === 'D4'),
+                    'c': keys.find(k => k.noteOctave === 'E4'),
+                    'v': keys.find(k => k.noteOctave === 'F4'),
+                    'b': keys.find(k => k.noteOctave === 'G4'),
+                    'n': keys.find(k => k.noteOctave === 'A4'),
+                    'm': keys.find(k => k.noteOctave === 'B4'),
+                    's': keys.find(k => k.noteOctave === 'C#4'),
+                    'd': keys.find(k => k.noteOctave === 'D#4'),
+                    'g': keys.find(k => k.noteOctave === 'F#4'),
+                    'h': keys.find(k => k.noteOctave === 'G#4'),
+                    'j': keys.find(k => k.noteOctave === 'A#4')
+                };
+                
+                if (keyMap[e.key]) {
+                    const keyElement = document.querySelector(`.key[data-note="${keyMap[e.key].noteOctave}"]`);
+                    if (keyElement) {
+                        deactivateKey(keyElement, keyMap[e.key].freq);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
