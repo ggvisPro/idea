@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>16步打击乐音序器</title>
+    <!-- 引入Tone.js库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1a202c;
+            color: white;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background-color: #2d3748;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: background-color 0.2s;
+        }
+        
+        .play-button {
+            background-color: #48bb78;
+        }
+        
+        .play-button:hover {
+            background-color: #38a169;
+        }
+        
+        .stop-button {
+            background-color: #f56565;
+        }
+        
+        .stop-button:hover {
+            background-color: #e53e3e;
+        }
+        
+        .basic-button {
+            background-color: #4299e1;
+        }
+        
+        .basic-button:hover {
+            background-color: #3182ce;
+        }
+        
+        .funk-button {
+            background-color: #9f7aea;
+        }
+        
+        .funk-button:hover {
+            background-color: #805ad5;
+        }
+        
+        .clear-button {
+            background-color: #718096;
+        }
+        
+        .clear-button:hover {
+            background-color: #4a5568;
+        }
+        
+        .bpm-control {
+            display: flex;
+            align-items: center;
+        }
+        
+        .bpm-label {
+            margin-right: 8px;
+        }
+        
+        .bpm-value {
+            margin-left: 8px;
+            min-width: 32px;
+        }
+        
+        .sequencer-grid {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        
+        .step-numbers {
+            display: flex;
+            margin-bottom: 4px;
+            padding-left: 80px;
+        }
+        
+        .step-number {
+            width: 40px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .step-highlight {
+            color: #fbbf24;
+        }
+        
+        .step-regular {
+            color: #9ca3af;
+        }
+        
+        .instrument-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .instrument-name {
+            width: 80px;
+            text-align: right;
+            padding-right: 8px;
+            font-weight: 500;
+        }
+        
+        .step-cells {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .step-cell {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.1s;
+        }
+        
+        .cell-inactive {
+            background-color: #4a5568;
+        }
+        
+        .cell-inactive:hover {
+            background-color: #718096;
+        }
+        
+        .cell-active {
+            background-color: #48bb78;
+        }
+        
+        .cell-active:hover {
+            background-color: #38a169;
+        }
+        
+        .cell-beat-marker {
+            border-left: 4px solid #718096;
+        }
+        
+        .cell-current {
+            border: 2px solid #fbbf24;
+        }
+        
+        .cell-indicator {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: white;
+        }
+        
+        @keyframes ping {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            75%, 100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+        
+        .cell-animate {
+            animation: ping 0.3s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+        
+        .hint {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>16步打击乐音序器</h1>
+        
+        <div class="controls">
+            <button id="playButton" class="play-button">播放</button>
+            
+            <div class="bpm-control">
+                <label for="bpmSlider" class="bpm-label">BPM:</label>
+                <input id="bpmSlider" type="range" min="60" max="200" value="120">
+                <span id="bpmValue" class="bpm-value">120</span>
+            </div>
+            
+            <div>
+                <button id="basicButton" class="basic-button">基础节奏</button>
+                <button id="funkButton" class="funk-button">放克节奏</button>
+                <button id="clearButton" class="clear-button">清除</button>
+            </div>
+        </div>
+        
+        <div class="sequencer-grid">
+            <div class="step-numbers" id="stepNumbers"></div>
+            <div id="sequencerRows"></div>
+        </div>
+        
+        <div class="hint">点击格子激活/停用。尝试不同的节奏模式！</div>
+    </div>
+    
+    <script>
+        // 音序器状态
+        const state = {
+            playing: false,
+            currentStep: 0,
+            bpm: 120,
+            sequence: {
+                kick: Array(16).fill(false),
+                snare: Array(16).fill(false),
+                hihat: Array(16).fill(false),
+                clap: Array(16).fill(false),
+                tom: Array(16).fill(false)
+            },
+            samplers: {},
+            loop: null
+        };
+        
+        // 中文乐器名映射
+        const instrumentNames = {
+            kick: '底鼓',
+            snare: '军鼓',
+            hihat: '嗨帽',
+            clap: '拍手',
+            tom: '通鼓'
+        };
+        
+        // DOM元素引用
+        const playButton = document.getElementById('playButton');
+        const bpmSlider = document.getElementById('bpmSlider');
+        const bpmValue = document.getElementById('bpmValue');
+        const basicButton = document.getElementById('basicButton');
+        const funkButton = document.getElementById('funkButton');
+        const clearButton = document.getElementById('clearButton');
+        const stepNumbers = document.getElementById('stepNumbers');
+        const sequencerRows = document.getElementById('sequencerRows');
+        
+        // 初始化步骤数字
+        function initStepNumbers() {
+            stepNumbers.innerHTML = '';
+            for (let i = 0; i < 16; i++) {
+                const stepNumber = document.createElement('div');
+                stepNumber.className = `step-number ${i % 4 === 0 ? 'step-highlight' : 'step-regular'}`;
+                stepNumber.textContent = i + 1;
+                stepNumbers.appendChild(stepNumber);
+            }
+        }
+        
+        // 初始化音序器网格
+        function initSequencerGrid() {
+            sequencerRows.innerHTML = '';
+            
+            Object.entries(state.sequence).forEach(([instrument, steps]) => {
+                const row = document.createElement('div');
+                row.className = 'instrument-row';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'instrument-name';
+                nameDiv.textContent = instrumentNames[instrument];
+                row.appendChild(nameDiv);
+                
+                const cellsDiv = document.createElement('div');
+                cellsDiv.className = 'step-cells';
+                
+                steps.forEach((active, stepIndex) => {
+                    const cell = document.createElement('div');
+                    cell.className = `step-cell ${active ? 'cell-active' : 'cell-inactive'} ${stepIndex % 4 === 0 ? 'cell-beat-marker' : ''}`;
+                    cell.dataset.instrument = instrument;
+                    cell.dataset.step = stepIndex;
+                    
+                    if (active) {
+                        const indicator = document.createElement('div');
+                        indicator.className = 'cell-indicator';
+                        cell.appendChild(indicator);
+                    }
+                    
+                    cell.addEventListener('click', () => toggleCell(instrument, stepIndex));
+                    cellsDiv.appendChild(cell);
+                });
+                
+                row.appendChild(cellsDiv);
+                sequencerRows.appendChild(row);
+            });
+        }
+        
+        // 更新网格单元格
+        function updateGrid() {
+            Object.entries(state.sequence).forEach(([instrument, steps]) => {
+                steps.forEach((active, stepIndex) => {
+                    const cell = document.querySelector(`.step-cell[data-instrument="${instrument}"][data-step="${stepIndex}"]`);
+                    
+                    // 更新活动状态
+                    if (active) {
+                        cell.classList.add('cell-active');
+                        cell.classList.remove('cell-inactive');
+                        
+                        if (!cell.querySelector('.cell-indicator')) {
+                            const indicator = document.createElement('div');
+                            indicator.className = 'cell-indicator';
+                            cell.appendChild(indicator);
+                        }
+                    } else {
+                        cell.classList.add('cell-inactive');
+                        cell.classList.remove('cell-active');
+                        
+                        const indicator = cell.querySelector('.cell-indicator');
+                        if (indicator) {
+                            cell.removeChild(indicator);
+                        }
+                    }
+                    
+                    // 更新当前步骤高亮
+                    if (stepIndex === state.currentStep && state.playing) {
+                        cell.classList.add('cell-current');
+                        
+                        if (active) {
+                            const indicator = cell.querySelector('.cell-indicator');
+                            if (indicator) {
+                                indicator.classList.add('cell-animate');
+                            }
+                        }
+                    } else {
+                        cell.classList.remove('cell-current');
+                        
+                        const indicator = cell.querySelector('.cell-indicator');
+                        if (indicator) {
+                            indicator.classList.remove('cell-animate');
+                        }
+                    }
+                });
+            });
+        }
+        
+        // 切换单元格状态
+        function toggleCell(instrument, step) {
+            state.sequence[instrument][step] = !state.sequence[instrument][step];
+            updateGrid();
+        }
+        
+        // 清除网格
+        function clearGrid() {
+            Object.keys(state.sequence).forEach(instrument => {
+                state.sequence[instrument] = Array(16).fill(false);
+            });
+            updateGrid();
+        }
+        
+        // 应用预设模式
+        function applyPattern(patternName) {
+            if (patternName === "basic") {
+                state.sequence = {
+                    kick: [true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false],
+                    snare: [false, false, true, false, false, false, true, false, false, false, true, false, false, false, true, false],
+                    hihat: [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true],
+                    clap: [false, false, true, false, false, false, true, false, false, false, true, false, false, false, true, false],
+                    tom: [false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false]
+                };
+            } else if (patternName === "funk") {
+                state.sequence = {
+                    kick: [true, false, false, true, false, true, false, false, true, false, false, true, false, false, true, false],
+                    snare: [false, false, true, false, false, false, true, false, false, false, true, false, false, false, true, false],
+                    hihat: [true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false],
+                    clap: [false, false, false, false, true, false, false, false, false, false, false, false, true, false, false, true],
+                    tom: [false, false, false, false, false, false, false, true, false, true, false, false, false, false, false, false]
+                };
+            }
+            updateGrid();
+        }
+        
+        // 初始化音频引擎
+        async function initAudio() {
+            // 等待用户交互以解锁音频上下文
+            await Tone.start();
+            
+            // 设置BPM
+            Tone.Transport.bpm.value = state.bpm;
+            
+            // 创建采样器
+            const kick = new Tone.MembraneSynth({
+                pitchDecay: 0.05,
+                octaves: 4,
+                oscillator: { type: 'sine' },
+                envelope: {
+                    attack: 0.001,
+                    decay: 0.4,
+                    sustain: 0.01,
+                    release: 1.4,
+                }
+            }).toDestination();
+            
+            const snare = new Tone.NoiseSynth({
+                noise: { type: 'white' },
+                envelope: {
+                    attack: 0.001,
+                    decay: 0.2,
+                    sustain: 0,
+                    release: 0.2
+                }
+            }).toDestination();
+            
+            const hihat = new Tone.MetalSynth({
+                frequency: 200,
+                envelope: {
+                    attack: 0.001,
+                    decay: 0.1,
+                    release: 0.1
+                },
+                harmonicity: 5.1,
+                modulationIndex: 32,
+                resonance: 4000,
+                octaves: 1.5
+            }).toDestination();
+            hihat.volume.value = -15;
+            
+            const clap = new Tone.NoiseSynth({
+                noise: { type: 'pink' },
+                envelope: {
+                    attack: 0.001,
+                    decay: 0.2,
+                    sustain: 0,
+                    release: 0.5
+                }
+            }).toDestination();
+            
+            const tom = new Tone.MembraneSynth({
+                pitchDecay: 0.05,
+                octaves: 2,
+                oscillator: { type: 'sine' },
+                envelope: {
+                    attack: 0.001,
+                    decay: 0.2,
+                    sustain: 0.01,
+                    release: 0.8,
+                }
+            }).toDestination();
+            tom.volume.value = -5;
+            
+            state.samplers = {
+                kick,
+                snare,
+                hihat,
+                clap,
+                tom
+            };
+            
+            // 设置音序循环
+            setupLoop();
+        }
+        
+        // 设置循环
+        function setupLoop() {
+            // 取消之前的循环
+            if (state.loop) {
+                state.loop.dispose();
+            }
+            
+            // 设置BPM
+            Tone.Transport.bpm.value = state.bpm;
+            
+            // 创建新的循环
+            state.loop = new Tone.Sequence(
+                (time, step) => {
+                    state.currentStep = step;
+                    
+                    // 对每个打击乐器检查当前步骤是否激活
+                    if (state.sequence.kick[step]) {
+                        state.samplers.kick.triggerAttackRelease('C1', '8n', time);
+                    }
+                    if (state.sequence.snare[step]) {
+                        state.samplers.snare.trigger(time, 0.1);
+                    }
+                    if (state.sequence.hihat[step]) {
+                        state.samplers.hihat.triggerAttackRelease('C6', '16n', time);
+                    }
+                    if (state.sequence.clap[step]) {
+                        state.samplers.clap.trigger(time, 0.1);
+                    }
+                    if (state.sequence.tom[step]) {
+                        state.samplers.tom.triggerAttackRelease('A2', '8n', time);
+                    }
+                    
+                    // 更新UI（需要使用requestAnimationFrame确保在正确的时间更新）
+                    requestAnimationFrame(() => updateGrid());
+                },
+                [...Array(16).keys()],
+                '16n'
+            );
+            
+            state.loop.start(0);
+        }
+        
+        // 切换播放状态
+        function togglePlay() {
+            state.playing = !state.playing;
+            
+            if (state.playing) {
+                playButton.textContent = '停止';
+                playButton.className = 'stop-button';
+                Tone.Transport.start();
+            } else {
+                playButton.textContent = '播放';
+                playButton.className = 'play-button';
+                Tone.Transport.pause();
+                state.currentStep = 0;
+                updateGrid();
+            }
+        }
+        
+        // 事件监听器
+        playButton.addEventListener('click', async () => {
+            // 第一次点击时初始化音频
+            if (!state.samplers.kick) {
+                await initAudio();
+            }
+            togglePlay();
+        });
+        
+        bpmSlider.addEventListener('input', (e) => {
+            state.bpm = Number(e.target.value);
+            bpmValue.textContent = state.bpm;
+            
+            if (state.loop) {
+                Tone.Transport.bpm.value = state.bpm;
+            }
+        });
+        
+        basicButton.addEventListener('click', () => applyPattern('basic'));
+        funkButton.addEventListener('click', () => applyPattern('funk'));
+        clearButton.addEventListener('click', clearGrid);
+        
+        // 初始化UI
+        initStepNumbers();
+        initSequencerGrid();
+    </script>
+</body>
+</html>

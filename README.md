@@ -2,7 +2,9 @@
 
 | 项目名称 | 项目描述 |
 |---------|---------|
-| [钢琴](https://ggvispro.github.io/idea/virtual_piano/)  | 网页版钢琴,电脑打开 |
+| [16步打击乐音序器2](https://ggvispro.github.io/idea/percussion_sonnet/)  | 16步打击乐音序器，Sonnet老师作品 |
+| [16步打击乐音序器1](https://ggvispro.github.io/idea/percussion_v3/)  | 16步打击乐音序器，DeepSeek v3老师作品 |
+| [钢琴🎹](https://ggvispro.github.io/idea/virtual_piano/)  | 网页版钢琴,电脑打开 |
 | [知识库简化版0.1.1](https://ggvispro.github.io/idea/knowledge_base_tidy_011/)  | 删除了不打算做的知识库 |
 | [知识库简化版0.1](https://ggvispro.github.io/idea/knowledge_base_tidy_01/)  | 删除了大部分页面和功能点 |
 | [知识库0.6](https://ggvispro.github.io/idea/knowledge_base_06/)  | 新增了暗黑模式；重构了所有页面；似曾相识，但又**处处不同** |
