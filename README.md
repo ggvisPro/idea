@@ -2,6 +2,7 @@
 
 | 项目名称 | 项目描述 |
 |---------|---------|
+| [打飞机](https://ggvispro.github.io/idea/plane_war/)  | Gemini 2.5 Pro 一句话生成的打飞机程序 |
 | [16步打击乐音序器2](https://ggvispro.github.io/idea/percussion_sonnet/)  | 16步打击乐音序器，Sonnet老师作品 |
 | [16步打击乐音序器1](https://ggvispro.github.io/idea/percussion_v3/)  | 16步打击乐音序器，DeepSeek v3老师作品 |
 | [钢琴🎹](https://ggvispro.github.io/idea/virtual_piano/)  | 网页版钢琴,电脑打开 |
