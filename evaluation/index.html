@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>问诊评价报告</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js CDN for Radar Chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* 自定义动画效果 */
+        .hover-scale {
+            transition: transform 0.2s ease-in-out;
+        }
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+        
+        .hover-shadow {
+            transition: box-shadow 0.2s ease-in-out;
+        }
+        .hover-shadow:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* 渐变背景 */
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 头部导航 -->
+    <div class="gradient-bg text-white p-4 sticky top-0 z-10 shadow-lg">
+        <div class="flex items-center justify-between">
+            <h1 class="text-xl font-bold flex items-center">
+                <i class="fas fa-clipboard-check mr-2"></i>
+                问诊评价报告
+            </h1>
+            <span class="text-sm opacity-90">2025-06-11</span>
+        </div>
+    </div>
+    
+    <!-- 总分卡片 -->
+    <div class="p-4">
+        <div class="bg-white rounded-2xl shadow-lg hover-shadow p-6 mb-4">
+            <div class="text-center">
+                <div class="relative inline-flex items-center justify-center w-32 h-32 mb-4">
+                    <svg class="absolute w-full h-full">
+                        <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="8" fill="none"></circle>
+                        <circle cx="64" cy="64" r="56" stroke="#ef4444" stroke-width="8" fill="none"
+                                stroke-dasharray="351.86" stroke-dashoffset="264" transform="rotate(-90 64 64)"
+                                style="transition: stroke-dashoffset 1s ease-in-out;"></circle>
+                    </svg>
+                    <div class="absolute">
+                        <span class="text-4xl font-bold text-red-500">25</span>
+                        <span class="text-gray-500">/100</span>
+                    </div>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">总体评分</h2>
+                <p class="text-sm text-gray-600">整体表现需要大幅改进</p>
+            </div>
+        </div>
+        
+        <!-- 雷达图卡片 -->
+        <div class="bg-white rounded-2xl shadow-lg hover-shadow p-6 mb-4">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-chart-radar mr-2 text-purple-600"></i>
+                能力雷达图
+            </h3>
+            <div class="relative h-64">
+                <canvas id="radarChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- 整体评价卡片 -->
+        <div class="bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl shadow-lg hover-shadow p-6 mb-4">
+            <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                <i class="fas fa-exclamation-triangle mr-2 text-orange-500"></i>
+                整体评价
+            </h3>
+            <p class="text-gray-700 leading-relaxed text-sm">
+                此次问诊表现欠佳。在内容上，多项关键信息未询问，如可能病因、既往病史、个人习惯等，仅部分方面有一定询问但不全面。沟通方面，初始交流、语言表达、沟通技巧等均存在严重不足，未展现尊重与同理心，缺乏对患者的关怀和专业解释。整体问诊在完整性、顺序、问题相关性及过程流畅性上都得0分，需大幅改进。
+            </p>
+        </div>
+        
+        <!-- 评分详情折叠面板 -->
+        <div class="space-y-3">
+            <!-- 现病史 -->
+            <div class="bg-white rounded-xl shadow hover-shadow overflow-hidden">
+                <button onclick="toggleAccordion('xianbingshi')" class="w-full p-4 text-left flex items-center justify-between hover-scale">
+                    <div class="flex items-center">
+                        <i class="fas fa-stethoscope text-blue-500 mr-3"></i>
+                        <span class="font-semibold text-gray-800">现病史</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-sm font-medium text-gray-600 mr-3">21/50分</span>
+                        <i class="fas fa-chevron-down text-gray-400 transition-transform" id="xianbingshi-icon"></i>
+                    </div>
+                </button>
+                <div id="xianbingshi" class="hidden px-4 pb-4">
+                    <div class="space-y-2 text-sm text-gray-600">
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span>起病日期及方式</span>
+                            <span class="text-orange-500 font-medium">3分</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span>可能病因或诱因</span>
+                            <span class="text-red-500 font-medium">0分</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span>主要症状的系统描述</span>
+                            <span class="text-yellow-500 font-medium">6分</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span>病情发展及演变</span>
+                            <span class="text-yellow-500 font-medium">5分</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span>伴随症状</span>
+                            <span class="text-orange-500 font-medium">4分</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span>诊疗经过及效果</span>
+                            <span class="text-orange-500 font-medium">3分</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2">
+                            <span>发病后的一般状况</span>
+                            <span class="text-red-500 font-medium">0分</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 其他病史 -->
+            <div class="bg-white rounded-xl shadow hover-shadow overflow-hidden">
+                <button onclick="toggleAccordion('qitabingshi')" class="w-full p-4 text-left flex items-center justify-between hover-scale">
+                    <div class="flex items-center">
+                        <i class="fas fa-file-medical text-green-500 mr-3"></i>
+                        <span class="font-semibold text-gray-800">其他病史</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-sm font-medium text-gray-600 mr-3">4/25分</span>
+                        <i class="fas fa-chevron-down text-gray-400 transition-transform" id="qitabingshi-icon"></i>
+                    </div>
+                </button>
+                <div id="qitabingshi" class="hidden px-4 pb-4">
+                    <div class="space-y-2 text-sm text-gray-600">
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span>既往病史</span>
+                            <span class="text-red-500 font-medium">0分</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span>个人习惯</span>
+                            <span class="text-red-500 font-medium">0分</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span>家族史</span>
+                            <span class="text-red-500 font-medium">0分</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span>婚姻史</span>
+                            <span class="text-red-500 font-medium">0分</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2">
+                            <span>月经史及生育史</span>
+                            <span class="text-green-500 font-medium">4分 (不适用)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 问诊技巧 -->
+            <div class="bg-white rounded-xl shadow hover-shadow overflow-hidden">
+                <button onclick="toggleAccordion('wenzenjiqiao')" class="w-full p-4 text-left flex items-center justify-between hover-scale">
+                    <div class="flex items-center">
+                        <i class="fas fa-comments text-purple-500 mr-3"></i>
+                        <span class="font-semibold text-gray-800">问诊技巧</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-sm font-medium text-gray-600 mr-3">0/10分</span>
+                        <i class="fas fa-chevron-down text-gray-400 transition-transform" id="wenzenjiqiao-icon"></i>
+                    </div>
+                </button>
+                <div id="wenzenjiqiao" class="hidden px-4 pb-4">
+                    <div class="space-y-2 text-sm text-gray-600">
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span>初始交流</span>
+                            <span class="text-red-500 font-medium">0分</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span>语言表达</span>
+                            <span class="text-red-500 font-medium">0分</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span>沟通技巧</span>
+                            <span class="text-red-500 font-medium">0分</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2">
+                            <span>尊重与同理心</span>
+                            <span class="text-red-500 font-medium">0分</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 人文关怀 -->
+            <div class="bg-white rounded-xl shadow hover-shadow overflow-hidden">
+                <button onclick="toggleAccordion('renwenguanhuai')" class="w-full p-4 text-left flex items-center justify-between hover-scale">
+                    <div class="flex items-center">
+                        <i class="fas fa-heart text-red-500 mr-3"></i>
+                        <span class="font-semibold text-gray-800">人文关怀</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-sm font-medium text-gray-600 mr-3">0/5分</span>
+                        <i class="fas fa-chevron-down text-gray-400 transition-transform" id="renwenguanhuai-icon"></i>
+                    </div>
+                </button>
+                <div id="renwenguanhuai" class="hidden px-4 pb-4">
+                    <div class="space-y-2 text-sm text-gray-600">
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span>患者境遇的同情与鼓励</span>
+                            <span class="text-red-500 font-medium">0分</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2">
+                            <span>专业沟通与初步沟通</span>
+                            <span class="text-red-500 font-medium">0分</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 问诊逻辑 -->
+            <div class="bg-white rounded-xl shadow hover-shadow overflow-hidden">
+                <button onclick="toggleAccordion('wenzhenluoji')" class="w-full p-4 text-left flex items-center justify-between hover-scale">
+                    <div class="flex items-center">
+                        <i class="fas fa-brain text-yellow-500 mr-3"></i>
+                        <span class="font-semibold text-gray-800">问诊逻辑</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-sm font-medium text-gray-600 mr-3">0/10分</span>
+                        <i class="fas fa-chevron-down text-gray-400 transition-transform" id="wenzhenluoji-icon"></i>
+                    </div>
+                </button>
+                <div id="wenzhenluoji" class="hidden px-4 pb-4">
+                    <div class="space-y-2 text-sm text-gray-600">
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span>问诊内容的完整性</span>
+                            <span class="text-red-500 font-medium">0分</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span>问诊顺序合理</span>
+                            <span class="text-red-500 font-medium">0分</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span>问题的相关性和适当性</span>
+                            <span class="text-red-500 font-medium">0分</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2">
+                            <span>问诊过程流畅</span>
+                            <span class="text-red-500 font-medium">0分</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 改进建议按钮 -->
+        <div class="mt-6 mb-20">
+            <button class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-semibold hover-scale shadow-lg">
+                <i class="fas fa-lightbulb mr-2"></i>
+                查看改进建议
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // 雷达图配置
+        const ctx = document.getElementById('radarChart').getContext('2d');
+        const radarChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['现病史', '问诊逻辑', '其他病史', '人文关怀', '问诊技巧'],
+                datasets: [{
+                    label: '得分率',
+                    data: [42, 0, 16, 0, 0], // 转换为百分比
+                    backgroundColor: 'rgba(147, 51, 234, 0.2)',
+                    borderColor: 'rgba(147, 51, 234, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(147, 51, 234, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(147, 51, 234, 1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            stepSize: 20
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+        
+        // 折叠面板控制
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById(id + '-icon');
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+        
+        // 页面加载动画
+        window.addEventListener('load', function() {
+            // 圆环进度动画
+            setTimeout(() => {
+                const circle = document.querySelector('circle[stroke="#ef4444"]');
+                if (circle) {
+                    circle.style.strokeDashoffset = '264';
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>
