@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三大核心智能体集群架构图</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 32px;
+            padding: 15px 0;
+            position: relative;
+            display: inline-block;
+        }
+
+        .header h1::after {
+            content: '';
+            position: absolute;
+            width: 60%;
+            height: 3px;
+            background: linear-gradient(90deg, #3498db, #9b59b6, #27ae60);
+            bottom: 5px;
+            left: 20%;
+            border-radius: 2px;
+        }
+
+        .modules-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .module {
+            flex: 1;
+            min-width: 300px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .module:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .module-header {
+            padding: 18px 20px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .module-icon {
+            margin-right: 10px;
+            font-size: 22px;
+        }
+
+        .module-body {
+            padding: 20px;
+        }
+
+        .module-item {
+            background-color: white;
+            margin-bottom: 12px;
+            padding: 15px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .module-item:hover .item-icon {
+            transform: rotate(360deg);
+        }
+
+        .item-icon {
+            margin-right: 12px;
+            font-size: 18px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            color: white;
+            transition: transform 0.5s;
+        }
+
+        .item-text {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .module-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .module-item:hover::after {
+            width: 100%;
+        }
+
+        /* Module 1 Styles */
+        .module-1 {
+            background-color: #e8f4fc;
+        }
+
+        .module-1 .module-header {
+            background-color: #3498db;
+        }
+
+        .module-1 .item-icon {
+            background-color: #3498db;
+        }
+
+        .module-1 .module-item::after {
+            background-color: #3498db;
+        }
+
+        /* Module 2 Styles */
+        .module-2 {
+            background-color: #f9f0ff;
+        }
+
+        .module-2 .module-header {
+            background-color: #9b59b6;
+        }
+
+        .module-2 .item-icon {
+            background-color: #9b59b6;
+        }
+
+        .module-2 .module-item::after {
+            background-color: #9b59b6;
+        }
+
+        /* Module 3 Styles */
+        .module-3 {
+            background-color: #f0fff0;
+        }
+
+        .module-3 .module-header {
+            background-color: #27ae60;
+        }
+
+        .module-3 .item-icon {
+            background-color: #27ae60;
+        }
+
+        .module-3 .module-item::after {
+            background-color: #27ae60;
+        }
+
+        /* Animation for the modules */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .module {
+            animation: fadeIn 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .module-1 {
+            animation-delay: 0.1s;
+        }
+
+        .module-2 {
+            animation-delay: 0.3s;
+        }
+
+        .module-3 {
+            animation-delay: 0.5s;
+        }
+
+        .tooltip {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 100;
+            white-space: nowrap;
+        }
+
+        .module-item:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Connection lines */
+        .connections {
+            position: absolute;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            z-index: 0;
+        }
+
+        .connection-line {
+            stroke-dasharray: 8, 4;
+            animation: dash 30s linear infinite;
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: 1000;
+            }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .modules-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>三大核心智能体集群架构图</h1>
+
+            <svg class="connections" height="30" width="100%">
+                <line class="connection-line" x1="20%" y1="15" x2="80%" y2="15" stroke="#666" stroke-width="2" />
+            </svg>
+        </div>
+
+        <div class="modules-container">
+            <!-- Module 1: Teaching Case Multi-Agent -->
+            <div class="module module-1">
+                <div class="module-header">
+                    <i class="fas fa-book-medical module-icon"></i>
+                    教学案例多智能体模块
+                </div>
+                <div class="module-body">
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-file-alt"></i></div>
+                        <div class="item-text">多种格式</div>
+                        <div class="tooltip">支持真实世界的多种文档格式(甚至是扫描版PDF)</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-search"></i></div>
+                        <div class="item-text">信息提取</div>
+                        <div class="tooltip">自动完美提取结构化信息提取</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-file-import"></i></div>
+                        <div class="item-text">一键导入</div>
+                        <div class="tooltip">识别并导入临床案例</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-brain"></i></div>
+                        <div class="item-text">智能理解</div>
+                        <div class="tooltip">AI理解临床案例</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-clipboard-check"></i></div>
+                        <div class="item-text">自动补全</div>
+                        <div class="tooltip">校验并补全基本信息</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-magic"></i></div>
+                        <div class="item-text">智能优化</div>
+                        <div class="tooltip">临床案例 —> 教学案例</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-graduation-cap"></i></div>
+                        <div class="item-text">教学大纲</div>
+                        <div class="tooltip">生成相关教学知识点内容</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 2: Standardized Patient Multi-Agent -->
+            <div class="module module-2">
+                <div class="module-header">
+                    <i class="fas fa-user-md module-icon"></i>
+                    标准化病人多智能体模块
+                </div>
+                <div class="module-body">
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-id-card"></i></div>
+                        <div class="item-text">识别案例内容</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-microscope"></i></div>
+                        <div class="item-text">理解案例内容</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-user-check"></i></div>
+                        <div class="item-text">分析病史提供者</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-file-medical-alt"></i></div>
+                        <div class="item-text">案例内容补全</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-theater-masks"></i></div>
+                        <div class="item-text">转化为真实问诊场景</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-comments"></i></div>
+                        <div class="item-text">语言模型</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-smile"></i></div>
+                        <div class="item-text">情绪模型</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-stethoscope"></i></div>
+                        <div class="item-text">辅助检查模型</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 3: Examiner Evaluation Multi-Agent -->
+            <div class="module module-3">
+                <div class="module-header">
+                    <i class="fas fa-clipboard-list module-icon"></i>
+                    考官评价多智能体模块
+                </div>
+                <div class="module-body">
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-chart-bar"></i></div>
+                        <div class="item-text">生成多智能个性化评分表</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-file-medical-alt"></i></div>
+                        <div class="item-text">评价Agent 1: 现病史</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-history"></i></div>
+                        <div class="item-text">评价Agent 2: 既往史</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-comments"></i></div>
+                        <div class="item-text">评价Agent 3: 问诊技巧</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-hands-helping"></i></div>
+                        <div class="item-text">评价Agent 4: 人文关怀</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-brain"></i></div>
+                        <div class="item-text">评价Agent 5: 问诊逻辑</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="item-icon"><i class="fas fa-user-tie"></i></div>
+                        <div class="item-text">设置全局考官角色进行整体评价</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            © 2025  AI 标准化病人架构图
+        </footer>
+    </div>
+
+    <script>
+        // 为每个模块项添加交互效果
+        document.querySelectorAll('.module-item').forEach(item => {
+            item.addEventListener('click', function () {
+                this.style.backgroundColor = '#f8f8f8';
+                setTimeout(() => {
+                    this.style.backgroundColor = 'white';
+                }, 300);
+            });
+        });
+    </script>
+</body>
+
+</html>
