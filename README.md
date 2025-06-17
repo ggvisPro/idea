@@ -2,7 +2,7 @@
 
 | 项目名称 | 项目描述 |
 |---------|---------|
-| [AI-SP架构](https://ggvispro.github.io/idea/index.html/)  | AI SP 漂亮的架构 |
+| [AI-SP架构](https://ggvispro.github.io/idea/ai-sp-structureindex.html/)  | AI SP 漂亮的架构 |
 | [评价报告](https://ggvispro.github.io/idea/evaluation/)  | opus老师给出的小程序AI问诊评价界面 |
 | [打飞机](https://ggvispro.github.io/idea/plane_war/)  | Gemini 2.5 Pro 一句话生成的打飞机程序 |
 | [16步打击乐音序器2](https://ggvispro.github.io/idea/percussion_sonnet/)  | 16步打击乐音序器，Sonnet老师作品 |
