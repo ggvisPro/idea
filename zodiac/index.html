@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>瑞克的星座传送门 - Rick's Zodiac Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Permanent+Marker&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="portal-bg"></div>
+    <div class="glitch-overlay"></div>
+
+    <div class="portal portal-1"></div>
+    <div class="portal portal-2"></div>
+    <div class="portal portal-3"></div>
+
+    <header>
+        <div class="drool"></div>
+        <h1 class="title">RICK'S ZODIAC PORTAL</h1>
+        <p class="subtitle">*BURP* 穿越维度探索你的星座，Morty！</p>
+        <div class="rick-speech">Listen M-M-Morty, these zodiac signs are just *burp* interdimensional personality algorithms!</div>
+    </header>
+
+    <main>
+        <div class="zodiac-grid" id="zodiacGrid">
+            <!-- 星座卡片将通过JavaScript动态生成 -->
+        </div>
+    </main>
+
+    <!-- 星座详情模态框 -->
+    <div class="modal" id="modal">
+        <div class="modal-portal-effect"></div>
+        <div class="modal-content">
+            <span class="close-btn" id="closeBtn">✕</span>
+            <div class="modal-header">
+                <div class="constellation-icon" id="modalIcon"></div>
+                <h2 id="modalTitle"></h2>
+                <p class="date-range" id="modalDate"></p>
+                <div class="dimension-label">DIMENSION C-137</div>
+            </div>
+            <div class="modal-body">
+                <div class="info-section">
+                    <h3>🧪 PERSONALITY MATRIX</h3>
+                    <p id="modalPersonality"></p>
+                </div>
+                <div class="info-section">
+                    <h3>💚 LOVE ALGORITHM</h3>
+                    <p id="modalLove"></p>
+                </div>
+                <div class="info-section">
+                    <h3>🔬 CAREER PROTOCOL</h3>
+                    <p id="modalCareer"></p>
+                </div>
+                <div class="info-section">
+                    <h3>⚡ LUCKY QUANTUM DATA</h3>
+                    <div class="lucky-items">
+                        <span><strong>Color:</strong> <span id="modalColor"></span></span>
+                        <span><strong>Number:</strong> <span id="modalNumber"></span></span>
+                        <span><strong>Crystal:</strong> <span id="modalStone"></span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="morty-comment">Aw geez, I-I don't know about this, Rick...</div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© C-137 Rick Sanchez | Interdimensional Zodiac Database</p>
+        <p class="footer-warning">⚠️ Side effects may include: portal sickness, existential crisis, pickle transformation</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

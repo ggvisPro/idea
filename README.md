@@ -2,6 +2,7 @@
 
 | 项目名称 | 项目描述 |
 |---------|---------|
+| [星座](https://ggvispro.github.io/idea/zodiac/)  | Rick's 星座 |
 | [AI-SP架构](https://ggvispro.github.io/idea/ai-sp-structure/)  | AI SP 漂亮的架构 |
 | [评价报告](https://ggvispro.github.io/idea/evaluation/)  | opus老师给出的小程序AI问诊评价界面 |
 | [打飞机](https://ggvispro.github.io/idea/plane_war/)  | Gemini 2.5 Pro 一句话生成的打飞机程序 |
